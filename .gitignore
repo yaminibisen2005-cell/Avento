@@ -1,0 +1,12 @@
+backend/target/
+frontend/node_modules/
+frontend/dist/
+
+# Local configuration and generated uploads
+backend/uploads/
+*.log
+
+# IDE files
+.idea/
+*.iml
+.vscode/

@@ -1,0 +1,194 @@
+import React, { useState, useEffect, useRef } from 'react'
+
+export default function OrganizerTopbar({
+  organizerName = 'IIT Delhi Tech Council',
+  unreadCount = 3,
+  onNavigateTab,
+  onLogout,
+  onMenuToggle,
+  searchQuery = '',
+  setSearchQuery
+}) {
+  const [profileOpen, setProfileOpen] = useState(false)
+  const [notificationOpen, setNotificationOpen] = useState(false)
+  const profileRef = useRef(null)
+  const notifRef = useRef(null)
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (profileRef.current && !profileRef.current.contains(e.target)) {
+        setProfileOpen(false)
+      }
+      if (notifRef.current && !notifRef.current.contains(e.target)) {
+        setNotificationOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  return (
+    <header 
+      style={{
+        background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(250, 248, 242, 0.88) 100%)',
+        backdropFilter: 'blur(25px)',
+        WebkitBackdropFilter: 'blur(25px)'
+      }}
+      className="h-20 w-full sticky top-0 z-20 px-4 sm:px-8 border-b border-[#0F5D46]/12 shadow-[0_4px_24px_rgba(15,93,70,0.03)] flex items-center justify-between select-none"
+    >
+      {/* LEFT: HAMBURGER & GREETING */}
+      <div className="flex items-center gap-3 sm:gap-4 text-left">
+        <button
+          type="button"
+          onClick={onMenuToggle}
+          className="lg:hidden p-2 rounded-[14px] text-[#0F5D46] hover:bg-[#0F5D46]/10 border border-[#0F5D46]/15 cursor-pointer"
+        >
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.4}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+
+        <div className="flex flex-col justify-center">
+          <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.14em] text-[#5E6A68]">
+            ORGANIZER WORKSPACE
+          </span>
+          <h1 className="font-display font-extrabold text-base sm:text-xl text-[#0F5D46] leading-tight">
+            {organizerName}
+          </h1>
+        </div>
+      </div>
+
+      {/* RIGHT: SEARCH, QUICK CREATE, NOTIFICATIONS, PROFILE */}
+      <div className="flex items-center gap-2.5 sm:gap-4">
+        {/* Search Input */}
+        <div className="relative hidden md:block w-60">
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">
+            🔍
+          </span>
+          <input
+            type="text"
+            placeholder="Search events, tickets..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery && setSearchQuery(e.target.value)}
+            className="w-full h-9 pl-8 pr-3 text-xs rounded-full bg-white/90 border border-[#0F5D46]/20 focus:outline-none focus:border-[#0F5D46] text-[#1F2937]"
+          />
+        </div>
+
+        {/* Quick Create Event Button */}
+        <button
+          type="button"
+          onClick={() => onNavigateTab && onNavigateTab('create-event')}
+          className="hidden sm:flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-[#0F5D46] hover:bg-[#126B51] text-white text-xs font-bold shadow-xs cursor-pointer transition-all"
+        >
+          <span>+</span>
+          <span>Create Event</span>
+        </button>
+
+        {/* Notification Bell */}
+        <div className="relative" ref={notifRef}>
+          <button
+            type="button"
+            onClick={() => setNotificationOpen(!notificationOpen)}
+            className="p-2.5 rounded-full bg-white/90 hover:bg-white text-[#0F5D46] border border-[#0F5D46]/20 shadow-2xs cursor-pointer relative"
+          >
+            <span>🔔</span>
+            {unreadCount > 0 && (
+              <span className="absolute top-1 right-1 w-2.5 h-2.5 rounded-full bg-[#D9B24A] border-2 border-white animate-pulse" />
+            )}
+          </button>
+
+          {notificationOpen && (
+            <div className="absolute right-0 mt-3 w-80 bg-white/95 backdrop-blur-xl rounded-[22px] shadow-2xl border border-[#0F5D46]/15 p-4 z-50 text-left">
+              <div className="flex items-center justify-between pb-2 border-b border-gray-100">
+                <span className="font-bold text-xs text-[#0F5D46]">Event Alerts</span>
+                <span className="text-[10px] bg-[#D9B24A] text-white font-extrabold px-2 py-0.5 rounded-full">
+                  {unreadCount} new
+                </span>
+              </div>
+              <div className="py-2 space-y-2 text-xs">
+                <div className="p-2 rounded-[12px] bg-[#FAF8F2] border border-[#0F5D46]/10">
+                  <span className="font-bold text-[#0F5D46] block">Gate Check-in Verified</span>
+                  <span className="text-[11px] text-[#5E6A68]">Attendee Aarav Sharma scanned at Gate 1.</span>
+                </div>
+                <div className="p-2 rounded-[12px] bg-[#FAF8F2] border border-[#0F5D46]/10">
+                  <span className="font-bold text-[#0F5D46] block">Payment Received</span>
+                  <span className="text-[11px] text-[#5E6A68]">₹999 received for Tech Summit.</span>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setNotificationOpen(false)
+                  if (onNavigateTab) onNavigateTab('notifications')
+                }}
+                className="w-full text-center text-xs font-bold text-[#0F5D46] hover:underline pt-2 block cursor-pointer"
+              >
+                View All Notifications →
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Profile Avatar Pill */}
+        <div className="relative" ref={profileRef}>
+          <div
+            onClick={() => setProfileOpen(!profileOpen)}
+            className="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-full bg-white/90 border border-[#0F5D46]/20 shadow-2xs hover:shadow-xs cursor-pointer"
+          >
+            <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-[#0F5D46] to-[#D9B24A] p-0.5 text-white flex items-center justify-center font-bold text-xs">
+              🏛
+            </div>
+            <span className="hidden sm:inline text-xs font-bold text-[#0F5D46] max-w-[100px] truncate">
+              Council
+            </span>
+            <span className="text-[10px] text-[#5E6A68]">▼</span>
+          </div>
+
+          {profileOpen && (
+            <div className="absolute right-0 mt-3 w-56 bg-white/95 backdrop-blur-xl rounded-[20px] shadow-2xl border border-[#0F5D46]/15 p-2.5 z-50 text-left text-xs font-semibold space-y-1">
+              <div className="p-2.5 bg-[#FAF8F2] rounded-[14px] mb-1">
+                <span className="font-bold text-[#0F5D46] block truncate">{organizerName}</span>
+                <span className="text-[10px] text-[#D9B24A] font-extrabold uppercase">Verified Organizer</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setProfileOpen(false)
+                  if (onNavigateTab) onNavigateTab('profile')
+                }}
+                className="w-full px-3 py-2 rounded-[12px] text-[#1F2937] hover:bg-[#EAF7F1] hover:text-[#0F5D46] flex items-center gap-2 cursor-pointer"
+              >
+                <span>🏛</span>
+                <span>Organizer Profile</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setProfileOpen(false)
+                  if (onNavigateTab) onNavigateTab('settings')
+                }}
+                className="w-full px-3 py-2 rounded-[12px] text-[#1F2937] hover:bg-[#EAF7F1] hover:text-[#0F5D46] flex items-center gap-2 cursor-pointer"
+              >
+                <span>⚙</span>
+                <span>Account Settings</span>
+              </button>
+              <div className="pt-1 border-t border-gray-100">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setProfileOpen(false)
+                    if (onLogout) onLogout()
+                  }}
+                  className="w-full px-3 py-2 rounded-[12px] text-red-700 hover:bg-red-50 flex items-center gap-2 cursor-pointer font-bold"
+                >
+                  <span>🚪</span>
+                  <span>Sign Out</span>
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </header>
+  )
+}
