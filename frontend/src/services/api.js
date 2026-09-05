@@ -119,7 +119,7 @@ export const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json'
   },
-  timeout: 20000
+  timeout: 60000
 });
 
 // Request Interceptor: Attach Firebase ID Token
@@ -154,8 +154,15 @@ apiClient.interceptors.response.use(
       authStorage.clear();
       window.dispatchEvent(new CustomEvent('avento_auth_unauthorized'));
     }
+    if (error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
+      const err = new Error('Backend server is waking up or offline. Please wait a moment and try again.');
+      err.code = 'ECONNABORTED';
+      err.isTimeout = true;
+      return Promise.reject(err);
+    }
     const message = error.response?.data?.message || error.message || 'Something went wrong';
     const err = new Error(message);
+    err.code = error.code;
     err.response = error.response;
     return Promise.reject(err);
   }
