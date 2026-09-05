@@ -80,7 +80,7 @@ export default function DigitalTicket({
                 </div>
 
                 {/* Attendee Details & Seat Grid */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 rounded-[20px] bg-[#FAF8F2] border border-[#0F5D46]/10 text-xs">
+                <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 p-3 sm:p-4 rounded-[18px] sm:rounded-[20px] bg-[#FAF8F2] border border-[#0F5D46]/10 text-xs">
                   <div>
                     <span className="text-[10px] uppercase font-bold text-[#5E6A68] tracking-wider block mb-0.5">
                       PASS HOLDER

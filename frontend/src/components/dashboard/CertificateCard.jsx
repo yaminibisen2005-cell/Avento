@@ -18,7 +18,7 @@ export default function CertificateCard({ certificate, studentName = 'Student' }
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)'
       }}
-      className="p-6 rounded-[26px] border border-white/70 shadow-[0_12px_36px_rgba(15,93,70,0.06)] hover:shadow-[0_20px_50px_rgba(15,93,70,0.12)] flex flex-col justify-between group transition-all select-none relative overflow-hidden"
+      className="p-4.5 sm:p-6 rounded-[22px] sm:rounded-[26px] border border-white/70 shadow-[0_12px_36px_rgba(15,93,70,0.06)] hover:shadow-[0_20px_50px_rgba(15,93,70,0.12)] flex flex-col justify-between group transition-all select-none relative overflow-hidden"
     >
       {/* Top Gold Corner Accent */}
       <div className="absolute top-0 right-0 w-28 h-28 bg-gradient-to-bl from-[#D9B24A]/15 via-transparent to-transparent pointer-events-none" />

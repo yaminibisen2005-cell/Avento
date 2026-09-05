@@ -72,7 +72,7 @@ export default function EventCard({ event, onRegister, onDetails, isWishlisted: 
       </div>
 
       {/* Content */}
-      <div className="p-5 flex flex-col flex-1 justify-between">
+      <div className="p-4 sm:p-5 flex flex-col flex-1 justify-between">
         <div>
           <h3 className="font-display font-bold text-lg text-[#0F5D46] group-hover:text-[#0A3B2E] transition-colors leading-snug line-clamp-1">
             {event.title}

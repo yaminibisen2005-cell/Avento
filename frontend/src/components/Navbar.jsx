@@ -411,102 +411,144 @@ export default function Navbar({
 
       </div>
 
-      {/* Mobile Menu Dropdown */}
+      {/* Mobile Menu Dropdown Backdrop & Sheet */}
       {mobileMenuOpen && (
-        <div className="md:hidden absolute top-[74px] inset-x-4 bg-white/95 backdrop-blur-2xl rounded-2xl border border-[rgba(200,155,60,0.2)] shadow-[0_20px_40px_rgba(15,76,58,0.12)] p-5 flex flex-col gap-2.5">
-          {navLinks.map((item) => (
-            <a 
-              key={item.name} 
-              href={item.href}
-              onClick={(e) => {
-                if (item.name === 'Home' && onBackToLanding) {
-                  e.preventDefault()
-                  onBackToLanding()
-                } else if (item.name === 'Dashboard' && onOpenDashboard) {
-                  e.preventDefault()
-                  onOpenDashboard('dashboard')
-                } else if (item.name === 'Events' && onOpenEvents) {
-                  e.preventDefault()
-                  onOpenEvents()
-                } else if (item.name === 'About' && onOpenAbout) {
-                  e.preventDefault()
-                  onOpenAbout()
-                } else if ((item.name === 'Features' || item.name === 'Contact') && activeTab !== 'Home') {
-                  if (onBackToLanding) {
+        <div className="md:hidden">
+          {/* Dark Backdrop */}
+          <div 
+            onClick={() => setMobileMenuOpen(false)}
+            className="fixed inset-0 top-[64px] sm:top-[72px] bg-black/40 backdrop-blur-xs z-30 animate-fade-in"
+          />
+
+          {/* Drawer Menu Container */}
+          <div className="absolute top-[68px] sm:top-[74px] inset-x-3 sm:inset-x-6 bg-white/95 backdrop-blur-2xl rounded-2xl border border-[rgba(200,155,60,0.25)] shadow-[0_20px_50px_rgba(15,76,58,0.18)] p-5 flex flex-col gap-2 z-40 animate-slide-down">
+            {navLinks.map((item) => (
+              <a 
+                key={item.name} 
+                href={item.href}
+                onClick={(e) => {
+                  if (item.name === 'Home' && onBackToLanding) {
                     e.preventDefault()
                     onBackToLanding()
-                    setTimeout(() => {
-                      const el = document.querySelector(item.href)
-                      if (el) el.scrollIntoView({ behavior: 'smooth' })
-                    }, 100)
-                  }
-                } else {
-                  setLocalActiveTab(item.name)
-                }
-                setMobileMenuOpen(false)
-              }}
-              style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}
-              className={`py-2 px-3 text-sm font-semibold tracking-[0.3px] transition-colors border-b border-gray-100 ${
-                activeTab === item.name 
-                  ? 'text-[#0A3629] font-bold' 
-                  : 'text-[#0F4C3A]'
-              }`}
-            >
-              {item.name}
-            </a>
-          ))}
-          {currentUser ? (
-            <div className="pt-3 border-t border-gray-100 flex flex-col gap-2.5">
-              <div className="flex items-center justify-between px-1">
-                <span className="text-xs font-bold text-[#0F5D46]">{currentUser.fullName}</span>
-                <span className="text-[10px] font-extrabold uppercase bg-[#D9B24A]/15 text-[#8C6F1E] border border-[#D9B24A]/30 px-2.5 py-0.5 rounded-full">
-                  {currentUser.role}
-                </span>
-              </div>
-              <div className="flex gap-2 pt-1">
-                <button 
-                  onClick={() => {
-                    if (onOpenProfile) onOpenProfile()
-                    else if (onOpenDashboard) onOpenDashboard('profile')
-                    setMobileMenuOpen(false)
-                  }}
-                  className="flex-1 py-2.5 text-xs font-bold text-[#0F5D46] bg-white border border-[#0F5D46]/25 rounded-xl shadow-2xs cursor-pointer flex items-center justify-center gap-1.5"
-                >
-                  <span>👤</span>
-                  <span>My Profile</span>
-                </button>
-                <button 
-                  onClick={() => {
-                    if (onLogout) onLogout()
-                    setMobileMenuOpen(false)
-                  }}
-                  className="flex-1 py-2.5 text-xs font-bold text-red-700 bg-red-50 hover:bg-red-100 border border-red-200 rounded-xl cursor-pointer flex items-center justify-center gap-1.5"
-                >
-                  <span>🚪</span>
-                  <span>Log Out</span>
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div className="pt-2">
-              <button 
-                onClick={() => {
-                  if (onOpenAuth) {
-                    onOpenAuth('login')
+                  } else if (item.name === 'Dashboard' && onOpenDashboard) {
+                    e.preventDefault()
+                    onOpenDashboard('dashboard')
+                  } else if (item.name === 'Events' && onOpenEvents) {
+                    e.preventDefault()
+                    onOpenEvents()
+                  } else if (item.name === 'About' && onOpenAbout) {
+                    e.preventDefault()
+                    onOpenAbout()
+                  } else if ((item.name === 'Features' || item.name === 'Contact') && activeTab !== 'Home') {
+                    if (onBackToLanding) {
+                      e.preventDefault()
+                      onBackToLanding()
+                      setTimeout(() => {
+                        const el = document.querySelector(item.href)
+                        if (el) el.scrollIntoView({ behavior: 'smooth' })
+                      }, 100)
+                    }
                   } else {
-                    setAuthMode('login')
-                    setAuthModalOpen(true)
+                    setLocalActiveTab(item.name)
                   }
                   setMobileMenuOpen(false)
                 }}
-                className="w-full py-2 px-3 text-[12px] font-bold tracking-wide rounded-xl text-white bg-gradient-to-r from-[#0F4C3A] via-[#14634d] to-[#0F4C3A] hover:from-[#14634d] hover:to-[#0B3A2C] border border-[#D9B24A]/40 shadow-xs flex items-center justify-center gap-1.5 cursor-pointer"
+                style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}
+                className={`py-2.5 px-3.5 rounded-xl text-sm font-semibold tracking-[0.3px] transition-all flex items-center justify-between border-b border-gray-100/80 ${
+                  activeTab === item.name 
+                    ? 'text-[#0A3629] font-bold bg-[#EAF7F1]' 
+                    : 'text-[#0F4C3A] hover:bg-gray-50'
+                }`}
               >
-                <span className="text-[11px]">👤</span>
-                <span>Login / Sign Up</span>
-                <span className="text-[#D9B24A] text-[11px]">→</span>
-              </button>
-            </div>
-          )}
+                <span>{item.name}</span>
+                <span className="text-[#D9B24A] text-xs">→</span>
+              </a>
+            ))}
+
+            {currentUser ? (
+              <div className="pt-3 border-t border-gray-100 flex flex-col gap-2.5">
+                <div className="flex items-center justify-between px-1">
+                  <div className="flex flex-col text-left">
+                    <span className="text-xs font-bold text-[#0F5D46]">{currentUser.fullName}</span>
+                    <span className="text-[10px] text-[#5E6A68]">{currentUser.email}</span>
+                  </div>
+                  <span className="text-[10px] font-extrabold uppercase bg-[#D9B24A]/15 text-[#8C6F1E] border border-[#D9B24A]/30 px-2.5 py-0.5 rounded-full">
+                    {currentUser.role}
+                  </span>
+                </div>
+
+                {/* Organizer/Admin Mobile Shortcut */}
+                {currentUser.role === 'ORGANIZER' && onOpenDashboard && (
+                  <button 
+                    onClick={() => {
+                      onOpenDashboard('dashboard')
+                      setMobileMenuOpen(false)
+                    }}
+                    className="w-full py-2.5 px-3.5 text-xs font-bold text-[#0F5D46] bg-[#D9B24A]/25 border border-[#D9B24A]/50 rounded-xl shadow-2xs flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <span>🏛</span>
+                    <span>Organizer Dashboard</span>
+                  </button>
+                )}
+
+                {currentUser.role === 'ADMIN' && onOpenDashboard && (
+                  <button 
+                    onClick={() => {
+                      onOpenDashboard('dashboard')
+                      setMobileMenuOpen(false)
+                    }}
+                    className="w-full py-2.5 px-3.5 text-xs font-bold text-white bg-[#0F5D46] rounded-xl shadow-2xs flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <span>🛡</span>
+                    <span>Admin Console</span>
+                  </button>
+                )}
+
+                <div className="flex gap-2 pt-1">
+                  <button 
+                    onClick={() => {
+                      if (onOpenProfile) onOpenProfile()
+                      else if (onOpenDashboard) onOpenDashboard('profile')
+                      setMobileMenuOpen(false)
+                    }}
+                    className="flex-1 py-2.5 text-xs font-bold text-[#0F5D46] bg-white border border-[#0F5D46]/25 rounded-xl shadow-2xs cursor-pointer flex items-center justify-center gap-1.5"
+                  >
+                    <span>👤</span>
+                    <span>My Profile</span>
+                  </button>
+                  <button 
+                    onClick={() => {
+                      if (onLogout) onLogout()
+                      setMobileMenuOpen(false)
+                    }}
+                    className="flex-1 py-2.5 text-xs font-bold text-red-700 bg-red-50 hover:bg-red-100 border border-red-200 rounded-xl cursor-pointer flex items-center justify-center gap-1.5"
+                  >
+                    <span>🚪</span>
+                    <span>Log Out</span>
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="pt-2">
+                <button 
+                  onClick={() => {
+                    if (onOpenAuth) {
+                      onOpenAuth('login')
+                    } else {
+                      setAuthMode('login')
+                      setAuthModalOpen(true)
+                    }
+                    setMobileMenuOpen(false)
+                  }}
+                  className="w-full py-3 px-4 text-[13px] font-bold tracking-wide rounded-xl text-white bg-gradient-to-r from-[#0F4C3A] via-[#14634d] to-[#0F4C3A] hover:from-[#14634d] hover:to-[#0B3A2C] border border-[#D9B24A]/40 shadow-xs flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <span className="text-[12px]">👤</span>
+                  <span>Login / Sign Up</span>
+                  <span className="text-[#D9B24A] text-[12px]">→</span>
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       )}
       

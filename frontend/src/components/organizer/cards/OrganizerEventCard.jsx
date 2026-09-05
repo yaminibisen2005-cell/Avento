@@ -59,7 +59,7 @@ export default function OrganizerEventCard({
       </div>
 
       {/* Card Body */}
-      <div className="p-5 space-y-4 flex-1 flex flex-col justify-between">
+      <div className="p-4 sm:p-5 space-y-3.5 flex-1 flex flex-col justify-between">
         <div>
           <h3 className="font-display font-bold text-base text-[#0F5D46] leading-snug line-clamp-1 mb-1">
             {event.title}
