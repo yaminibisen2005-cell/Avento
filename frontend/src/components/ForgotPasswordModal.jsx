@@ -28,51 +28,8 @@ export default function ForgotPasswordModal({ isOpen, onClose }) {
     }
   }
 
-  const handleVerifyOtp = async (e) => {
-    e.preventDefault()
-    if (!otpCode.trim()) return
-
-    setLoading(true)
-    try {
-      await authApi.verifyOtp({ email: email.trim(), otpCode: otpCode.trim() })
-      toast.success('Code verified successfully!')
-      setStep(3)
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Invalid or expired OTP')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleResetPassword = async (e) => {
-    e.preventDefault()
-    if (newPassword.length < 6) {
-      toast.error('Password must be at least 6 characters')
-      return
-    }
-    if (newPassword !== confirmPassword) {
-      toast.error('Passwords do not match')
-      return
-    }
-
-    setLoading(true)
-    try {
-      await authApi.resetPassword({
-        email: email.trim(),
-        otpCode: otpCode.trim(),
-        newPassword
-      })
-      toast.success('Password updated successfully!')
-      setStep(4)
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to reset password')
-    } finally {
-      setLoading(false)
-    }
-  }
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs select-none">
+    <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs select-none">
       <motion.div
         initial={{ scale: 0.95, opacity: 0, y: 15 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -105,7 +62,7 @@ export default function ForgotPasswordModal({ isOpen, onClose }) {
             <div>
               <h3 className="font-display font-bold text-lg text-gray-900">Reset Your Password</h3>
               <p className="text-gray-500 mt-1">
-                Enter your registered AVENTO email address and we'll dispatch a 6-digit verification code.
+                Enter your registered AVENTO email address and we'll dispatch a secure password reset link.
               </p>
             </div>
 
@@ -128,99 +85,7 @@ export default function ForgotPasswordModal({ isOpen, onClose }) {
               disabled={loading}
               className="w-full py-3 rounded-[14px] bg-[#0F5D46] hover:bg-[#126B51] text-white font-bold cursor-pointer transition-all shadow-xs disabled:opacity-50"
             >
-              {loading ? 'Dispatching OTP...' : 'Send Verification Code'}
-            </button>
-          </form>
-        )}
-
-        {/* STEP 2: Enter OTP */}
-        {step === 2 && (
-          <form onSubmit={handleVerifyOtp} className="space-y-4 text-xs">
-            <div>
-              <h3 className="font-display font-bold text-lg text-gray-900">Enter 6-Digit Code</h3>
-              <p className="text-gray-500 mt-1">
-                We sent a one-time verification code to <strong>{email}</strong>.
-              </p>
-            </div>
-
-            <div>
-              <label className="font-bold text-[#0F5D46] uppercase text-[10.5px] block mb-1">
-                Verification OTP
-              </label>
-              <input
-                type="text"
-                required
-                maxLength={6}
-                value={otpCode}
-                onChange={e => setOtpCode(e.target.value)}
-                placeholder="123456"
-                className="w-full h-11 text-center font-mono font-bold text-lg tracking-widest rounded-[12px] bg-[#FAF8F2] border border-gray-200 focus:outline-none focus:border-[#0F5D46]"
-              />
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => setStep(1)}
-                className="px-3.5 py-2.5 rounded-[12px] bg-gray-100 text-gray-600 font-bold"
-              >
-                Back
-              </button>
-              <button
-                type="submit"
-                disabled={loading}
-                className="flex-1 py-2.5 rounded-[12px] bg-[#0F5D46] hover:bg-[#126B51] text-white font-bold cursor-pointer transition-all shadow-xs disabled:opacity-50"
-              >
-                {loading ? 'Verifying...' : 'Verify Code'}
-              </button>
-            </div>
-          </form>
-        )}
-
-        {/* STEP 3: Enter New Password */}
-        {step === 3 && (
-          <form onSubmit={handleResetPassword} className="space-y-3.5 text-xs">
-            <div>
-              <h3 className="font-display font-bold text-lg text-gray-900">Create New Password</h3>
-              <p className="text-gray-500 mt-1">
-                Choose a strong password with at least 6 characters.
-              </p>
-            </div>
-
-            <div>
-              <label className="font-bold text-[#0F5D46] uppercase text-[10.5px] block mb-1">
-                New Password
-              </label>
-              <input
-                type="password"
-                required
-                value={newPassword}
-                onChange={e => setNewPassword(e.target.value)}
-                placeholder="••••••••••••"
-                className="w-full h-10 px-3 text-xs rounded-[12px] bg-[#FAF8F2] border border-gray-200 focus:outline-none focus:border-[#0F5D46]"
-              />
-            </div>
-
-            <div>
-              <label className="font-bold text-[#0F5D46] uppercase text-[10.5px] block mb-1">
-                Confirm New Password
-              </label>
-              <input
-                type="password"
-                required
-                value={confirmPassword}
-                onChange={e => setConfirmPassword(e.target.value)}
-                placeholder="••••••••••••"
-                className="w-full h-10 px-3 text-xs rounded-[12px] bg-[#FAF8F2] border border-gray-200 focus:outline-none focus:border-[#0F5D46]"
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-3 rounded-[14px] bg-[#0F5D46] hover:bg-[#126B51] text-white font-bold cursor-pointer transition-all shadow-xs disabled:opacity-50"
-            >
-              {loading ? 'Saving...' : 'Reset Password & Save'}
+              {loading ? 'Dispatching Reset Link...' : 'Send Recovery Link'}
             </button>
           </form>
         )}

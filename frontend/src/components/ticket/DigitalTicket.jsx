@@ -5,7 +5,7 @@ import TicketActions from './TicketActions'
 
 export default function DigitalTicket({ 
   ticket, 
-  studentName = 'Aarav Sharma',
+  studentName = 'Attendee',
   showActions = true 
 }) {
   const [isFlipped, setIsFlipped] = useState(false)

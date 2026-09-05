@@ -2,11 +2,20 @@ backend/target/
 frontend/node_modules/
 frontend/dist/
 
-# Local configuration and generated uploads
+# Local configuration, secrets, and generated uploads
 backend/uploads/
 *.log
+*.env
+.env
+.env.local
+backend/.env
+frontend/.env
+serviceAccountKey.json
+backend/serviceAccountKey.json
 
-# IDE files
+# IDE and OS files
 .idea/
 *.iml
 .vscode/
+.DS_Store
+Thumbs.db

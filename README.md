@@ -113,15 +113,26 @@ The platform is architected following enterprise-grade Clean Architecture and Do
 
 ---
 
-## 🏃 Running with Docker Compose
+## 🏃 Running with Docker Compose & Environment Variables
 
-To start the full production stack:
-
+### 1. Configure Environment Variables
+Copy the template to create your `.env` configuration:
 ```bash
-docker-compose up -d --build
+cp .env.example .env
+```
+Adjust your database passwords, Razorpay credentials, and Google OAuth Client ID if needed.
+
+### 2. Start the Full Stack with Docker
+```bash
+docker compose up -d --build
 ```
 
-- **Frontend**: `http://localhost` (Port 80)
-- **Backend**: `http://localhost:8081`
-- **Swagger Documentation**: `http://localhost:8081/swagger-ui/index.html`
-- **MySQL**: `localhost:3306`
+- **Frontend**: `http://localhost` (or `${FRONTEND_PORT}`)
+- **Backend API**: `http://localhost:8081` (or `${BACKEND_PORT}`)
+- **Swagger Documentation**: `http://localhost:8081/swagger-ui.html`
+- **MySQL Database**: `localhost:3306` (or `${MYSQL_PORT}`)
+
+### 3. Stop Containers
+```bash
+docker compose down
+```

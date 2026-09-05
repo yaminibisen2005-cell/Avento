@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { eventService } from '../../services/eventService'
-import { reviewApi, wishlistApi } from '../../services/api'
+import { reviewApi, wishlistApi, registrationApi } from '../../services/api'
+import { useAuth } from '../../context/AuthContext'
 import HeroSection from './HeroSection'
 import StickyRegistrationCard from './StickyRegistrationCard'
 import EventOverview from './EventOverview'
@@ -30,6 +31,24 @@ export default function EventDetails({
   const [reviewsData, setReviewsData] = useState({ reviews: [], totalReviews: 0, averageRating: 4.9 })
   const [showRegisterModal, setShowRegisterModal] = useState(false)
   const [shareToast, setShareToast] = useState(false)
+
+  const { isEventRegistered, addRegisteredEventId } = useAuth()
+  const [isRegistered, setIsRegistered] = useState(() => isEventRegistered(eventId))
+
+  useEffect(() => {
+    if (isEventRegistered(eventId)) {
+      setIsRegistered(true)
+    } else {
+      registrationApi.checkRegistration(eventId).then(res => {
+        if (res?.isRegistered) {
+          setIsRegistered(true)
+          addRegisteredEventId(eventId)
+        } else {
+          setIsRegistered(false)
+        }
+      }).catch(() => {})
+    }
+  }, [eventId, isEventRegistered, addRegisteredEventId])
 
   const loadReviews = () => {
     reviewApi.getEventReviews(eventId)
@@ -193,9 +212,11 @@ export default function EventDetails({
           isWishlisted={isWishlisted}
           onToggleWishlist={handleToggleWishlist}
           onShare={handleShare}
+          isRegistered={isRegistered}
+          onViewTickets={onGoToTickets}
         />
 
-        {/* 2. TWO-COLUMN LAYOUT: MAIN CONTENT (8 Cols) + STICKY REGISTRATION RAIL (4 Cols) */}
+        {/* 2. TWO-COLUMN LAYOUT: MAIN CONTENT (8 Cols) + REGISTRATION PASS SIDEBAR (4 Cols) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
           
           {/* Main Left Column (7-8 Cols) */}
@@ -241,6 +262,8 @@ export default function EventDetails({
               onRegister={() => setShowRegisterModal(true)}
               isWishlisted={isWishlisted}
               onToggleWishlist={handleToggleWishlist}
+              isRegistered={isRegistered}
+              onViewTickets={onGoToTickets}
             />
           </div>
 
@@ -259,25 +282,46 @@ export default function EventDetails({
 
           <div className="space-y-2 relative z-10">
             <span className="text-xs uppercase font-extrabold tracking-[0.2em] text-[#D9B24A] bg-[#D9B24A]/20 px-3 py-1 rounded-full border border-[#D9B24A]/30 inline-block mb-1">
-              Final Call for Registrations
+              {isRegistered ? 'Registration Status: Confirmed' : 'Final Call for Registrations'}
             </span>
             <h3 className="font-display font-extrabold text-2xl sm:text-3xl lg:text-4xl tracking-tight leading-tight">
-              Ready to attend {event.title}?
+              {isRegistered ? `You're attending ${event.title}!` : `Ready to attend ${event.title}?`}
             </h3>
             <p className="text-white/80 text-sm max-w-xl">
-              Secure your verified entry badge today with 0.3s fast-track check-in and instant pass generation.
+              {isRegistered 
+                ? 'Your entry badge is ready. Bring your digital QR ticket for 0.3s fast-track check-in on event day.'
+                : 'Secure your verified entry badge today with 0.3s fast-track check-in and instant pass generation.'
+              }
             </p>
           </div>
 
-          <motion.button
-            whileHover={{ y: -3, scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => setShowRegisterModal(true)}
-            className="px-8 py-4 bg-[#D9B24A] hover:bg-[#E5BF57] text-[#0B4B3A] font-extrabold text-sm sm:text-base rounded-[18px] shadow-[0_8px_30px_rgba(217,178,74,0.35)] flex items-center justify-center gap-2 shrink-0 cursor-pointer relative z-10 transition-all"
-          >
-            <span>Register Now • {event.fee}</span>
-            <span>→</span>
-          </motion.button>
+          {isRegistered ? (
+            <div className="flex items-center gap-3 shrink-0 relative z-10">
+              <div className="py-4 px-6 rounded-[18px] bg-white/15 border border-white/30 text-white font-extrabold text-sm flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#D9B24A] animate-ping" />
+                <span>✓ Already Registered</span>
+              </div>
+              {onGoToTickets && (
+                <button
+                  type="button"
+                  onClick={onGoToTickets}
+                  className="px-6 py-4 bg-[#D9B24A] hover:bg-[#E5BF57] text-[#0B4B3A] font-extrabold text-sm rounded-[18px] shadow-sm cursor-pointer transition-all flex items-center gap-1.5"
+                >
+                  <span>🎟 View Pass</span>
+                </button>
+              )}
+            </div>
+          ) : (
+            <motion.button
+              whileHover={{ y: -3, scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => setShowRegisterModal(true)}
+              className="px-8 py-4 bg-[#D9B24A] hover:bg-[#E5BF57] text-[#0B4B3A] font-extrabold text-sm sm:text-base rounded-[18px] shadow-[0_8px_30px_rgba(217,178,74,0.35)] flex items-center justify-center gap-2 shrink-0 cursor-pointer relative z-10 transition-all"
+            >
+              <span>Register Now • {event.fee}</span>
+              <span>→</span>
+            </motion.button>
+          )}
         </div>
 
         {/* 4. RELATED & TRENDING EVENTS */}

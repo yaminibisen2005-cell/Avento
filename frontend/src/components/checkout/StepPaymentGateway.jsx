@@ -14,7 +14,7 @@ export default function StepPaymentGateway({
     number: '4242 •••• •••• 4242',
     expiry: '12/28',
     cvv: '884',
-    name: 'Aarav Sharma'
+    name: registrationData?.fullName || 'Attendee'
   })
   const [selectedBank, setSelectedBank] = useState('HDFC')
 
@@ -38,24 +38,24 @@ export default function StepPaymentGateway({
   }
 
   return (
-    <div className="space-y-5 text-left select-none">
+    <div className="space-y-3.5 text-left select-none pb-1">
       {/* Razorpay Header Banner */}
-      <div className="p-3.5 rounded-[18px] bg-gradient-to-r from-[#0B4B3A] to-[#0F5D46] text-white flex items-center justify-between shadow-xs">
+      <div className="p-3 rounded-[16px] bg-gradient-to-r from-[#0B4B3A] to-[#0F5D46] text-white flex items-center justify-between shadow-xs">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-full bg-white/15 flex items-center justify-center font-extrabold text-sm text-[#D9B24A]">
+          <div className="w-7 h-7 rounded-full bg-white/15 flex items-center justify-center font-extrabold text-xs text-[#D9B24A]">
             ₹
           </div>
           <div>
-            <span className="text-[10px] uppercase font-bold text-[#D9B24A] tracking-wider block">
+            <span className="text-[9.5px] uppercase font-bold text-[#D9B24A] tracking-wider block">
               RAZORPAY SECURE CHECKOUT
             </span>
-            <span className="font-extrabold text-base">
+            <span className="font-extrabold text-sm sm:text-base">
               ₹{amount}
             </span>
           </div>
         </div>
 
-        <div className="flex items-center gap-1.5 text-[11px] text-white/80 bg-black/20 px-2.5 py-1 rounded-full">
+        <div className="flex items-center gap-1.5 text-[10.5px] text-white/80 bg-black/20 px-2.5 py-1 rounded-full">
           <span>🔒</span>
           <span>256-bit SSL</span>
         </div>
@@ -63,7 +63,7 @@ export default function StepPaymentGateway({
 
       {/* Error / Cancellation Notification */}
       {errorMessage && (
-        <div className="p-3.5 rounded-[16px] bg-red-50 text-red-700 border border-red-200 text-xs flex items-center justify-between">
+        <div className="p-3 rounded-[14px] bg-red-50 text-red-700 border border-red-200 text-xs flex items-center justify-between">
           <span>⚠️ {errorMessage}</span>
           {onClearError && (
             <button 
@@ -83,23 +83,23 @@ export default function StepPaymentGateway({
             key={m.id}
             type="button"
             onClick={() => setSelectedMethod(m.id)}
-            className={`p-2.5 rounded-[14px] text-xs font-bold border transition-all flex flex-col items-center gap-1 cursor-pointer ${
+            className={`p-2 rounded-[12px] text-xs font-bold border transition-all flex flex-col items-center gap-0.5 cursor-pointer ${
               selectedMethod === m.id
                 ? 'bg-[#0F5D46] text-white border-[#0F5D46] shadow-xs'
                 : 'bg-white/80 hover:bg-white text-[#5E6A68] border-gray-200'
             }`}
           >
-            <span className="text-base">{m.icon}</span>
-            <span className="text-[11px] truncate">{m.label}</span>
+            <span className="text-sm">{m.icon}</span>
+            <span className="text-[10.5px] truncate">{m.label}</span>
           </button>
         ))}
       </div>
 
       {/* Payment Method Details Form */}
-      <div className="p-5 rounded-[22px] bg-white/85 border border-[#0F5D46]/15 shadow-xs">
+      <div className="p-4 rounded-[18px] bg-white/85 border border-[#0F5D46]/15 shadow-xs">
         {/* UPI VIEW */}
         {selectedMethod === 'upi' && (
-          <div className="space-y-3.5 text-xs">
+          <div className="space-y-2.5 text-xs">
             <div>
               <label className="text-[11px] font-bold uppercase tracking-wider text-[#0F5D46] block mb-1">
                 Virtual Payment Address (UPI ID)

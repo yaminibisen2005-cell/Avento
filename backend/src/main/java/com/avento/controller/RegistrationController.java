@@ -28,9 +28,27 @@ public class RegistrationController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping("/tickets/{id}")
-    public ResponseEntity<TicketDto> getTicketDetails(@PathVariable Long id) {
-        TicketDto ticket = registrationService.getTicketById(id);
+    @GetMapping("/tickets/{identifier}")
+    public ResponseEntity<TicketDto> getTicketDetails(@PathVariable String identifier) {
+        TicketDto ticket;
+        try {
+            Long id = Long.parseLong(identifier);
+            ticket = registrationService.getTicketById(id);
+        } catch (NumberFormatException | com.avento.exception.ResourceNotFoundException e) {
+            ticket = registrationService.getTicketByNumber(identifier);
+        }
         return ResponseEntity.ok(ticket);
+    }
+
+    @GetMapping("/registrations/check/{eventId}")
+    public ResponseEntity<java.util.Map<String, Object>> checkRegistration(
+            @PathVariable Long eventId,
+            @AuthenticationPrincipal User currentUser
+    ) {
+        boolean isRegistered = registrationService.isUserRegistered(eventId, currentUser);
+        java.util.Map<String, Object> resp = new java.util.HashMap<>();
+        resp.put("eventId", eventId);
+        resp.put("isRegistered", isRegistered);
+        return ResponseEntity.ok(resp);
     }
 }

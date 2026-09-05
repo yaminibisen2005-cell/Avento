@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useAuth } from '../context/AuthContext'
 import ForgotPasswordModal from './ForgotPasswordModal'
@@ -8,6 +8,10 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
 
   // 3D Flip state: false = Signup ('Create Account'), true = Login ('Welcome Back')
   const [isLogin, setIsLogin] = useState(initialIsLogin)
+
+  useEffect(() => {
+    setIsLogin(initialIsLogin)
+  }, [initialIsLogin])
   const [showForgotModal, setShowForgotModal] = useState(false)
   const [rememberMe, setRememberMe] = useState(true)
   
@@ -32,23 +36,6 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
   const [showLoginPassword, setShowLoginPassword] = useState(false)
   const [showSignupPassword, setShowSignupPassword] = useState(false)
   const [showSignupConfirmPassword, setShowSignupConfirmPassword] = useState(false)
-
-  // Interactive 3D Card Tilt following mouse movement (Max 5deg, smooth spring interpolation)
-  const [cardTilt, setCardTilt] = useState({ rotateX: 0, rotateY: 0 })
-
-  const handleMouseMove = (e) => {
-    const { innerWidth, innerHeight } = window
-    const normX = (e.clientX / innerWidth - 0.5) * 2
-    const normY = (e.clientY / innerHeight - 0.5) * 2
-    setCardTilt({
-      rotateX: -normY * 5,
-      rotateY: normX * 5
-    })
-  }
-
-  const handleMouseLeave = () => {
-    setCardTilt({ rotateX: 0, rotateY: 0 })
-  }
 
   const handleToggleAuth = (targetLogin) => {
     setToast({ type: '', message: '' })
@@ -155,59 +142,39 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
 
   return (
     <main 
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      className="relative w-full min-h-screen min-h-[100dvh] overflow-y-auto overflow-x-hidden auth-mesh-bg text-[#1F2937] antialiased selection:bg-[#D9B24A]/25 selection:text-[#0B4B3A] flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8 pt-6 sm:pt-8 lg:pt-8 pb-24 sm:pb-28 lg:pb-32 select-none"
+      className="relative w-full h-screen h-[100dvh] overflow-hidden bg-[#FAF8F2] text-[#1F2937] antialiased selection:bg-[#D9B24A]/25 selection:text-[#0B4B3A] flex flex-col items-center justify-center p-2 sm:p-4 lg:p-5"
       style={{ 
-        perspective: '1600px',
         fontFamily: 'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
       }}
     >
       
       {/* ========================================================================= */}
-      {/* BACKGROUND: MESH GRADIENTS & ATMOSPHERIC BLURS                             */}
+      {/* BACKGROUND: SUBTLE ACCENTS (NO BLUR OVERLAYING FORM)                      */}
       {/* ========================================================================= */}
 
-      {/* 1. Large Blurred Green Glow Behind Entire Card */}
+      {/* 1. Subtle Green Glow (Top-Left) */}
       <div 
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] rounded-full bg-[#0F5D46]/18 blur-[160px] pointer-events-none -z-20 animate-blob-24s"
+        className="absolute -top-10 -left-10 w-[500px] h-[500px] rounded-full bg-[#0F5D46]/08 blur-[100px] pointer-events-none -z-20"
         aria-hidden="true"
       />
 
-      {/* 2. Large Gold Radial Glow (Top-Right) */}
+      {/* 2. Subtle Gold Glow (Bottom-Right) */}
       <div 
-        className="absolute -top-28 -right-28 w-[680px] h-[680px] rounded-full bg-[#D9B24A]/20 blur-[150px] pointer-events-none -z-20 animate-blob-18s"
+        className="absolute -bottom-10 -right-10 w-[500px] h-[500px] rounded-full bg-[#D9B24A]/10 blur-[100px] pointer-events-none -z-20"
         aria-hidden="true"
       />
 
-      {/* 3. Deep Green Radial Glow (Bottom-Left) */}
+      {/* 3. Fine Dotted Matrix Grid */}
       <div 
-        className="absolute -bottom-28 -left-28 w-[680px] h-[680px] rounded-full bg-[#0F5D46]/15 blur-[150px] pointer-events-none -z-20 animate-blob-12s"
-        aria-hidden="true"
-      />
-
-      {/* 4. Fine Dotted Matrix Grid */}
-      <div 
-        className="absolute inset-0 bg-dot-grid pointer-events-none -z-30 opacity-30 [mask-image:radial-gradient(ellipse_at_center,black_45%,transparent_85%)]" 
+        className="absolute inset-0 bg-dot-grid pointer-events-none -z-30 opacity-25 [mask-image:radial-gradient(ellipse_at_center,black_45%,transparent_85%)]" 
         aria-hidden="true" 
       />
-
-      {/* 5. Abstract Curved Vector Lines & Rings */}
-      <svg className="absolute -top-16 -left-16 w-[600px] h-[600px] pointer-events-none -z-20 opacity-35" viewBox="0 0 500 500" fill="none" aria-hidden="true">
-        <circle cx="250" cy="250" r="230" stroke="#0F5D46" strokeWidth="1.2" strokeDasharray="8 8" />
-        <circle cx="250" cy="250" r="170" stroke="#D9B24A" strokeWidth="1" strokeDasharray="6 6" />
-        <circle cx="250" cy="250" r="110" stroke="#0F5D46" strokeWidth="0.8" strokeDasharray="4 4" opacity="0.6" />
-      </svg>
-      <svg className="absolute -bottom-24 -right-24 w-[580px] h-[580px] pointer-events-none -z-20 opacity-30" viewBox="0 0 500 500" fill="none" aria-hidden="true">
-        <ellipse cx="250" cy="250" rx="230" ry="140" stroke="#D9B24A" strokeWidth="1.2" strokeDasharray="6 6" transform="rotate(-25 250 250)" />
-        <ellipse cx="250" cy="250" rx="160" ry="90" stroke="#0F5D46" strokeWidth="0.8" strokeDasharray="4 4" transform="rotate(15 250 250)" />
-      </svg>
 
       {/* Optional Top Return Link */}
       {onBackToLanding && (
         <button
           onClick={onBackToLanding}
-          className="fixed top-5 left-6 sm:left-10 z-50 flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/85 hover:bg-white border border-[#0F5D46]/20 text-[12px] font-medium text-[#0F5D46] shadow-sm hover:shadow transition-all duration-200 hover:-translate-x-0.5 group backdrop-blur-md cursor-pointer"
+          className="fixed top-3.5 left-4 sm:left-8 z-50 flex items-center gap-2 px-3 py-1.5 rounded-full bg-white hover:bg-white/95 border border-[#0F5D46]/20 text-[12px] font-semibold text-[#0F5D46] shadow-xs hover:shadow-sm transition-all duration-200 hover:-translate-x-0.5 group cursor-pointer"
         >
           <span className="text-[#D9B24A] group-hover:-translate-x-1 transition-transform text-xs">←</span>
           <span>Home</span>
@@ -215,34 +182,19 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
       )}
 
       {/* ========================================================================= */}
-      {/* MAIN CARD: FLOATING GLASS CONTAINER (RESPONSIVE, BALANCED 3D CARD)        */}
+      {/* MAIN CARD: SOLID, CRISP LUXURY CARD (ZERO BLUR OR DISTORTION)             */}
       {/* ========================================================================= */}
       <motion.div 
-        initial={{ opacity: 0, scale: 0.985, y: 12 }}
-        animate={{ 
-          opacity: 1, 
-          scale: 1, 
-          y: 0,
-          rotateX: cardTilt.rotateX,
-          rotateY: cardTilt.rotateY
-        }}
-        transition={{ 
-          opacity: { duration: 0.65, ease: [0.22, 1, 0.36, 1] },
-          scale: { duration: 0.65, ease: [0.22, 1, 0.36, 1] },
-          y: { duration: 0.65, ease: [0.22, 1, 0.36, 1] },
-          rotateX: { type: 'spring', stiffness: 75, damping: 20, mass: 0.5 },
-          rotateY: { type: 'spring', stiffness: 75, damping: 20, mass: 0.5 }
-        }}
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, ease: 'easeOut' }}
         style={{
-          background: 'rgba(255, 255, 255, 0.72)',
-          backdropFilter: 'blur(30px)',
-          WebkitBackdropFilter: 'blur(30px)',
-          border: '1px solid rgba(255, 255, 255, 0.55)',
-          boxShadow: '0 40px 90px rgba(15, 93, 70, 0.15)',
-          borderRadius: '34px',
-          transformStyle: 'preserve-3d'
+          background: '#FFFFFF',
+          border: '1px solid rgba(15, 93, 70, 0.15)',
+          boxShadow: '0 20px 60px -15px rgba(15, 93, 70, 0.14), 0 0 0 1px rgba(15, 93, 70, 0.05)',
+          borderRadius: '28px'
         }}
-        className="auth-main-card-float relative w-full max-w-[500px] sm:max-w-[540px] lg:max-w-[1220px] xl:max-w-[1300px] my-auto flex flex-col lg:flex-row lg:h-[600px] xl:h-[610px] rounded-[24px] sm:rounded-[34px] overflow-hidden z-20"
+        className="relative w-full max-w-[500px] sm:max-w-[540px] lg:max-w-[1140px] xl:max-w-[1200px] my-auto flex flex-col lg:flex-row h-full max-h-[96vh] lg:max-h-[610px] xl:max-h-[630px] rounded-[22px] sm:rounded-[28px] overflow-hidden z-20"
       >
         
         {/* Soft 1px Gradient Vertical Divider */}
@@ -261,7 +213,7 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
           style={{
             background: 'radial-gradient(at 0% 0%, rgba(15, 93, 70, 0.22) 0px, transparent 60%), radial-gradient(at 100% 100%, rgba(217, 178, 74, 0.22) 0px, transparent 60%), linear-gradient(135deg, rgba(234, 247, 241, 0.95) 0%, rgba(255, 255, 255, 0.5) 45%, rgba(234, 247, 241, 0.88) 100%)'
           }}
-          className="w-full lg:w-1/2 h-full p-6 sm:p-7 lg:p-8 xl:p-10 hidden lg:flex flex-col justify-between text-left relative z-10 overflow-hidden"
+          className="w-full lg:w-1/2 h-full p-4 sm:p-5 lg:p-6 xl:p-7 hidden lg:flex flex-col justify-between text-left relative z-10 overflow-hidden"
         >
           
           {/* --- 3D BACKGROUND GRAPHICS & DEPTH --- */}
@@ -362,16 +314,16 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
           {/* --- MAIN HERO SECTION: COMPACT, ELEGANT PROPORTIONS --- */}
           <div className="my-auto">
             
-            {/* HERO HEADING: Compact 34px / 32px scale */}
-            <div className="mb-3 max-w-[480px]">
+            {/* HERO HEADING: Compact 30px / 28px scale */}
+            <div className="mb-2 max-w-[480px]">
               <h1 className="uppercase text-left">
                 <span 
-                  className="font-bold text-2xl sm:text-[30px] lg:text-[34px] text-[#0F5D46] block tracking-[-0.035em] leading-[1.05]"
+                  className="font-bold text-2xl sm:text-[26px] lg:text-[30px] text-[#0F5D46] block tracking-[-0.035em] leading-[1.05]"
                 >
                   SMART EVENTS.
                 </span>
                 <span 
-                  className="font-bold text-2xl sm:text-[28px] lg:text-[32px] bg-gradient-to-b from-[#E6C55A] to-[#D9B24A] bg-clip-text text-transparent inline-block tracking-[-0.035em] leading-[1.05] mt-0.5"
+                  className="font-bold text-2xl sm:text-[24px] lg:text-[28px] bg-gradient-to-b from-[#E6C55A] to-[#D9B24A] bg-clip-text text-transparent inline-block tracking-[-0.035em] leading-[1.05] mt-0.5"
                 >
                   MADE SIMPLE.
                 </span>
@@ -380,38 +332,36 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
 
             {/* PARAGRAPH */}
             <p 
-              className="text-[13px] sm:text-[13.5px] font-normal leading-[1.5] max-w-[420px] mb-3 text-left text-[#66757A]"
+              className="text-xs sm:text-[13px] font-normal leading-snug max-w-[420px] mb-2 text-left text-[#66757A]"
             >
               Manage registrations, QR attendance, certificates and analytics from one intelligent platform.
             </p>
 
             {/* FEATURE CARDS: 4 Specified Cards */}
-            <div className="space-y-2 relative max-w-[420px]">
+            <div className="space-y-1.5 relative max-w-[420px]">
               
               {/* Card 1: ⚡ Instant QR Check-in */}
               <div 
                 style={{
-                  background: 'rgba(255, 255, 255, 0.84)',
-                  backdropFilter: 'blur(20px)',
-                  WebkitBackdropFilter: 'blur(20px)',
-                  border: '1px solid rgba(255, 255, 255, 0.9)',
-                  boxShadow: '0 10px 25px rgba(15, 93, 70, 0.06)',
-                  borderRadius: '16px'
+                  background: '#FFFFFF',
+                  border: '1px solid rgba(15, 93, 70, 0.12)',
+                  boxShadow: '0 4px 14px rgba(15, 93, 70, 0.05)',
+                  borderRadius: '14px'
                 }}
-                className="w-[92%] sm:w-[355px] px-3.5 py-2 flex items-center justify-between group hover:-translate-y-0.5 hover:shadow-[0_12px_28px_rgba(15,93,70,0.12)] transition-all duration-200 relative z-0 cursor-default"
+                className="w-[92%] sm:w-[355px] px-3.5 py-1.5 flex items-center justify-between group hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(15,93,70,0.08)] transition-all duration-200 relative z-0 cursor-default"
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-6 h-6 rounded-full bg-[#0B4B3A] text-[#D9B24A] flex items-center justify-center text-xs font-bold shadow-xs shrink-0 group-hover:scale-105 transition-transform">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-5 h-5 rounded-full bg-[#0B4B3A] text-[#D9B24A] flex items-center justify-center text-[11px] font-bold shadow-xs shrink-0 group-hover:scale-105 transition-transform">
                     ⚡
                   </div>
                   <div className="text-left">
-                    <div className="text-[13px] font-semibold text-[#0B4B3A] leading-tight">Instant QR Check-in</div>
-                    <div className="text-[11px] font-normal mt-0.5 leading-tight text-[#0F5D46]/70">
+                    <div className="text-[12.5px] font-semibold text-[#0B4B3A] leading-tight">Instant QR Check-in</div>
+                    <div className="text-[10.5px] font-normal mt-0.5 leading-tight text-[#0F5D46]/70">
                       0.3s sub-second turnstile gate entry
                     </div>
                   </div>
                 </div>
-                <span className="text-[10px] font-mono font-semibold text-[#0F5D46] bg-[#EAF7F1] px-2 py-0.5 rounded-full border border-[#0F5D46]/15">
+                <span className="text-[9.5px] font-mono font-semibold text-[#0F5D46] bg-[#EAF7F1] px-2 py-0.5 rounded-full border border-[#0F5D46]/15">
                   0.3s
                 </span>
               </div>
@@ -419,27 +369,25 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
               {/* Card 2: 🎓 Smart Certificates */}
               <div 
                 style={{
-                  background: 'rgba(255, 255, 255, 0.86)',
-                  backdropFilter: 'blur(24px)',
-                  WebkitBackdropFilter: 'blur(24px)',
-                  border: '1px solid rgba(255, 255, 255, 0.95)',
-                  boxShadow: '0 12px 30px rgba(15, 93, 70, 0.08)',
-                  borderRadius: '16px'
+                  background: '#FFFFFF',
+                  border: '1px solid rgba(15, 93, 70, 0.12)',
+                  boxShadow: '0 4px 14px rgba(15, 93, 70, 0.05)',
+                  borderRadius: '14px'
                 }}
-                className="w-[96%] sm:w-[375px] -mt-1 ml-2 px-3.5 py-2 flex items-center justify-between group hover:-translate-y-0.5 hover:shadow-[0_14px_32px_rgba(15,93,70,0.14)] transition-all duration-200 relative z-10 cursor-default"
+                className="w-[96%] sm:w-[375px] -mt-0.5 ml-2 px-3.5 py-1.5 flex items-center justify-between group hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(15,93,70,0.08)] transition-all duration-200 relative z-10 cursor-default"
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-6 h-6 rounded-full bg-[#D9B24A]/25 text-[#0B4B3A] border border-[#D9B24A]/40 flex items-center justify-center text-xs shadow-xs shrink-0 group-hover:scale-105 transition-transform">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-5 h-5 rounded-full bg-[#D9B24A]/25 text-[#0B4B3A] border border-[#D9B24A]/40 flex items-center justify-center text-[11px] shadow-xs shrink-0 group-hover:scale-105 transition-transform">
                     🎓
                   </div>
                   <div className="text-left">
-                    <div className="text-[13px] font-semibold text-[#0B4B3A] leading-tight">Smart Certificates</div>
-                    <div className="text-[11px] font-normal mt-0.5 leading-tight text-[#0F5D46]/70">
+                    <div className="text-[12.5px] font-semibold text-[#0B4B3A] leading-tight">Smart Certificates</div>
+                    <div className="text-[10.5px] font-normal mt-0.5 leading-tight text-[#0F5D46]/70">
                       Cryptographically verifiable credentials
                     </div>
                   </div>
                 </div>
-                <span className="text-[10px] font-mono font-semibold text-[#0B4B3A] bg-[#FAF8F3] px-2 py-0.5 rounded-full border border-[#D9B24A]/30 flex items-center gap-1">
+                <span className="text-[9.5px] font-mono font-semibold text-[#0B4B3A] bg-[#FAF8F3] px-2 py-0.5 rounded-full border border-[#D9B24A]/30 flex items-center gap-1">
                   <span className="w-1 h-1 rounded-full bg-[#0F5D46]" />
                   VERIFIED
                 </span>
@@ -448,27 +396,25 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
               {/* Card 3: 📊 Live Event Analytics */}
               <div 
                 style={{
-                  background: 'rgba(255, 255, 255, 0.90)',
-                  backdropFilter: 'blur(28px)',
-                  WebkitBackdropFilter: 'blur(28px)',
-                  border: '1px solid rgba(255, 255, 255, 1)',
-                  boxShadow: '0 14px 35px rgba(15, 93, 70, 0.10)',
-                  borderRadius: '16px'
+                  background: '#FFFFFF',
+                  border: '1px solid rgba(15, 93, 70, 0.12)',
+                  boxShadow: '0 4px 14px rgba(15, 93, 70, 0.05)',
+                  borderRadius: '14px'
                 }}
-                className="w-[94%] sm:w-[365px] -mt-1 ml-1 px-3.5 py-2 flex items-center justify-between group hover:-translate-y-0.5 hover:shadow-[0_16px_36px_rgba(15,93,70,0.16)] transition-all duration-200 relative z-20 cursor-default"
+                className="w-[94%] sm:w-[365px] -mt-0.5 ml-1 px-3.5 py-1.5 flex items-center justify-between group hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(15,93,70,0.08)] transition-all duration-200 relative z-20 cursor-default"
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-6 h-6 rounded-full bg-[#0F5D46] text-white flex items-center justify-center text-xs shadow-xs shrink-0 group-hover:scale-105 transition-transform">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-5 h-5 rounded-full bg-[#0F5D46] text-white flex items-center justify-center text-[11px] shadow-xs shrink-0 group-hover:scale-105 transition-transform">
                     📊
                   </div>
                   <div className="text-left">
-                    <div className="text-[13px] font-semibold text-[#0B4B3A] leading-tight">Live Event Analytics</div>
-                    <div className="text-[11px] font-normal mt-0.5 leading-tight text-[#0F5D46]/70">
+                    <div className="text-[12.5px] font-semibold text-[#0B4B3A] leading-tight">Live Event Analytics</div>
+                    <div className="text-[10.5px] font-normal mt-0.5 leading-tight text-[#0F5D46]/70">
                       Real-time attendance & seat tracking
                     </div>
                   </div>
                 </div>
-                <span className="text-[10px] font-mono font-semibold text-[#0F5D46] bg-[#EAF7F1] px-2.5 py-0.5 rounded-full border border-[#0F5D46]/20">
+                <span className="text-[9.5px] font-mono font-semibold text-[#0F5D46] bg-[#EAF7F1] px-2.5 py-0.5 rounded-full border border-[#0F5D46]/20">
                   LIVE
                 </span>
               </div>
@@ -476,27 +422,25 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
               {/* Card 4: 💳 Secure Payments */}
               <div 
                 style={{
-                  background: 'rgba(255, 255, 255, 0.92)',
-                  backdropFilter: 'blur(30px)',
-                  WebkitBackdropFilter: 'blur(30px)',
-                  border: '1px solid rgba(255, 255, 255, 1)',
-                  boxShadow: '0 16px 40px rgba(15, 93, 70, 0.12)',
-                  borderRadius: '16px'
+                  background: '#FFFFFF',
+                  border: '1px solid rgba(15, 93, 70, 0.12)',
+                  boxShadow: '0 4px 14px rgba(15, 93, 70, 0.05)',
+                  borderRadius: '14px'
                 }}
-                className="w-[96%] sm:w-[370px] -mt-1 ml-3 px-3.5 py-2 flex items-center justify-between group hover:-translate-y-0.5 hover:shadow-[0_18px_40px_rgba(15,93,70,0.18)] transition-all duration-200 relative z-30 cursor-default"
+                className="w-[96%] sm:w-[370px] -mt-0.5 ml-3 px-3.5 py-1.5 flex items-center justify-between group hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(15,93,70,0.08)] transition-all duration-200 relative z-30 cursor-default"
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-6 h-6 rounded-full bg-[#D9B24A]/25 text-[#0B4B3A] border border-[#D9B24A]/50 flex items-center justify-center text-xs shadow-xs shrink-0 group-hover:scale-105 transition-transform">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-5 h-5 rounded-full bg-[#D9B24A]/25 text-[#0B4B3A] border border-[#D9B24A]/50 flex items-center justify-center text-[11px] shadow-xs shrink-0 group-hover:scale-105 transition-transform">
                     💳
                   </div>
                   <div className="text-left">
-                    <div className="text-[13px] font-semibold text-[#0B4B3A] leading-tight">Secure Payments</div>
-                    <div className="text-[11px] font-normal mt-0.5 leading-tight text-[#0F5D46]/70">
+                    <div className="text-[12.5px] font-semibold text-[#0B4B3A] leading-tight">Secure Payments</div>
+                    <div className="text-[10.5px] font-normal mt-0.5 leading-tight text-[#0F5D46]/70">
                       Bank-grade Razorpay escrow checkout
                     </div>
                   </div>
                 </div>
-                <span className="text-[10px] font-mono font-semibold text-[#0B4B3A] bg-[#FAF8F3] px-2 py-0.5 rounded-full border border-[#D9B24A]/30">
+                <span className="text-[9.5px] font-mono font-semibold text-[#0B4B3A] bg-[#FAF8F3] px-2 py-0.5 rounded-full border border-[#D9B24A]/30">
                   ESCROW
                 </span>
               </div>
@@ -506,8 +450,8 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
           </div>
 
           {/* --- BOTTOM: STATS (13px, 500 Weight) --- */}
-          <div className="pt-3 border-t border-[#0F5D46]/12">
-            <div className="flex items-center justify-between gap-3 sm:gap-4 text-[12.5px] font-medium text-[#0F5D46] flex-wrap">
+          <div className="pt-2 sm:pt-2.5 border-t border-[#0F5D46]/12">
+            <div className="flex items-center justify-between gap-2 sm:gap-3 text-[11.5px] font-medium text-[#0F5D46] flex-wrap">
               <span className="flex items-center gap-1">
                 <span className="text-[#0F5D46] font-bold text-xs">✔</span>
                 <span>200+ Colleges</span>
@@ -538,37 +482,42 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
         {/* ======================================================================= */}
         <div className="auth-right-panel-bg w-full lg:w-1/2 h-auto lg:h-full relative p-4 sm:p-6 lg:p-6 xl:p-8 flex items-center justify-center">
           
-          {/* Soft Green Glow Behind the Form Container */}
-          <div 
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[480px] h-[480px] rounded-full bg-[#0F5D46]/10 blur-[100px] pointer-events-none" 
-            aria-hidden="true"
-          />
+          <div className="w-full max-w-[480px] sm:max-w-[500px] h-full flex flex-col justify-between relative z-10">
+            {/* Top-Level Unified Switcher: Sign In | Sign Up in the Same Card */}
+            <div className="flex p-1 bg-[#0F5D46]/[0.07] rounded-2xl border border-[#0F5D46]/15 mb-2 relative z-20 shrink-0">
+              <button
+                type="button"
+                onClick={() => handleToggleAuth(true)}
+                className={`flex-1 py-1.5 text-xs sm:text-[13px] font-bold rounded-xl transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 ${
+                  isLogin
+                    ? 'bg-[#0F5D46] text-white shadow-xs'
+                    : 'text-[#0F5D46] hover:bg-white/60'
+                }`}
+              >
+                <span>🔐</span>
+                <span>Sign In</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleToggleAuth(false)}
+                className={`flex-1 py-1.5 text-xs sm:text-[13px] font-bold rounded-xl transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 ${
+                  !isLogin
+                    ? 'bg-[#0F5D46] text-white shadow-xs'
+                    : 'text-[#0F5D46] hover:bg-white/60'
+                }`}
+              >
+                <span>✨</span>
+                <span>Sign Up</span>
+              </button>
+            </div>
 
-          {/* 3D Perspective Viewport */}
-          <div className="auth-perspective w-full max-w-[480px] sm:max-w-[500px] lg:max-w-[480px] xl:max-w-[500px] h-[550px] sm:h-[560px] lg:h-full relative z-10">
-            
-            {/* Framer Motion 3D Flipper Container (650ms ease-in-out) */}
-            <motion.div
-              initial={false}
-              animate={{ rotateY: isLogin ? 180 : 0 }}
-              transition={{ duration: 0.65, ease: 'easeInOut' }}
-              style={{ transformStyle: 'preserve-3d' }}
-              className="relative w-full h-full"
-            >
-
-              {/* ================================================================= */}
-              {/* FRONT FACE: SIGNUP (CREATE ACCOUNT)                               */}
-              {/* ================================================================= */}
-              <div 
-                style={{ 
-                  background: 'rgba(255, 255, 255, 0.78)',
-                  backdropFilter: 'blur(28px)',
-                  WebkitBackdropFilter: 'blur(28px)',
-                  backfaceVisibility: 'hidden',
-                  WebkitBackfaceVisibility: 'hidden',
-                  pointerEvents: !isLogin ? 'auto' : 'none'
-                }}
-                className="absolute inset-0 w-full h-full rounded-[24px] border border-white/60 p-4 sm:p-5 lg:p-6 flex flex-col justify-between text-left shadow-[0_25px_60px_rgba(15,93,70,0.12)] overflow-y-auto custom-scrollbar"
+            {!isLogin ? (
+              <motion.div
+                key="signup-pane"
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2 }}
+                className="w-full h-full p-2 sm:p-3 flex flex-col justify-between text-left overflow-y-auto custom-scrollbar"
               >
                 {/* Mobile Brand Header */}
                 <div className="lg:hidden flex items-center justify-center gap-2 pt-0.5 pb-1 shrink-0">
@@ -581,13 +530,9 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                   </span>
                 </div>
 
-                {/* Instant Access Badge */}
-                <div className="flex items-center justify-between relative z-10 shrink-0">
-                  <span className="text-[10px] sm:text-[10.5px] uppercase font-semibold tracking-[0.12em] text-[#0B4B3A] bg-[#EAF7F1]/90 border border-[#0F5D46]/20 px-2.5 py-0.5 rounded-full flex items-center gap-1.5 shadow-2xs">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#0F5D46] animate-ping" />
-                    Instant Access
-                  </span>
-                  <span className="text-[11px] sm:text-[11.5px] font-medium text-[#6B7478]">
+                {/* Portal Subtitle */}
+                <div className="flex items-center justify-end relative z-10 shrink-0">
+                  <span className="text-[10.5px] sm:text-[11px] font-medium text-[#6B7478]">
                     Event Registration
                   </span>
                 </div>
@@ -806,23 +751,14 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                   </div>
                 </div>
 
-              </div>
-
-
-              {/* ================================================================= */}
-              {/* BACK FACE: LOGIN (SIGN IN) - REDESIGNED                          */}
-              {/* ================================================================= */}
-              <div 
-                style={{ 
-                  background: 'rgba(255, 255, 255, 0.82)',
-                  backdropFilter: 'blur(28px)',
-                  WebkitBackdropFilter: 'blur(28px)',
-                  backfaceVisibility: 'hidden',
-                  WebkitBackfaceVisibility: 'hidden',
-                  transform: 'rotateY(180deg)',
-                  pointerEvents: isLogin ? 'auto' : 'none'
-                }}
-                className="absolute inset-0 w-full h-full rounded-[24px] border border-white/60 p-4 sm:p-5 lg:p-6 flex flex-col justify-between text-left shadow-[0_25px_60px_rgba(15,93,70,0.12)] overflow-y-auto custom-scrollbar"
+              </motion.div>
+            ) : (
+              <motion.div 
+                key="login-pane"
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2 }}
+                className="w-full h-full p-1 sm:p-2 flex flex-col justify-between text-left overflow-hidden"
               >
                 {/* Mobile Brand Header */}
                 <div className="lg:hidden flex items-center justify-center gap-2 pt-0.5 pb-1 shrink-0">
@@ -835,26 +771,22 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                   </span>
                 </div>
 
-                {/* Instant Access Badge */}
-                <div className="flex items-center justify-between relative z-10 shrink-0">
-                  <span className="text-[10px] sm:text-[10.5px] uppercase font-semibold tracking-[0.12em] text-[#0B4B3A] bg-[#EAF7F1]/90 border border-[#0F5D46]/20 px-2.5 py-0.5 rounded-full flex items-center gap-1.5 shadow-2xs">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#0F5D46] animate-ping" />
-                    Instant Access
-                  </span>
-                  <span className="text-[11px] sm:text-[11.5px] font-medium text-[#6B7478]">
+                {/* Portal Subtitle */}
+                <div className="flex items-center justify-end relative z-10 shrink-0 mb-0.5">
+                  <span className="text-[10.5px] sm:text-[11px] font-medium text-[#6B7478]">
                     {loginRole === 'ORGANIZER' ? '🏢 Organizer Portal' : '🎓 Student Portal'}
                   </span>
                 </div>
 
                 {/* Heading & Subtitle */}
-                <div className="relative z-10 mt-1 sm:mt-1.5 mb-1 shrink-0">
+                <div className="relative z-10 mb-1 shrink-0">
                   <h2 
-                    className="font-bold text-2xl sm:text-[26px] lg:text-[28px] text-[#0B4B3A] tracking-[-0.025em] leading-tight"
+                    className="font-bold text-xl sm:text-[22px] lg:text-[24px] text-[#0B4B3A] tracking-[-0.025em] leading-tight"
                   >
                     Welcome Back
                   </h2>
                   <p 
-                    className="text-xs sm:text-[13px] font-normal mt-0.5 leading-normal text-[#6B7478]"
+                    className="text-[11px] sm:text-[11.5px] font-normal mt-0.5 leading-snug text-[#6B7478]"
                   >
                     {loginRole === 'ORGANIZER' 
                       ? 'Sign in to manage university events, registrations and analytics.' 
@@ -865,7 +797,7 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                 {/* ============================================================= */}
                 {/* ACCOUNT TYPE SELECTOR: Segmented Selectable Cards             */}
                 {/* ============================================================= */}
-                <div className="grid grid-cols-2 gap-2 sm:gap-2.5 my-1.5 relative z-10 shrink-0">
+                <div className="grid grid-cols-2 gap-2 my-1 relative z-10 shrink-0">
                   {/* Option 1: Student Login */}
                   <motion.button
                     type="button"
@@ -875,15 +807,15 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                       setLoginRole('STUDENT')
                       setToast({ type: '', message: '' })
                     }}
-                    className={`p-2 sm:p-2.5 rounded-[16px] text-left transition-all duration-200 cursor-pointer flex flex-col justify-between relative ${
+                    className={`p-2 rounded-[14px] text-left transition-all duration-200 cursor-pointer flex flex-col justify-between relative ${
                       loginRole === 'STUDENT'
                         ? 'bg-[#0F5D46]/[0.08] border-2 border-[#0F5D46] shadow-[0_4px_16px_rgba(15,93,70,0.12)] scale-[1.01]'
                         : 'bg-white/80 border border-gray-200/90 hover:border-[#0F5D46]/35 hover:bg-white shadow-2xs'
                     }`}
                   >
-                    <div className="flex items-center justify-between w-full mb-1">
-                      <div className="flex items-center gap-1.5 font-bold text-xs sm:text-[12.5px] text-[#0B4B3A]">
-                        <span className="text-sm sm:text-base">🎓</span>
+                    <div className="flex items-center justify-between w-full mb-0.5">
+                      <div className="flex items-center gap-1.5 font-bold text-xs sm:text-[12px] text-[#0B4B3A]">
+                        <span className="text-sm">🎓</span>
                         <span>Student Login</span>
                       </div>
                       {loginRole === 'STUDENT' ? (
@@ -894,7 +826,7 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                         <span className="w-3.5 h-3.5 rounded-full border border-gray-300 shrink-0" />
                       )}
                     </div>
-                    <p className="text-[10px] sm:text-[10.5px] leading-tight text-[#0F5D46]/75">
+                    <p className="text-[9.5px] sm:text-[10px] leading-tight text-[#0F5D46]/75">
                       Access registered events, certificates and tickets.
                     </p>
                   </motion.button>
@@ -908,15 +840,15 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                       setLoginRole('ORGANIZER')
                       setToast({ type: '', message: '' })
                     }}
-                    className={`p-2 sm:p-2.5 rounded-[16px] text-left transition-all duration-200 cursor-pointer flex flex-col justify-between relative ${
+                    className={`p-2 rounded-[14px] text-left transition-all duration-200 cursor-pointer flex flex-col justify-between relative ${
                       loginRole === 'ORGANIZER'
                         ? 'bg-[#0F5D46]/[0.08] border-2 border-[#0F5D46] shadow-[0_4px_16px_rgba(15,93,70,0.12)] scale-[1.01]'
                         : 'bg-white/80 border border-gray-200/90 hover:border-[#0F5D46]/35 hover:bg-white shadow-2xs'
                     }`}
                   >
-                    <div className="flex items-center justify-between w-full mb-1">
-                      <div className="flex items-center gap-1.5 font-bold text-xs sm:text-[12.5px] text-[#0B4B3A]">
-                        <span className="text-sm sm:text-base">🏢</span>
+                    <div className="flex items-center justify-between w-full mb-0.5">
+                      <div className="flex items-center gap-1.5 font-bold text-xs sm:text-[12px] text-[#0B4B3A]">
+                        <span className="text-sm">🏢</span>
                         <span>Organizer Login</span>
                       </div>
                       {loginRole === 'ORGANIZER' ? (
@@ -927,7 +859,7 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                         <span className="w-3.5 h-3.5 rounded-full border border-gray-300 shrink-0" />
                       )}
                     </div>
-                    <p className="text-[10px] sm:text-[10.5px] leading-tight text-[#0F5D46]/75">
+                    <p className="text-[9.5px] sm:text-[10px] leading-tight text-[#0F5D46]/75">
                       Manage events, registrations, payments and analytics.
                     </p>
                   </motion.button>
@@ -935,7 +867,7 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
 
                 {/* Toast Alert on Login */}
                 {toast.message && isLogin && (
-                  <div className={`p-2 rounded-[12px] text-xs font-semibold flex items-center justify-between gap-2 mb-1.5 relative z-10 shrink-0 ${
+                  <div className={`p-1.5 rounded-[10px] text-xs font-semibold flex items-center justify-between gap-2 mb-1 relative z-10 shrink-0 ${
                     toast.type === 'error'
                       ? 'bg-red-50 text-red-700 border border-red-200/80'
                       : 'bg-emerald-50 text-emerald-800 border border-emerald-200/80'
@@ -946,11 +878,11 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                 )}
 
                 {/* Login Fields Form */}
-                <form onSubmit={handleLoginSubmit} className="space-y-2 relative z-10 shrink-0">
+                <form onSubmit={handleLoginSubmit} className="space-y-1.5 relative z-10 shrink-0">
                   
                   {/* Email with Mail Icon */}
                   <div>
-                    <label className="text-[10px] sm:text-[10.5px] font-semibold tracking-[0.08em] uppercase text-[#0F5D46] mb-0.5 block">
+                    <label className="text-[10px] font-semibold tracking-[0.08em] uppercase text-[#0F5D46] mb-0.5 block">
                       EMAIL ADDRESS
                     </label>
                     <div className="relative">
@@ -973,7 +905,7 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                   {/* Password with Lock Icon & Eye Toggle */}
                   <div>
                     <div className="flex justify-between items-center mb-0.5">
-                      <label className="text-[10px] sm:text-[10.5px] font-semibold tracking-[0.08em] uppercase text-[#0F5D46]">
+                      <label className="text-[10px] font-semibold tracking-[0.08em] uppercase text-[#0F5D46]">
                         PASSWORD
                       </label>
                       <button 
@@ -1027,7 +959,7 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                       onChange={(e) => setRememberMe(e.target.checked)}
                       className="w-3.5 h-3.5 rounded text-[#0F5D46] border-gray-300 focus:ring-[#0F5D46] accent-[#0F5D46] cursor-pointer"
                     />
-                    <label htmlFor="loginRememberCheckCustom" className="text-[11.5px] sm:text-[12px] font-normal text-[#66757A] cursor-pointer select-none">
+                    <label htmlFor="loginRememberCheckCustom" className="text-[11px] sm:text-[11.5px] font-normal text-[#66757A] cursor-pointer select-none">
                       Remember me for 30 days
                     </label>
                   </div>
@@ -1036,16 +968,16 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                   <motion.button 
                     type="submit"
                     disabled={loading}
-                    whileHover={{ y: loading ? 0 : -2 }}
+                    whileHover={{ y: loading ? 0 : -1 }}
                     whileTap={{ scale: loading ? 1 : 0.985 }}
-                    className="w-full h-[42px] sm:h-[44px] rounded-[14px] bg-[#0B4B3A] hover:bg-[#073327] text-white flex items-center justify-center gap-2 font-semibold text-[13.5px] sm:text-[14px] shadow-[0_4px_16px_rgba(11,75,58,0.22)] hover:shadow-[0_6px_22px_rgba(11,75,58,0.32)] transition-all duration-200 cursor-pointer relative overflow-hidden disabled:opacity-70 mt-1.5"
+                    className="w-full h-[38px] sm:h-[40px] rounded-[12px] bg-[#0B4B3A] hover:bg-[#073327] text-white flex items-center justify-center gap-2 font-semibold text-xs sm:text-[13px] shadow-[0_4px_16px_rgba(11,75,58,0.22)] hover:shadow-[0_6px_22px_rgba(11,75,58,0.32)] transition-all duration-200 cursor-pointer relative overflow-hidden disabled:opacity-70 mt-1"
                   >
                     <div className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/15 to-transparent pointer-events-none -translate-x-full group-hover:translate-x-[250%] transition-transform duration-700" />
                     <span className="relative z-10 font-bold">
                       {loading ? 'Authenticating...' : `Login as ${loginRole === 'ORGANIZER' ? 'Organizer' : 'Student'}`}
                     </span>
                     {!loading && (
-                      <span className="relative z-10 text-[#D9B24A] font-extrabold text-base transform group-hover:translate-x-1 transition-transform duration-200">
+                      <span className="relative z-10 text-[#D9B24A] font-extrabold text-sm transform group-hover:translate-x-1 transition-transform duration-200">
                         →
                       </span>
                     )}
@@ -1054,15 +986,15 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                 </form>
 
                 {/* Bottom Row: Google Button & Separate Account Creation Links */}
-                <div className="relative z-10 pt-1.5 shrink-0 space-y-2">
+                <div className="relative z-10 pt-1 shrink-0 space-y-1.5">
                   {/* Google Button */}
                   <button 
                     type="button"
                     onClick={handleGoogleLogin}
                     disabled={loading}
-                    className="w-full h-[38px] sm:h-[40px] bg-white/90 hover:bg-white text-[#0B4B3A] border border-[#0F5D46]/20 hover:border-[#0F5D46]/40 font-medium text-[13px] rounded-[14px] shadow-2xs hover:shadow-xs hover:-translate-y-0.5 active:scale-[0.99] flex items-center justify-center gap-2.5 transition-all duration-200 cursor-pointer backdrop-blur-md"
+                    className="w-full h-[36px] sm:h-[38px] bg-white/90 hover:bg-white text-[#0B4B3A] border border-[#0F5D46]/20 hover:border-[#0F5D46]/40 font-medium text-xs sm:text-[12.5px] rounded-[12px] shadow-2xs hover:shadow-xs hover:-translate-y-0.5 active:scale-[0.99] flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer backdrop-blur-md"
                   >
-                    <svg className="w-4 h-4" viewBox="0 0 24 24">
+                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24">
                       <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                       <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
                       <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
@@ -1073,15 +1005,15 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
 
                   {/* Dual Create Account Links */}
                   <div className="pt-0.5 text-center text-xs text-[#6B7478]">
-                    <span className="text-[10.5px] sm:text-[11px] text-gray-500 block mb-0.5">Don't have an account?</span>
-                    <div className="flex items-center justify-center gap-3 text-xs font-semibold">
+                    <span className="text-[10px] sm:text-[10.5px] text-gray-500 block mb-0.5">Don't have an account?</span>
+                    <div className="flex items-center justify-center gap-2.5 text-[11px] font-semibold">
                       <button 
                         type="button" 
                         onClick={() => {
                           setSignupForm(prev => ({ ...prev, role: 'STUDENT' }))
                           handleToggleAuth(false)
                         }}
-                        className="inline-flex items-center gap-1.5 text-[#0F5D46] hover:text-[#0B4B3A] hover:underline underline-offset-4 cursor-pointer transition-colors"
+                        className="inline-flex items-center gap-1 text-[#0F5D46] hover:text-[#0B4B3A] hover:underline underline-offset-4 cursor-pointer transition-colors"
                       >
                         <span>🎓</span>
                         <span>Create Student Account</span>
@@ -1093,7 +1025,7 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                           setSignupForm(prev => ({ ...prev, role: 'ORGANIZER' }))
                           handleToggleAuth(false)
                         }}
-                        className="inline-flex items-center gap-1.5 text-[#D9B24A] hover:text-[#b8912e] hover:underline underline-offset-4 cursor-pointer transition-colors"
+                        className="inline-flex items-center gap-1 text-[#D9B24A] hover:text-[#b8912e] hover:underline underline-offset-4 cursor-pointer transition-colors"
                       >
                         <span>🏢</span>
                         <span>Create Organizer Account</span>
@@ -1102,9 +1034,8 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                   </div>
                 </div>
 
-              </div>
-
-            </motion.div>
+              </motion.div>
+            )}
 
           </div>
 

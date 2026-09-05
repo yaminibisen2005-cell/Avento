@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 public class RegistrationServiceImpl implements RegistrationService {
 
     private final RegistrationRepository registrationRepository;
+    private final UserRepository userRepository;
     private final EventRepository eventRepository;
     private final TicketRepository ticketRepository;
     private final PaymentRepository paymentRepository;
@@ -32,6 +33,33 @@ public class RegistrationServiceImpl implements RegistrationService {
     @Override
     @Transactional
     public RegistrationResponse registerEvent(RegistrationRequest req, User user) {
+        // Fallback user resolution: If security principal is null (e.g. dev mode or token bypass),
+        // resolve user by studentEmail or create registered student record
+        if (user == null) {
+            String email = req.getStudentEmail() != null ? req.getStudentEmail().trim().toLowerCase() : null;
+            if (email != null) {
+                user = userRepository.findByEmail(email).orElse(null);
+                if (user == null) {
+                    user = User.builder()
+                            .email(email)
+                            .fullName(req.getStudentName() != null ? req.getStudentName().trim() : email.split("@")[0])
+                            .phoneNumber(req.getStudentPhone())
+                            .college(req.getCollege())
+                            .branch(req.getBranch())
+                            .year(req.getYear())
+                            .emergencyContact(req.getEmergencyContact())
+                            .role(Role.STUDENT)
+                            .approved(true)
+                            .verified(true)
+                            .blocked(false)
+                            .build();
+                    user = userRepository.save(user);
+                }
+            } else {
+                throw new BadRequestException("Student email is required for registration.");
+            }
+        }
+
         Event event = eventRepository.findById(req.getEventId())
                 .orElseThrow(() -> new ResourceNotFoundException("Event not found with ID: " + req.getEventId()));
 
@@ -186,5 +214,18 @@ public class RegistrationServiceImpl implements RegistrationService {
         Ticket t = ticketRepository.findByTicketNumber(ticketNumber)
                 .orElseThrow(() -> new ResourceNotFoundException("Ticket not found with number: " + ticketNumber));
         return TicketDto.fromEntity(t);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isUserRegistered(Long eventId, User user) {
+        if (eventId == null || user == null) {
+            return false;
+        }
+        Event event = eventRepository.findById(eventId).orElse(null);
+        if (event == null) {
+            return false;
+        }
+        return registrationRepository.existsByEventAndUser(event, user);
     }
 }

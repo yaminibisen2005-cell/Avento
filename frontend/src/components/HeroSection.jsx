@@ -6,7 +6,7 @@ import {
   CertificateCard
 } from './FloatingGlassCard'
 
-export default function HeroSection() {
+export default function HeroSection({ currentUser, onOpenProfile, onOpenEvents, onOpenAuth }) {
   return (
     <motion.section 
       id="home" 
@@ -23,7 +23,7 @@ export default function HeroSection() {
           radial-gradient(at 15% 90%, #F3F7F4 0px, transparent 55%)
         `
       }}
-      className="relative w-full pt-32 sm:pt-36 lg:pt-38 pb-16 sm:pb-20 lg:pb-24 overflow-hidden select-none"
+      className="relative w-full pt-20 sm:pt-24 lg:pt-24 pb-8 sm:pb-10 lg:pb-12 overflow-hidden select-none"
     >
       {/* Seamless bottom fade into next section */}
       <div 
@@ -317,6 +317,12 @@ export default function HeroSection() {
               {/* Primary Button */}
               <motion.a 
                 href="#events" 
+                onClick={(e) => {
+                  if (onOpenEvents) {
+                    e.preventDefault();
+                    onOpenEvents();
+                  }
+                }}
                 whileHover={{ y: -3, scale: 1.015 }}
                 whileTap={{ scale: 0.985 }}
                 className="h-[58px] px-8 sm:px-9 rounded-[18px] bg-gradient-to-r from-[#0B4B3A] to-[#0F5D46] text-white font-bold text-[16.5px] tracking-[-0.01em] shadow-[0_14px_35px_-6px_rgba(15,93,70,0.45)] hover:shadow-[0_20px_45px_-4px_rgba(15,93,70,0.55)] flex items-center justify-center gap-3 transition-all duration-200 border border-[#0F5D46]/30 group cursor-pointer"
@@ -327,18 +333,35 @@ export default function HeroSection() {
                 </span>
               </motion.a>
 
-              {/* Secondary Button */}
-              <motion.a 
-                href="#host" 
-                whileHover={{ y: -3, scale: 1.015 }}
-                whileTap={{ scale: 0.985 }}
-                className="h-[58px] px-7 sm:px-8 rounded-[18px] bg-white/80 hover:bg-white text-[#0F5D46] font-semibold text-[16.5px] tracking-[-0.01em] border border-[#0F5D46]/20 hover:border-[#0F5D46]/40 shadow-xs hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2.5 backdrop-blur-md cursor-pointer"
-              >
-                <svg className="w-4.5 h-4.5 text-[#D9B24A]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M12 4v16m8-8H4" />
-                </svg>
-                <span>Host Event</span>
-              </motion.a>
+              {/* Secondary Button: Profile when logged in, Host Event when guest */}
+              {currentUser ? (
+                <motion.button 
+                  type="button"
+                  onClick={onOpenProfile}
+                  whileHover={{ y: -3, scale: 1.015 }}
+                  whileTap={{ scale: 0.985 }}
+                  className="h-[58px] px-7 sm:px-8 rounded-[18px] bg-white/90 hover:bg-white text-[#0F5D46] font-bold text-[16px] tracking-[-0.01em] border border-[#0F5D46]/25 hover:border-[#0F5D46]/45 shadow-xs hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2.5 backdrop-blur-md cursor-pointer"
+                >
+                  <div className="w-6 h-6 rounded-full bg-[#EAF7F1] border border-[#0F5D46]/20 flex items-center justify-center text-xs font-extrabold text-[#0F5D46]">
+                    {currentUser.fullName ? currentUser.fullName.charAt(0).toUpperCase() : '👤'}
+                  </div>
+                  <span>View My Profile</span>
+                  <span className="text-[#D9B24A] text-xs font-bold">→</span>
+                </motion.button>
+              ) : (
+                <motion.button 
+                  type="button"
+                  onClick={() => onOpenAuth ? onOpenAuth('signup') : null}
+                  whileHover={{ y: -3, scale: 1.015 }}
+                  whileTap={{ scale: 0.985 }}
+                  className="h-[58px] px-7 sm:px-8 rounded-[18px] bg-white/80 hover:bg-white text-[#0F5D46] font-semibold text-[16.5px] tracking-[-0.01em] border border-[#0F5D46]/20 hover:border-[#0F5D46]/40 shadow-xs hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2.5 backdrop-blur-md cursor-pointer"
+                >
+                  <svg className="w-4.5 h-4.5 text-[#D9B24A]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M12 4v16m8-8H4" />
+                  </svg>
+                  <span>Host Event</span>
+                </motion.button>
+              )}
             </motion.div>
 
             {/* Stats Row: 4 Glass Chips */}
@@ -408,7 +431,7 @@ export default function HeroSection() {
               <motion.div 
                 animate={{ y: [0, -10, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                className="hidden lg:block absolute -top-9 -left-6 xl:-left-9 z-30 pointer-events-auto"
+                className="hidden lg:block absolute -top-5 -left-6 xl:-left-9 z-30 pointer-events-auto"
               >
                 <QRAttendanceCard />
               </motion.div>
@@ -417,7 +440,7 @@ export default function HeroSection() {
               <motion.div 
                 animate={{ y: [0, -10, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 1.8 }}
-                className="hidden lg:block absolute -top-11 -right-4 xl:-right-8 z-30 pointer-events-auto"
+                className="hidden lg:block absolute -top-6 -right-4 xl:-right-8 z-30 pointer-events-auto"
               >
                 <CertificateCard />
               </motion.div>

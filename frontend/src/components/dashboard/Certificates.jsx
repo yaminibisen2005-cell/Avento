@@ -1,7 +1,7 @@
 import React from 'react'
 import CertificateCard from './CertificateCard'
 
-export default function Certificates({ certificates = [], studentName = 'Aarav Sharma' }) {
+export default function Certificates({ certificates = [], studentName = 'Student' }) {
   return (
     <div className="space-y-6 text-left select-none pb-12">
       {/* Page Title */}

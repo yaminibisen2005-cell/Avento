@@ -7,12 +7,24 @@
 
 import { paymentApi, registrationApi } from './api';
 
+function sanitizeEventId(id) {
+  if (typeof id === 'number' && !isNaN(id) && id > 0) return id;
+  if (typeof id === 'string') {
+    const digits = id.replace(/\D/g, '');
+    if (digits.length > 0) {
+      const parsed = parseInt(digits, 10);
+      if (!isNaN(parsed) && parsed > 0) return parsed;
+    }
+  }
+  return 1;
+}
+
 export const checkoutService = {
   // 1. Create real Registration record (for Free events or direct fallback)
   async createRegistration(event, attendeeData) {
     try {
       const payload = {
-        eventId: event.id,
+        eventId: sanitizeEventId(event?.id),
         studentName: attendeeData.fullName,
         studentEmail: attendeeData.email,
         studentPhone: attendeeData.phoneNumber,
@@ -73,7 +85,7 @@ export const checkoutService = {
   async createPaymentOrder(event, attendeeData) {
     try {
       const payload = {
-        eventId: event.id,
+        eventId: sanitizeEventId(event?.id),
         studentName: attendeeData.fullName,
         studentEmail: attendeeData.email,
         studentPhone: attendeeData.phoneNumber,
@@ -99,7 +111,11 @@ export const checkoutService = {
   // 3. Verify Real HMAC Razorpay Signature via Spring Boot
   async verifyPayment(verificationPayload) {
     try {
-      const ticket = await paymentApi.verifyPayment(verificationPayload);
+      const sanitizedPayload = {
+        ...verificationPayload,
+        eventId: sanitizeEventId(verificationPayload.eventId)
+      };
+      const ticket = await paymentApi.verifyPayment(sanitizedPayload);
       return {
         success: true,
         ticket

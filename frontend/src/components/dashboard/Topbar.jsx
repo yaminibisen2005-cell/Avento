@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
 
 export default function Topbar({ 
-  studentName = 'Aarav Sharma', 
-  userEmail = 'aarav@student.edu',
+  studentName = 'Student', 
+  userEmail = '',
   unreadCount = 2, 
   notifications = [],
   onNavigateTab,

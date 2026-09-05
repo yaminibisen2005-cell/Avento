@@ -24,6 +24,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final EmailService emailService;
     private final AuditLogService auditLogService;
+    private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
@@ -42,6 +43,11 @@ public class AuthServiceImpl implements AuthService {
         Role assignedRole = request.getRole() != null ? request.getRole() : Role.STUDENT;
 
         if (user != null) {
+            // Prevent duplicate registration if user already has an active password
+            if (StringUtils.hasText(request.getPassword()) && StringUtils.hasText(user.getPassword()) && !StringUtils.hasText(request.getFirebaseUid())) {
+                throw new com.avento.exception.BadRequestException("An account with email '" + email + "' already exists. Please log in.");
+            }
+
             // Update existing user details
             if (StringUtils.hasText(uid)) {
                 user.setFirebaseUid(uid);
@@ -51,6 +57,9 @@ public class AuthServiceImpl implements AuthService {
             }
             if (StringUtils.hasText(request.getPhoneNumber())) {
                 user.setPhoneNumber(request.getPhoneNumber().trim());
+            }
+            if (StringUtils.hasText(request.getPassword()) && !StringUtils.hasText(user.getPassword())) {
+                user.setPassword(passwordEncoder.encode(request.getPassword()));
             }
             if (StringUtils.hasText(request.getCollege())) {
                 user.setCollege(request.getCollege());
@@ -74,13 +83,17 @@ public class AuthServiceImpl implements AuthService {
             return UserResponse.fromUser(saved);
         }
 
-        // Auto-create newly registered Firebase user in MySQL
+        // Auto-create newly registered Firebase/Database user in MySQL
         boolean isOrganizer = (assignedRole == Role.ORGANIZER);
         boolean isApproved = request.getApproved() != null ? request.getApproved() : !isOrganizer;
+
+        String encodedPassword = StringUtils.hasText(request.getPassword()) ?
+                passwordEncoder.encode(request.getPassword()) : null;
 
         User newUser = User.builder()
                 .firebaseUid(uid)
                 .email(email)
+                .password(encodedPassword)
                 .fullName(StringUtils.hasText(request.getFullName()) ? request.getFullName().trim() : (email != null ? email.split("@")[0] : "AVENTO User"))
                 .phoneNumber(request.getPhoneNumber())
                 .role(assignedRole)
@@ -98,12 +111,36 @@ public class AuthServiceImpl implements AuthService {
         // Send welcome email & audit log
         try {
             emailService.sendWelcomeEmail(savedUser);
-            auditLogService.log("REGISTRATION", savedUser.getId(), savedUser.getEmail(), savedUser.getRole().name(), null, "Firebase account synced as " + savedUser.getRole());
+            auditLogService.log("REGISTRATION", savedUser.getId(), savedUser.getEmail(), savedUser.getRole().name(), null, "Account created in database as " + savedUser.getRole());
         } catch (Exception ex) {
             // Log warning without failing registration
         }
 
         return UserResponse.fromUser(savedUser);
+    }
+
+    @Override
+    public UserResponse login(com.avento.dto.LoginRequest request) {
+        String email = request.getEmail() != null ? request.getEmail().trim().toLowerCase() : "";
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new com.avento.exception.BadRequestException("User with email '" + email + "' does not exist in database. Please sign up first."));
+
+        if (Boolean.TRUE.equals(user.getBlocked())) {
+            throw new com.avento.exception.BadRequestException("Your account has been suspended by an administrator.");
+        }
+
+        // Enforce strict password validation
+        if (!StringUtils.hasText(request.getPassword())) {
+            throw new com.avento.exception.BadRequestException("Password is required.");
+        }
+        if (!StringUtils.hasText(user.getPassword())) {
+            throw new com.avento.exception.BadRequestException("This account was registered via Google Sign-In. Please sign in using Google.");
+        }
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new com.avento.exception.BadRequestException("Invalid email or password.");
+        }
+
+        return UserResponse.fromUser(user);
     }
 
     @Override

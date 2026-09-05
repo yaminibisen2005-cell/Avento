@@ -6,6 +6,7 @@ import com.avento.entity.User;
 import com.avento.service.RegistrationService;
 import com.avento.service.StudentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -65,6 +66,9 @@ public class StudentController {
             @RequestBody UpdateProfileRequest request,
             @AuthenticationPrincipal User currentUser
     ) {
+        if (currentUser == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
         User updated = studentService.updateStudentProfile(currentUser, request);
         return ResponseEntity.ok(UserResponse.fromUser(updated));
     }

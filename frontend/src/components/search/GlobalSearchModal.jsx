@@ -72,7 +72,7 @@ export default function GlobalSearchModal({ isOpen, onClose, onSelectResult }) {
   }
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-start justify-center pt-16 sm:pt-24 p-4 bg-black/60 backdrop-blur-xs select-none">
+    <div className="fixed inset-0 z-[2000] flex items-start justify-center pt-16 sm:pt-24 p-4 bg-black/60 backdrop-blur-xs select-none">
       <motion.div
         initial={{ scale: 0.96, opacity: 0, y: -10 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}

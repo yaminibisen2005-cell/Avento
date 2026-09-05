@@ -50,7 +50,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
   return (
     <div 
       onMouseMove={handleMouseMove}
-      className="fixed inset-0 z-[1000] flex items-center justify-center overflow-y-auto bg-[#FAF8F3]/90 backdrop-blur-2xl p-4 sm:p-6 lg:p-10 select-none animate-in fade-in duration-300"
+      className="fixed inset-0 z-[1000] flex items-center justify-center overflow-y-auto bg-black/50 p-4 sm:p-6 lg:p-10 animate-in fade-in duration-300"
     >
       {/* ================= BACKGROUND ATMOSPHERE (HERO THEME) ================= */}
       
@@ -152,7 +152,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
             
             {/* Feature 1: QR Attendance */}
             <div 
-              className="p-3.5 rounded-[20px] bg-white/80 backdrop-blur-xl border border-white/60 shadow-[0_12px_28px_-8px_rgba(15,76,58,0.08)] flex items-center gap-3.5 transition-transform duration-300 hover:translate-x-1"
+              className="p-3.5 rounded-[20px] bg-white border border-[#0F4C3A]/15 shadow-[0_12px_28px_-8px_rgba(15,76,58,0.08)] flex items-center gap-3.5 transition-transform duration-300 hover:translate-x-1"
               style={{ transform: `translateX(${mouseOffset.x * 0.5}px)` }}
             >
               <div className="w-11 h-11 rounded-[14px] bg-[#0F4C3A]/10 border border-[#0F4C3A]/20 flex items-center justify-center text-xl shrink-0">
@@ -167,7 +167,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
 
             {/* Feature 2: AI Certificates */}
             <div 
-              className="p-3.5 rounded-[20px] bg-white/80 backdrop-blur-xl border border-white/60 shadow-[0_12px_28px_-8px_rgba(15,76,58,0.08)] flex items-center gap-3.5 transition-transform duration-300 hover:translate-x-1"
+              className="p-3.5 rounded-[20px] bg-white border border-[#0F4C3A]/15 shadow-[0_12px_28px_-8px_rgba(15,76,58,0.08)] flex items-center gap-3.5 transition-transform duration-300 hover:translate-x-1"
               style={{ transform: `translateX(${mouseOffset.x * -0.5}px)` }}
             >
               <div className="w-11 h-11 rounded-[14px] bg-[#C89B3C]/15 border border-[#C89B3C]/30 flex items-center justify-center text-xl shrink-0">
@@ -182,7 +182,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
 
             {/* Feature 3: Secure Payments */}
             <div 
-              className="p-3.5 rounded-[20px] bg-white/80 backdrop-blur-xl border border-white/60 shadow-[0_12px_28px_-8px_rgba(15,76,58,0.08)] flex items-center gap-3.5 transition-transform duration-300 hover:translate-x-1"
+              className="p-3.5 rounded-[20px] bg-white border border-[#0F4C3A]/15 shadow-[0_12px_28px_-8px_rgba(15,76,58,0.08)] flex items-center gap-3.5 transition-transform duration-300 hover:translate-x-1"
               style={{ transform: `translateX(${mouseOffset.x * 0.3}px)` }}
             >
               <div className="w-11 h-11 rounded-[14px] bg-[#0F4C3A]/10 border border-[#0F4C3A]/20 flex items-center justify-center text-xl shrink-0">
@@ -225,7 +225,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
             {/* FRONT FACE: LOGIN FORM                                   */}
             {/* ======================================================== */}
             <div 
-              className="w-full rounded-[28px] bg-white/82 backdrop-blur-[24px] border border-white/80 p-7 sm:p-9 shadow-[0_30px_70px_-15px_rgba(15,76,58,0.2)] backface-hidden flex flex-col justify-between relative overflow-hidden"
+              className="w-full rounded-[28px] bg-white border border-[#0F4C3A]/15 p-7 sm:p-9 shadow-2xl flex flex-col justify-between relative overflow-hidden"
               style={{
                 display: isFlipped ? 'none' : 'flex' // Clean accessibility & pointer-events guarantee
               }}
@@ -368,7 +368,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
             {/* BACK FACE: SIGNUP FORM                                   */}
             {/* ======================================================== */}
             <div 
-              className="w-full rounded-[28px] bg-white/85 backdrop-blur-[24px] border border-white/80 p-7 sm:p-9 shadow-[0_30px_70px_-15px_rgba(15,76,58,0.2)] backface-hidden rotate-y-180 flex flex-col justify-between relative overflow-hidden"
+              className="w-full rounded-[28px] bg-white border border-[#0F4C3A]/15 p-7 sm:p-9 shadow-2xl flex flex-col justify-between relative overflow-hidden"
               style={{
                 display: !isFlipped ? 'none' : 'flex' // Clean accessibility & pointer-events guarantee
               }}
@@ -381,11 +381,8 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <img src={aventoLogo} alt="Avento Logo" className="w-6 h-6 object-contain" />
-                    <span className="font-display font-extrabold text-lg text-[#0F4C3A] tracking-tight">AVENTO</span>
+                    <span className="font-display font-extrabold text-lg text-[#0F5D46] tracking-tight">AVENTO</span>
                   </div>
-                  <span className="text-[10px] uppercase font-bold text-[#0F4C3A] bg-[#0F4C3A]/10 border border-[#0F4C3A]/20 px-2.5 py-0.5 rounded-full">
-                    Instant Access
-                  </span>
                 </div>
                 <h3 className="font-display font-black text-2xl sm:text-3xl text-[#0F4C3A] tracking-tight">
                   Create Account

@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface AuthService {
     UserResponse syncUser(SyncUserRequest request);
+    UserResponse login(com.avento.dto.LoginRequest request);
     UserResponse getProfile(String email);
     MessageResponse logout();
     UserResponse approveOrganizer(Long userId);

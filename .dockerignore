@@ -1,0 +1,11 @@
+**/.git
+**/.github
+**/.vscode
+**/.idea
+**/node_modules
+**/dist
+**/target
+**/*.log
+**/.env
+**/.env.local
+serviceAccountKey.json

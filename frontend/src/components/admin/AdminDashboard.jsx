@@ -17,14 +17,29 @@ import { adminService } from '../../services/adminService'
 export default function AdminDashboard({ 
   user, 
   onLogout, 
-  onBackToLanding 
+  onBackToLanding,
+  initialTab = 'overview'
 }) {
-  const [activeTab, setActiveTab] = useState('overview')
+  const [activeTab, setActiveTab] = useState(initialTab || 'overview')
   const [mobileOpen, setMobileOpen] = useState(false)
   const [overviewData, setOverviewData] = useState(null)
   const [users, setUsers] = useState([])
   const [pendingOrganizers, setPendingOrganizers] = useState([])
   const [pendingEvents, setPendingEvents] = useState([])
+
+  useEffect(() => {
+    if (initialTab) {
+      setActiveTab(initialTab)
+    }
+  }, [initialTab])
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab)
+    try { sessionStorage.setItem('avento_dashboard_tab', tab) } catch {}
+    if (window.history) {
+      window.history.replaceState({}, '', `/dashboard#${tab}`)
+    }
+  }
   const [allEvents, setAllEvents] = useState([])
   const [payments, setPayments] = useState([])
   const [certificatesData, setCertificatesData] = useState(null)
@@ -80,7 +95,7 @@ export default function AdminDashboard({
       {/* 1. FIXED GLASS SIDEBAR (280px) */}
       <AdminSidebar
         activeTab={activeTab}
-        setActiveTab={setActiveTab}
+        setActiveTab={handleTabChange}
         onLogout={onLogout}
         onBackToLanding={onBackToLanding}
         mobileOpen={mobileOpen}
@@ -93,8 +108,9 @@ export default function AdminDashboard({
         {/* Sticky Header */}
         <AdminTopbar
           adminName={adminName}
-          onNavigateTab={setActiveTab}
+          onNavigateTab={handleTabChange}
           onLogout={onLogout}
+          onBackToLanding={onBackToLanding}
           onMenuToggle={() => setMobileOpen(true)}
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}

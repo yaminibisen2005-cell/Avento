@@ -16,14 +16,29 @@ import { organizerService } from '../../services/organizerService'
 export default function OrganizerDashboard({ 
   user, 
   onLogout, 
-  onBackToLanding 
+  onBackToLanding,
+  initialTab = 'dashboard'
 }) {
-  const [activeTab, setActiveTab] = useState('dashboard')
+  const [activeTab, setActiveTab] = useState(initialTab || 'dashboard')
   const [mobileOpen, setMobileOpen] = useState(false)
   const [overviewData, setOverviewData] = useState(null)
   const [events, setEvents] = useState([])
   const [registrations, setRegistrations] = useState([])
   const [searchQuery, setSearchQuery] = useState('')
+
+  useEffect(() => {
+    if (initialTab) {
+      setActiveTab(initialTab)
+    }
+  }, [initialTab])
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab)
+    try { sessionStorage.setItem('avento_dashboard_tab', tab) } catch {}
+    if (window.history) {
+      window.history.replaceState({}, '', `/dashboard#${tab}`)
+    }
+  }
 
   useEffect(() => {
     Promise.all([
@@ -71,7 +86,7 @@ export default function OrganizerDashboard({
       {/* 1. SIDEBAR (280px Fixed) */}
       <OrganizerSidebar
         activeTab={activeTab}
-        setActiveTab={setActiveTab}
+        setActiveTab={handleTabChange}
         unreadCount={3}
         onLogout={onLogout}
         onBackToLanding={onBackToLanding}
@@ -85,8 +100,9 @@ export default function OrganizerDashboard({
         <OrganizerTopbar
           organizerName={organizerName}
           unreadCount={3}
-          onNavigateTab={setActiveTab}
+          onNavigateTab={handleTabChange}
           onLogout={onLogout}
+          onBackToLanding={onBackToLanding}
           onMenuToggle={() => setMobileOpen(true)}
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}

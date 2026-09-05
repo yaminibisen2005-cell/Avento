@@ -88,7 +88,7 @@ export default function EventCategoriesSection({ onCategoryClick }) {
           linear-gradient(180deg, #FAF8F2 0%, #F7F8F5 50%, #FAF8F2 100%)
         `
       }}
-      className="relative w-full pt-20 sm:pt-24 pb-24 sm:pb-28 overflow-visible select-none"
+      className="relative w-full pt-10 sm:pt-12 pb-12 sm:pb-14 overflow-visible select-none"
     >
       {/* ================= 1. CANVAS CONTINUATION GRADIENTS ================= */}
       <div 

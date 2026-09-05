@@ -5,7 +5,9 @@ export default function StickyRegistrationCard({
   event, 
   onRegister, 
   isWishlisted, 
-  onToggleWishlist 
+  onToggleWishlist,
+  isRegistered = false,
+  onViewTickets
 }) {
   const [copied, setCopied] = useState(false)
 
@@ -26,7 +28,7 @@ export default function StickyRegistrationCard({
         backdropFilter: 'blur(25px)',
         WebkitBackdropFilter: 'blur(25px)'
       }}
-      className="sticky top-28 p-6 sm:p-7 rounded-[28px] border border-white/80 shadow-[0_16px_40px_rgba(15,93,70,0.08)] space-y-5 text-left select-none"
+      className="relative p-6 sm:p-7 rounded-[28px] border border-white/80 shadow-[0_16px_40px_rgba(15,93,70,0.08)] space-y-5 text-left select-none"
     >
       {/* Top Header: Price & Deadline */}
       <div className="flex items-baseline justify-between pb-4 border-b border-[#0F5D46]/10">
@@ -83,16 +85,35 @@ export default function StickyRegistrationCard({
         </div>
       </div>
 
-      {/* Primary Register Button */}
-      <motion.button
-        whileHover={{ y: -2, scale: 1.01 }}
-        whileTap={{ scale: 0.98 }}
-        onClick={onRegister}
-        className="w-full py-3.5 px-5 rounded-[16px] bg-gradient-to-r from-[#0B4B3A] to-[#0F5D46] hover:from-[#083629] hover:to-[#0B4B3A] text-white font-bold text-sm shadow-[0_8px_25px_rgba(15,93,70,0.28)] hover:shadow-[0_12px_32px_rgba(15,93,70,0.38)] flex items-center justify-center gap-2 group cursor-pointer transition-all border border-[#0F5D46]/30"
-      >
-        <span>Register Now</span>
-        <span className="text-[#D9B24A] group-hover:translate-x-1 transition-transform font-bold">→</span>
-      </motion.button>
+      {/* Primary Register or Already Registered Button */}
+      {isRegistered ? (
+        <div className="space-y-2">
+          <div className="w-full py-3.5 px-4 rounded-[16px] bg-emerald-50 border border-emerald-300 text-emerald-800 font-bold text-sm shadow-xs flex items-center justify-center gap-2 select-none">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span>✓ Already Registered</span>
+          </div>
+          {onViewTickets && (
+            <button
+              type="button"
+              onClick={onViewTickets}
+              className="w-full py-3 px-4 rounded-[16px] bg-[#0F5D46] hover:bg-[#0B4B3A] text-white font-bold text-xs shadow-sm transition-all cursor-pointer flex items-center justify-center gap-1.5"
+            >
+              <span>🎟 View My Pass / QR Ticket</span>
+              <span>→</span>
+            </button>
+          )}
+        </div>
+      ) : (
+        <motion.button
+          whileHover={{ y: -2, scale: 1.01 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={onRegister}
+          className="w-full py-3.5 px-5 rounded-[16px] bg-gradient-to-r from-[#0B4B3A] to-[#0F5D46] hover:from-[#083629] hover:to-[#0B4B3A] text-white font-bold text-sm shadow-[0_8px_25px_rgba(15,93,70,0.28)] hover:shadow-[0_12px_32px_rgba(15,93,70,0.38)] flex items-center justify-center gap-2 group cursor-pointer transition-all border border-[#0F5D46]/30"
+        >
+          <span>Register Now</span>
+          <span className="text-[#D9B24A] group-hover:translate-x-1 transition-transform font-bold">→</span>
+        </motion.button>
+      )}
 
       {/* Secondary Actions: Wishlist & Share */}
       <div className="flex items-center gap-2.5 pt-1">

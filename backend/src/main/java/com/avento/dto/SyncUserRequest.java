@@ -20,6 +20,7 @@ public class SyncUserRequest {
     private String branch;
     private String year;
     private String emergencyContact;
+    private String password;
     private Boolean approved;
     private Boolean blocked;
 }

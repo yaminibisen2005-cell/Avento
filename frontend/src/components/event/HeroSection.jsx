@@ -1,7 +1,15 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 
-export default function HeroSection({ event, onRegister, isWishlisted, onToggleWishlist, onShare }) {
+export default function HeroSection({ 
+  event, 
+  onRegister, 
+  isWishlisted, 
+  onToggleWishlist, 
+  onShare,
+  isRegistered = false,
+  onViewTickets
+}) {
   const [copied, setCopied] = useState(false)
 
   const handleShareClick = () => {
@@ -145,16 +153,34 @@ export default function HeroSection({ event, onRegister, isWishlisted, onToggleW
 
         {/* Primary Action Buttons */}
         <div className="flex flex-wrap items-center gap-3 pt-2">
-          {/* Register Button */}
-          <motion.button
-            whileHover={{ y: -3, scale: 1.01 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={onRegister}
-            className="flex-1 min-w-[200px] py-3.5 px-6 rounded-[16px] bg-gradient-to-r from-[#0B4B3A] to-[#0F5D46] hover:from-[#083629] hover:to-[#0B4B3A] text-white font-bold text-sm shadow-[0_8px_25px_rgba(15,93,70,0.3)] hover:shadow-[0_12px_32px_rgba(15,93,70,0.4)] flex items-center justify-center gap-2 group cursor-pointer transition-all border border-[#0F5D46]/30"
-          >
-            <span>Register Now • {event.fee}</span>
-            <span className="text-[#D9B24A] group-hover:translate-x-1 transition-transform font-bold">→</span>
-          </motion.button>
+          {/* Register or Already Registered Button */}
+          {isRegistered ? (
+            <div className="flex-1 min-w-[220px] flex items-center gap-2">
+              <div className="flex-1 py-3.5 px-6 rounded-[16px] bg-emerald-50 border border-emerald-300 text-emerald-800 font-bold text-sm shadow-xs flex items-center justify-center gap-2 select-none">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span>✓ Already Registered</span>
+              </div>
+              {onViewTickets && (
+                <button
+                  type="button"
+                  onClick={onViewTickets}
+                  className="py-3.5 px-5 rounded-[16px] bg-[#0F5D46] hover:bg-[#0B4B3A] text-white font-bold text-xs shadow-sm transition-all cursor-pointer whitespace-nowrap"
+                >
+                  🎟 View Pass
+                </button>
+              )}
+            </div>
+          ) : (
+            <motion.button
+              whileHover={{ y: -3, scale: 1.01 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={onRegister}
+              className="flex-1 min-w-[200px] py-3.5 px-6 rounded-[16px] bg-gradient-to-r from-[#0B4B3A] to-[#0F5D46] hover:from-[#083629] hover:to-[#0B4B3A] text-white font-bold text-sm shadow-[0_8px_25px_rgba(15,93,70,0.3)] hover:shadow-[0_12px_32px_rgba(15,93,70,0.4)] flex items-center justify-center gap-2 group cursor-pointer transition-all border border-[#0F5D46]/30"
+            >
+              <span>Register Now • {event.fee}</span>
+              <span className="text-[#D9B24A] group-hover:translate-x-1 transition-transform font-bold">→</span>
+            </motion.button>
+          )}
 
           {/* Save to Wishlist Button */}
           <button

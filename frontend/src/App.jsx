@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Navbar from './components/Navbar'
 import SplashScreen from './components/SplashScreen'
@@ -20,50 +20,162 @@ export default function App() {
   // Page view state: 'landing' or 'auth' or 'dashboard' or 'events' or 'about'
   const [view, setView] = useState(() => {
     if (typeof window !== 'undefined') {
-      if (window.location.pathname === '/events' || window.location.hash === '#events') {
+      const pathname = window.location.pathname
+      const hash = window.location.hash
+      if (pathname === '/events' || hash === '#events') {
         return 'events'
       }
-      if (window.location.pathname === '/about' || window.location.hash === '#about') {
+      if (pathname === '/about' || hash === '#about') {
         return 'about'
+      }
+      if (pathname === '/dashboard' || hash.startsWith('#dashboard') || hash === '#profile') {
+        return 'dashboard'
+      }
+      if (pathname === '/login' || hash === '#login' || pathname === '/signup' || hash === '#signup') {
+        return 'auth'
       }
     }
     return 'landing'
   })
-  // Splash screen appears immediately when application starts or reloads
-  const [showSplash, setShowSplash] = useState(true)
+
+  // Splash screen appears on first visit of browser session
+  const [showSplash, setShowSplash] = useState(() => {
+    try {
+      return !sessionStorage.getItem('avento_splash_shown')
+    } catch {
+      return true
+    }
+  })
   const [authInitialLogin, setAuthInitialLogin] = useState(true)
   const [currentUser, setCurrentUser] = useState(() => authStorage.getUser())
+  const [dashboardTab, setDashboardTab] = useState(() => {
+    try {
+      return sessionStorage.getItem('avento_dashboard_tab') || 'dashboard'
+    } catch {
+      return 'dashboard'
+    }
+  })
+
+  const handleOpenProfile = () => {
+    setDashboardTab('profile')
+    try { sessionStorage.setItem('avento_dashboard_tab', 'profile') } catch {}
+    if (window.history) window.history.pushState({}, '', '/dashboard#profile')
+    setView('dashboard')
+  }
+
+  const handleOpenDashboard = (tab = 'dashboard') => {
+    setDashboardTab(tab)
+    try { sessionStorage.setItem('avento_dashboard_tab', tab) } catch {}
+    if (window.history) window.history.pushState({}, '', `/dashboard#${tab}`)
+    setView('dashboard')
+  }
+
+  const handleBackToLanding = () => {
+    if (window.history) {
+      window.history.pushState({}, '', '/')
+    }
+    setView('landing')
+  }
+
+  const handleOpenEvents = () => {
+    if (window.history) {
+      window.history.pushState({}, '', '/events')
+    }
+    setView('events')
+  }
+
+  const handleOpenAbout = () => {
+    if (window.history) {
+      window.history.pushState({}, '', '/about')
+    }
+    setView('about')
+  }
+
+  const handleOpenAuth = (mode = 'login') => {
+    setAuthInitialLogin(mode === 'login')
+    if (window.history) {
+      window.history.pushState({}, '', mode === 'signup' ? '/signup' : '/login')
+    }
+    setView('auth')
+  }
+
+  const handleLogout = useCallback((target = 'landing') => {
+    logout()
+    setCurrentUser(null)
+    if (window.history) {
+      window.history.pushState({}, '', target === 'login' ? '/login' : '/')
+    }
+    if (target === 'login') {
+      setAuthInitialLogin(true)
+      setView('auth')
+    } else {
+      setView('landing')
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [logout])
 
   // Keep currentUser synchronized with AuthContext state
   useEffect(() => {
     if (authUser) {
       setCurrentUser(authUser)
+    } else if (authStorage.isSessionExpired()) {
+      setCurrentUser(null)
     } else {
       setCurrentUser(authStorage.getUser())
     }
   }, [authUser])
 
-  // Display Splash Screen for full 5.5 seconds animation choreography on launch
+  // Handle automatic session expiration and unauthorized 401 events
   useEffect(() => {
-    try {
-      sessionStorage.removeItem('avento_splash_shown')
-    } catch {}
+    const handleSessionExpired = () => {
+      handleLogout('landing')
+    }
+    window.addEventListener('avento_session_expired', handleSessionExpired)
+    window.addEventListener('avento_auth_unauthorized', handleSessionExpired)
+    return () => {
+      window.removeEventListener('avento_session_expired', handleSessionExpired)
+      window.removeEventListener('avento_auth_unauthorized', handleSessionExpired)
+    }
+  }, [handleLogout])
 
-    const timer = setTimeout(() => {
-      setShowSplash(false)
-    }, 5500)
+  // Display Splash Screen for full animation on first launch only
+  useEffect(() => {
+    if (showSplash) {
+      const timer = setTimeout(() => {
+        setShowSplash(false)
+        try {
+          sessionStorage.setItem('avento_splash_shown', 'true')
+        } catch {}
+      }, 5500)
+      return () => clearTimeout(timer)
+    }
+  }, [showSplash])
 
-    return () => clearTimeout(timer)
-  }, [])
-
-  // Listen for browser URL /events, /about or hash navigation
+  // Listen for browser URL /events, /about, /dashboard, /login, /signup or hash navigation
   useEffect(() => {
     const handleLocationChange = () => {
-      if (window.location.pathname === '/events' || window.location.hash === '#events') {
+      const pathname = window.location.pathname
+      const hash = window.location.hash
+
+      if (pathname === '/events' || hash === '#events') {
         setView('events')
-      } else if (window.location.pathname === '/about' || window.location.hash === '#about') {
+      } else if (pathname === '/about' || hash === '#about') {
         setView('about')
-      } else if (window.location.pathname === '/' && !window.location.hash) {
+      } else if (pathname === '/dashboard' || hash.startsWith('#dashboard') || hash === '#profile') {
+        if (hash === '#profile') {
+          setDashboardTab('profile')
+        } else if (hash.includes('#')) {
+          const tab = hash.replace('#dashboard', '').replace('#', '')
+          if (tab) setDashboardTab(tab)
+        }
+        setView('dashboard')
+      } else if (pathname === '/login' || hash === '#login') {
+        setAuthInitialLogin(true)
+        setView('auth')
+      } else if (pathname === '/signup' || hash === '#signup') {
+        setAuthInitialLogin(false)
+        setView('auth')
+      } else if (pathname === '/' && (!hash || hash === '#home')) {
         setView('landing')
       }
     }
@@ -101,10 +213,6 @@ export default function App() {
   const toggleFaq = (index) => {
     setFaqOpen(faqOpen === index ? null : index)
   }
-
-
-
-
 
   // Steps data
   const steps = [
@@ -208,26 +316,12 @@ export default function App() {
     return (
       <EventListingPage
         currentUser={currentUser}
-        onBackToLanding={() => {
-          if (window.history) {
-            window.history.pushState({}, '', '/')
-          }
-          setView('landing')
-        }}
-        onOpenAbout={() => {
-          if (window.history) {
-            window.history.pushState({}, '', '/about')
-          }
-          setView('about')
-        }}
-        onOpenAuth={(mode) => {
-          setAuthInitialLogin(mode === 'login')
-          setView('auth')
-        }}
-        onLogout={() => {
-          logout()
-          setCurrentUser(null)
-        }}
+        onBackToLanding={handleBackToLanding}
+        onOpenAbout={handleOpenAbout}
+        onOpenAuth={handleOpenAuth}
+        onOpenDashboard={handleOpenDashboard}
+        onOpenProfile={handleOpenProfile}
+        onLogout={() => handleLogout('landing')}
       />
     )
   }
@@ -236,39 +330,25 @@ export default function App() {
     return (
       <AboutPage
         currentUser={currentUser}
-        onBackToLanding={() => {
-          if (window.history) {
-            window.history.pushState({}, '', '/')
-          }
-          setView('landing')
-        }}
-        onOpenEvents={() => {
-          if (window.history) {
-            window.history.pushState({}, '', '/events')
-          }
-          setView('events')
-        }}
-        onOpenAuth={(mode) => {
-          setAuthInitialLogin(mode === 'login')
-          setView('auth')
-        }}
-        onLogout={() => {
-          logout()
-          setCurrentUser(null)
-        }}
+        onBackToLanding={handleBackToLanding}
+        onOpenEvents={handleOpenEvents}
+        onOpenAuth={handleOpenAuth}
+        onOpenDashboard={handleOpenDashboard}
+        onOpenProfile={handleOpenProfile}
+        onLogout={() => handleLogout('landing')}
       />
     )
   }
 
   if (!showSplash && view === 'auth') {
     return (
-      <div className="w-full min-h-screen min-h-[100dvh] relative">
+      <div className="w-full h-screen h-[100dvh] overflow-hidden relative">
         <Authentication 
           initialIsLogin={authInitialLogin}
-          onBackToLanding={() => setView('landing')}
+          onBackToLanding={handleBackToLanding}
           onLoginSuccess={(user) => {
             setCurrentUser(user)
-            setView('dashboard')
+            handleBackToLanding()
           }}
         />
       </div>
@@ -293,11 +373,7 @@ export default function App() {
             </p>
             <button
               type="button"
-              onClick={() => {
-                logout()
-                setCurrentUser(null)
-                setView('landing')
-              }}
+              onClick={() => handleLogout('landing')}
               className="w-full py-2.5 rounded-[12px] bg-gray-900 hover:bg-black text-white font-semibold text-xs cursor-pointer transition-all shadow-xs"
             >
               Sign Out & Return Home
@@ -341,11 +417,7 @@ export default function App() {
               </button>
               <button
                 type="button"
-                onClick={() => {
-                  logout()
-                  setCurrentUser(null)
-                  setView('landing')
-                }}
+                onClick={() => handleLogout('landing')}
                 className="flex-1 py-2.5 rounded-[12px] bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 font-semibold text-xs cursor-pointer transition-all"
               >
                 Sign Out
@@ -360,12 +432,9 @@ export default function App() {
       return (
         <AdminDashboard
           user={currentUser}
-          onLogout={() => {
-            logout()
-            setCurrentUser(null)
-            setView('landing')
-          }}
-          onBackToLanding={() => setView('landing')}
+          initialTab={dashboardTab}
+          onLogout={() => handleLogout('landing')}
+          onBackToLanding={handleBackToLanding}
         />
       )
     }
@@ -374,12 +443,9 @@ export default function App() {
       return (
         <OrganizerDashboard
           user={currentUser}
-          onLogout={() => {
-            logout()
-            setCurrentUser(null)
-            setView('landing')
-          }}
-          onBackToLanding={() => setView('landing')}
+          initialTab={dashboardTab}
+          onLogout={() => handleLogout('landing')}
+          onBackToLanding={handleBackToLanding}
         />
       )
     }
@@ -387,12 +453,9 @@ export default function App() {
     return (
       <StudentDashboard
         user={currentUser}
-        onLogout={() => {
-          logout()
-          setCurrentUser(null)
-          setView('landing')
-        }}
-        onBackToLanding={() => setView('landing')}
+        initialTab={dashboardTab}
+        onLogout={() => handleLogout('landing')}
+        onBackToLanding={handleBackToLanding}
       />
     )
   }
@@ -419,36 +482,31 @@ export default function App() {
         >
           {/* ==================== 1. FLOATING GLASS NAVBAR ==================== */}
           <Navbar 
-            onOpenAuth={(mode) => { setAuthInitialLogin(mode === 'login'); setView('auth'); }} 
+            onOpenAuth={handleOpenAuth} 
             isSplashing={false}
             currentUser={currentUser}
-            onOpenDashboard={() => setView('dashboard')}
-            onOpenEvents={() => {
-              if (window.history) window.history.pushState({}, '', '/events');
-              setView('events');
-            }}
-            onOpenAbout={() => {
-              if (window.history) window.history.pushState({}, '', '/about');
-              setView('about');
-            }}
-            onLogout={() => {
-              logout()
-              setCurrentUser(null)
-            }}
+            onOpenDashboard={handleOpenDashboard}
+            onOpenProfile={handleOpenProfile}
+            onBackToLanding={handleBackToLanding}
+            onOpenEvents={handleOpenEvents}
+            onOpenAbout={handleOpenAbout}
+            onLogout={() => handleLogout('landing')}
           />
 
           {/* ==================== 2. MAIN HERO SECTION ==================== */}
-          <HeroSection />
+          <HeroSection 
+            currentUser={currentUser}
+            onOpenProfile={handleOpenProfile}
+            onOpenEvents={handleOpenEvents}
+            onOpenAuth={handleOpenAuth}
+          />
 
           {/* ==================== 3. EVENT CATEGORIES (PRIMARY SHOWCASE) ==================== */}
-          <EventCategoriesSection onCategoryClick={() => {
-            if (window.history) window.history.pushState({}, '', '/events');
-            setView('events');
-          }} />
+          <EventCategoriesSection onCategoryClick={handleOpenEvents} />
 
       {/* ==================== 6. HOW IT WORKS ==================== */}
-      <section className="py-24 max-w-7xl mx-auto px-6 relative">
-        <div className="mb-16 text-center">
+      <section className="py-12 sm:py-14 max-w-7xl mx-auto px-6 relative">
+        <div className="mb-10 sm:mb-12 text-center">
           <span className="text-[11px] font-extrabold text-[#C89B3C] tracking-widest uppercase bg-[#C89B3C]/15 px-3.5 py-1.5 rounded-full border border-[#C89B3C]/30">
             Frictionless Flow
           </span>
@@ -486,8 +544,8 @@ export default function App() {
       </section>
 
       {/* ==================== 7. WHY CHOOSE AVENTO / BENTO FEATURES ==================== */}
-      <section id="about" className="py-24 max-w-7xl mx-auto px-6 relative">
-        <div className="mb-16 text-center">
+      <section id="about" className="py-12 sm:py-14 max-w-7xl mx-auto px-6 relative">
+        <div className="mb-10 sm:mb-12 text-center">
           <span className="text-[11px] font-extrabold text-[#0F4C3A] tracking-widest uppercase bg-[#0F4C3A]/10 px-3.5 py-1.5 rounded-full border border-[#0F4C3A]/15">
             Architecture
           </span>
@@ -522,7 +580,7 @@ export default function App() {
       </section>
 
       {/* ==================== 8. LIVE SPOTLIGHT EVENT ==================== */}
-      <section className="py-16 max-w-6xl mx-auto px-6">
+      <section className="py-10 sm:py-12 max-w-6xl mx-auto px-6">
         <div className="bg-gradient-to-br from-[#0F4C3A] via-[#0B382B] to-[#062018] rounded-[32px] text-white p-8 md:p-12 shadow-[0_30px_70px_rgba(15,76,58,0.25)] relative overflow-hidden text-left flex flex-col lg:flex-row items-center justify-between gap-8 border border-white/15">
           
           {/* Subtle Ambient Gold Glow inside Container */}
@@ -584,7 +642,11 @@ export default function App() {
               </div>
             </div>
 
-            <button className="w-full py-3.5 bg-[#C89B3C] hover:bg-[#B3872E] text-[#0F4C3A] font-extrabold text-xs sm:text-sm rounded-full shadow-lg hover:shadow-xl transition-all duration-300">
+            <button 
+              type="button"
+              onClick={handleOpenEvents}
+              className="w-full py-3.5 bg-[#C89B3C] hover:bg-[#B3872E] text-[#0F4C3A] font-extrabold text-xs sm:text-sm rounded-full shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
+            >
               Claim Hackathon Ticket
             </button>
           </div>
@@ -593,8 +655,8 @@ export default function App() {
       </section>
 
       {/* ==================== 9. TESTIMONIALS ==================== */}
-      <section className="py-24 max-w-7xl mx-auto px-6 text-center relative">
-        <div className="mb-16">
+      <section className="py-12 sm:py-14 max-w-7xl mx-auto px-6 text-center relative">
+        <div className="mb-10 sm:mb-12">
           <span className="text-[11px] font-extrabold text-[#C89B3C] tracking-widest uppercase bg-[#C89B3C]/15 px-3.5 py-1.5 rounded-full border border-[#C89B3C]/30">
             Validated by Community
           </span>
@@ -644,8 +706,8 @@ export default function App() {
       </section>
 
       {/* ==================== 10. FAQ ACCORDION ==================== */}
-      <section className="py-24 max-w-3xl mx-auto px-6 text-center relative">
-        <div className="mb-14">
+      <section className="py-12 sm:py-14 max-w-3xl mx-auto px-6 text-center relative">
+        <div className="mb-8 sm:mb-10">
           <span className="text-[11px] font-extrabold text-[#0F4C3A] tracking-widest uppercase bg-[#0F4C3A]/10 px-3.5 py-1.5 rounded-full border border-[#0F4C3A]/15">
             Clear Answers
           </span>
@@ -690,21 +752,10 @@ export default function App() {
 
       {/* ==================== 11. REDESIGNED LUXURY FOOTER ==================== */}
       <Footer
-        onBackToLanding={() => {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }}
-        onOpenEvents={() => {
-          if (window.history) window.history.pushState({}, '', '/events');
-          setView('events');
-        }}
-        onOpenAbout={() => {
-          if (window.history) window.history.pushState({}, '', '/about');
-          setView('about');
-        }}
-        onOpenAuth={(mode) => {
-          setAuthInitialLogin(mode === 'login');
-          setView('auth');
-        }}
+        onBackToLanding={handleBackToLanding}
+        onOpenEvents={handleOpenEvents}
+        onOpenAbout={handleOpenAbout}
+        onOpenAuth={handleOpenAuth}
         showCta={true}
       />
         </motion.div>

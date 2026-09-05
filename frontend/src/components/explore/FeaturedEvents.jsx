@@ -1,7 +1,9 @@
 import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
+import { useAuth } from '../../context/AuthContext';
 
 export default function FeaturedEvents({ events = [], onViewDetails, onRegister }) {
+  const { isEventRegistered } = useAuth();
   const [activeTab, setActiveTab] = useState('Top Rated');
   const scrollRef = useRef(null);
 
@@ -157,12 +159,19 @@ export default function FeaturedEvents({ events = [], onViewDetails, onRegister 
                     >
                       Details
                     </button>
-                    <button
-                      onClick={() => onRegister && onRegister(evt)}
-                      className="px-3.5 py-1.5 text-xs font-bold text-white bg-[#0F5D46] hover:bg-[#0B4B3A] rounded-lg transition-colors cursor-pointer shadow-2xs"
-                    >
-                      Register
-                    </button>
+                    {isEventRegistered(evt.id) ? (
+                      <span className="px-3 py-1.5 text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-300 rounded-lg select-none flex items-center gap-1 shadow-2xs">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                        <span>Registered</span>
+                      </span>
+                    ) : (
+                      <button
+                        onClick={() => onRegister && onRegister(evt)}
+                        className="px-3.5 py-1.5 text-xs font-bold text-white bg-[#0F5D46] hover:bg-[#0B4B3A] rounded-lg transition-colors cursor-pointer shadow-2xs"
+                      >
+                        Register
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>

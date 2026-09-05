@@ -33,6 +33,7 @@ public class PaymentServiceImpl implements PaymentService {
     private static final Logger logger = LoggerFactory.getLogger(PaymentServiceImpl.class);
 
     private final PaymentRepository paymentRepository;
+    private final UserRepository userRepository;
     private final EventRepository eventRepository;
     private final RegistrationRepository registrationRepository;
     private final TicketRepository ticketRepository;
@@ -41,10 +42,10 @@ public class PaymentServiceImpl implements PaymentService {
     private final com.avento.service.EmailService emailService;
     private final com.avento.service.AuditLogService auditLogService;
 
-    @Value("${razorpay.key.id:rzp_test_AVENTO12345678}")
+    @Value("${razorpay.key.id:rzp_test_placeholder}")
     private String keyId;
 
-    @Value("${razorpay.key.secret:SecretKeyForAventoTesting1234}")
+    @Value("${razorpay.key.secret:rzp_secret_placeholder}")
     private String keySecret;
 
     @Value("${razorpay.currency:INR}")
@@ -71,14 +72,50 @@ public class PaymentServiceImpl implements PaymentService {
         return Long.parseLong(clean) * 100L;
     }
 
+    private User resolveUser(User user, String studentEmail, String studentName, String studentPhone,
+                             String college, String branch, String year, String emergencyContact) {
+        if (user != null) {
+            return user;
+        }
+        String email = studentEmail != null ? studentEmail.trim().toLowerCase() : null;
+        if (email != null) {
+            User existing = userRepository.findByEmail(email).orElse(null);
+            if (existing != null) {
+                return existing;
+            }
+            User newUser = User.builder()
+                    .email(email)
+                    .fullName(studentName != null && !studentName.trim().isEmpty() ? studentName.trim() : email.split("@")[0])
+                    .phoneNumber(studentPhone)
+                    .college(college)
+                    .branch(branch)
+                    .year(year)
+                    .emergencyContact(emergencyContact)
+                    .role(Role.STUDENT)
+                    .approved(true)
+                    .verified(true)
+                    .blocked(false)
+                    .build();
+            return userRepository.save(newUser);
+        }
+        throw new BadRequestException("Student email is required.");
+    }
+
     @Override
     @Transactional
     public CreateOrderResponse createOrder(CreateOrderRequest req, User user) {
+        user = resolveUser(user, req.getStudentEmail(), req.getStudentName(), req.getStudentPhone(),
+                req.getCollege(), req.getBranch(), req.getYear(), req.getEmergencyContact());
+
         Event event = eventRepository.findById(req.getEventId())
                 .orElseThrow(() -> new ResourceNotFoundException("Event not found with ID: " + req.getEventId()));
 
         if (event.getSeatsTotal() != null && event.getSeatsFilled() != null && event.getSeatsFilled() >= event.getSeatsTotal()) {
             throw new BadRequestException("Event is fully booked.");
+        }
+
+        if (registrationRepository.existsByEventAndUser(event, user)) {
+            throw new BadRequestException("You are already registered for this event.");
         }
 
         Long amountInPaise = parseAmountToPaise(event.getFee());
@@ -224,6 +261,9 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     @Transactional
     public TicketDto verifyPayment(VerifyPaymentRequest req, User user) {
+        final User finalUser = resolveUser(user, req.getStudentEmail(), req.getStudentName(), req.getStudentPhone(),
+                req.getCollege(), req.getBranch(), req.getYear(), req.getEmergencyContact());
+
         Event event = eventRepository.findById(req.getEventId())
                 .orElseThrow(() -> new ResourceNotFoundException("Event not found with ID: " + req.getEventId()));
 
@@ -253,9 +293,9 @@ public class PaymentServiceImpl implements PaymentService {
             return Payment.builder()
                     .txnId(txnId)
                     .razorpayOrderId(req.getRazorpayOrderId())
-                    .user(user)
+                    .user(finalUser)
                     .event(event)
-                    .studentName(req.getStudentName() != null ? req.getStudentName() : user.getFullName())
+                    .studentName(req.getStudentName() != null ? req.getStudentName() : finalUser.getFullName())
                     .organizerName(event.getOrganizer() != null ? event.getOrganizer().getFullName() : "AVENTO Technical Council")
                     .eventTitle(event.getTitle())
                     .amount(event.getFee())
@@ -269,25 +309,42 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setRazorpaySignature(req.getRazorpaySignature());
         payment.setStatus(PaymentStatus.SUCCESS);
 
+        // Check if user is already registered for this event
+        if (registrationRepository.existsByEventAndUser(event, finalUser)) {
+            Registration existingReg = registrationRepository.findByUserOrderByRegisteredAtDesc(finalUser).stream()
+                    .filter(r -> r.getEvent().getId().equals(event.getId()))
+                    .findFirst()
+                    .orElse(null);
+            if (existingReg != null) {
+                Ticket existingTicket = ticketRepository.findByRegistration(existingReg).orElse(null);
+                if (existingTicket != null) {
+                    payment.setRegistration(existingReg);
+                    payment.setTicket(existingTicket);
+                    paymentRepository.save(payment);
+                    return TicketDto.fromEntity(existingTicket);
+                }
+            }
+        }
+
         // Generate Registration and Digital Ticket
         String studentName = req.getStudentName() != null && !req.getStudentName().trim().isEmpty() ?
-                req.getStudentName().trim() : user.getFullName();
+                req.getStudentName().trim() : finalUser.getFullName();
         String studentEmail = req.getStudentEmail() != null && !req.getStudentEmail().trim().isEmpty() ?
-                req.getStudentEmail().trim() : user.getEmail();
+                req.getStudentEmail().trim() : finalUser.getEmail();
 
         String regNumber = "REG-" + (System.currentTimeMillis() % 100000);
         Registration registration = Registration.builder()
                 .registrationNumber(regNumber)
                 .event(event)
-                .user(user)
+                .user(finalUser)
                 .studentName(studentName)
                 .studentEmail(studentEmail)
-                .studentPhone(req.getStudentPhone() != null ? req.getStudentPhone() : user.getPhoneNumber())
-                .college(req.getCollege() != null ? req.getCollege() : user.getCollege())
-                .branch(req.getBranch() != null ? req.getBranch() : user.getBranch())
-                .year(req.getYear() != null ? req.getYear() : user.getYear())
+                .studentPhone(req.getStudentPhone() != null ? req.getStudentPhone() : finalUser.getPhoneNumber())
+                .college(req.getCollege() != null ? req.getCollege() : finalUser.getCollege())
+                .branch(req.getBranch() != null ? req.getBranch() : finalUser.getBranch())
+                .year(req.getYear() != null ? req.getYear() : finalUser.getYear())
                 .gender(req.getGender() != null ? req.getGender() : "Not Specified")
-                .emergencyContact(req.getEmergencyContact() != null ? req.getEmergencyContact() : user.getEmergencyContact())
+                .emergencyContact(req.getEmergencyContact() != null ? req.getEmergencyContact() : finalUser.getEmergencyContact())
                 .teamName(req.getTeamName())
                 .specialRequirements(req.getSpecialRequirements())
                 .paymentStatus("Paid (" + event.getFee() + " Razorpay)")

@@ -4,6 +4,7 @@ export default function AdminTopbar({
   adminName = 'AVENTO Administrator',
   onNavigateTab,
   onLogout,
+  onBackToLanding,
   onMenuToggle,
   searchQuery = '',
   setSearchQuery
@@ -115,7 +116,6 @@ export default function AdminTopbar({
             </div>
           )}
         </div>
-
         {/* Admin Profile Pill */}
         <div className="relative" ref={profileRef}>
           <div
@@ -137,6 +137,19 @@ export default function AdminTopbar({
                 <span className="font-bold text-[#0F5D46] block truncate">{adminName}</span>
                 <span className="text-[10px] text-[#D9B24A] font-extrabold uppercase">Platform Root Admin</span>
               </div>
+              {onBackToLanding && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setProfileOpen(false)
+                    onBackToLanding()
+                  }}
+                  className="w-full px-3 py-2 rounded-[12px] text-[#0F5D46] hover:bg-[#EAF7F1] flex items-center gap-2 cursor-pointer"
+                >
+                  <span>🌐</span>
+                  <span>Landing Page</span>
+                </button>
+              )}
               <button
                 type="button"
                 onClick={() => {

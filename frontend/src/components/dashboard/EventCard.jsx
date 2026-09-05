@@ -1,7 +1,11 @@
 import React from 'react'
 import { motion } from 'framer-motion'
+import { useAuth } from '../../context/AuthContext'
 
-export default function EventCard({ event, onRegister, onDetails }) {
+export default function EventCard({ event, onRegister, onDetails, isWishlisted: propIsWishlisted, onToggleWishlist, isRegistered: propIsRegistered }) {
+  const { isEventRegistered } = useAuth()
+  const isRegistered = propIsRegistered !== undefined ? propIsRegistered : isEventRegistered(event?.id)
+  const isWishlisted = propIsWishlisted !== undefined ? propIsWishlisted : Boolean(event?.isWishlisted);
   return (
     <motion.div
       whileHover={{ y: -7, scale: 1.01 }}
@@ -94,17 +98,24 @@ export default function EventCard({ event, onRegister, onDetails }) {
 
         {/* CTA Button */}
         <div className="mt-5 pt-3.5 border-t border-[#0F5D46]/[0.08] flex items-center gap-2">
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation()
-              if (onRegister) onRegister(event)
-            }}
-            className="flex-1 py-2.5 bg-[#0F5D46] hover:bg-[#126B51] text-white font-bold text-xs rounded-[14px] shadow-2xs hover:shadow-xs transition-all duration-200 flex items-center justify-center gap-1.5 group/btn cursor-pointer"
-          >
-            <span>Register</span>
-            <span className="text-[#D9B24A] group-hover/btn:translate-x-1 transition-transform">→</span>
-          </button>
+          {isRegistered ? (
+            <div className="flex-1 py-2.5 bg-emerald-50 border border-emerald-300 text-emerald-800 font-bold text-xs rounded-[14px] shadow-2xs flex items-center justify-center gap-1.5 select-none">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+              <span>✓ Registered</span>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation()
+                if (onRegister) onRegister(event)
+              }}
+              className="flex-1 py-2.5 bg-[#0F5D46] hover:bg-[#126B51] text-white font-bold text-xs rounded-[14px] shadow-2xs hover:shadow-xs transition-all duration-200 flex items-center justify-center gap-1.5 group/btn cursor-pointer"
+            >
+              <span>Register</span>
+              <span className="text-[#D9B24A] group/btn:translate-x-1 transition-transform">→</span>
+            </button>
+          )}
 
           {onDetails && (
             <button

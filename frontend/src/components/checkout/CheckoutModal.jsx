@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import StepRegistrationForm from './StepRegistrationForm'
 import StepOrderSummary from './StepOrderSummary'
@@ -6,6 +6,8 @@ import StepPaymentGateway from './StepPaymentGateway'
 import StepPaymentSuccess from './StepPaymentSuccess'
 import { checkoutService } from '../../services/checkoutService'
 import { loadRazorpayScript } from '../../utils/razorpay'
+import { useAuth } from '../../context/AuthContext'
+import { registrationApi } from '../../services/api'
 
 export default function CheckoutModal({ 
   event, 
@@ -20,19 +22,76 @@ export default function CheckoutModal({
   const [isProcessing, setIsProcessing] = useState(false)
   const [paymentError, setPaymentError] = useState('')
   const [createdRegistration, setCreatedRegistration] = useState(null)
+  const [isAlreadyRegistered, setIsAlreadyRegistered] = useState(false)
 
-  const [formData, setFormData] = useState({
-    fullName: currentUser?.fullName || 'Aarav Sharma',
-    email: currentUser?.email || 'aarav@student.edu',
-    phoneNumber: currentUser?.phoneNumber || '+91 98765 43210',
-    college: currentUser?.college || 'IIT Delhi',
-    branch: currentUser?.branch || 'Computer Science & Engineering',
-    year: currentUser?.year || '3rd Year',
-    gender: 'Male',
-    emergencyContact: '+91 99887 76655',
+  const { isEventRegistered, addRegisteredEventId, refreshUserRegistrations } = useAuth()
+
+  useEffect(() => {
+    if (isOpen && event?.id) {
+      if (isEventRegistered(event.id)) {
+        setIsAlreadyRegistered(true)
+      } else {
+        registrationApi.checkRegistration(event.id).then(res => {
+          if (res?.isRegistered) {
+            setIsAlreadyRegistered(true)
+            addRegisteredEventId(event.id)
+          } else {
+            setIsAlreadyRegistered(false)
+          }
+        }).catch(() => {})
+      }
+    } else {
+      setIsAlreadyRegistered(false)
+    }
+  }, [isOpen, event?.id, isEventRegistered, addRegisteredEventId])
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [isOpen])
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && isOpen) onClose()
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen, onClose])
+
+  const getInitialFormData = (u) => ({
+    fullName: u?.fullName || u?.name || '',
+    email: u?.email || '',
+    phoneNumber: u?.phoneNumber || '',
+    college: u?.college || '',
+    branch: u?.branch || '',
+    year: u?.year || '',
+    gender: '',
+    emergencyContact: u?.emergencyContact || '',
     teamName: '',
     specialRequirements: ''
   })
+
+  const [formData, setFormData] = useState(() => getInitialFormData(currentUser))
+
+  useEffect(() => {
+    if (currentUser) {
+      setFormData(prev => ({
+        ...prev,
+        fullName: currentUser.fullName || currentUser.name || prev.fullName,
+        email: currentUser.email || prev.email,
+        phoneNumber: currentUser.phoneNumber || prev.phoneNumber,
+        college: currentUser.college || prev.college,
+        branch: currentUser.branch || prev.branch,
+        year: currentUser.year || prev.year
+      }))
+    }
+  }, [currentUser])
 
   if (!isOpen || !event) return null
 
@@ -54,6 +113,8 @@ export default function CheckoutModal({
         const res = await checkoutService.createRegistration(event, formData)
         setCreatedRegistration(res.data)
         setStep(4)
+        addRegisteredEventId(event.id)
+        refreshUserRegistrations()
         if (onCheckoutComplete) {
           onCheckoutComplete(res.data)
         }
@@ -97,6 +158,8 @@ export default function CheckoutModal({
         }
         setCreatedRegistration(regRecord)
         setStep(4)
+        addRegisteredEventId(event.id)
+        refreshUserRegistrations()
         if (onCheckoutComplete) onCheckoutComplete(regRecord)
         setIsProcessing(false)
         return
@@ -154,6 +217,8 @@ export default function CheckoutModal({
 
               setCreatedRegistration(regRecord)
               setStep(4)
+              addRegisteredEventId(event.id)
+              refreshUserRegistrations()
               if (onCheckoutComplete) onCheckoutComplete(regRecord)
             } catch (err) {
               setPaymentError(err.message || 'Payment signature verification failed')
@@ -207,6 +272,8 @@ export default function CheckoutModal({
 
         setCreatedRegistration(regRecord)
         setStep(4)
+        addRegisteredEventId(event.id)
+        refreshUserRegistrations()
         if (onCheckoutComplete) onCheckoutComplete(regRecord)
         setIsProcessing(false)
       }
@@ -217,7 +284,12 @@ export default function CheckoutModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/55 backdrop-blur-xs select-none">
+    <div 
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose()
+      }}
+      className="fixed inset-0 z-[2000] flex items-center justify-center p-3 sm:p-4 md:p-6 bg-black/65 backdrop-blur-sm select-none overflow-y-auto"
+    >
       <motion.div
         initial={{ scale: 0.95, opacity: 0, y: 15 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -227,7 +299,7 @@ export default function CheckoutModal({
           backdropFilter: 'blur(30px)',
           WebkitBackdropFilter: 'blur(30px)'
         }}
-        className="w-full max-w-xl max-h-[92vh] overflow-y-auto rounded-[32px] p-6 sm:p-8 border border-white shadow-2xl space-y-6 relative"
+        className="w-full max-w-xl max-h-[92vh] overflow-y-auto rounded-[32px] p-5 sm:p-7 pb-8 border border-white shadow-2xl space-y-4 sm:space-y-5 relative my-auto custom-scrollbar"
       >
         {/* Top Header & Close */}
         <div className="flex items-center justify-between border-b border-[#0F5D46]/10 pb-4">
@@ -247,42 +319,99 @@ export default function CheckoutModal({
           </button>
         </div>
 
-        {/* 4-Step Wizard Progress Indicator */}
-        <div className="flex items-center justify-between px-2">
-          {stepsMeta.map((s, idx) => (
-            <React.Fragment key={s.num}>
-              <div className="flex flex-col items-center gap-1">
-                <div 
-                  className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
-                    step === s.num
-                      ? 'bg-[#0F5D46] text-white ring-4 ring-[#0F5D46]/15 shadow-sm'
-                      : step > s.num
-                        ? 'bg-[#D9B24A] text-white'
-                        : 'bg-gray-100 text-gray-400'
-                  }`}
-                >
-                  {step > s.num ? '✓' : s.num}
-                </div>
-                <span className={`text-[10px] uppercase font-bold tracking-wider ${
-                  step === s.num ? 'text-[#0F5D46]' : 'text-gray-400'
-                }`}>
-                  {s.title}
+        {/* If user is already registered, show Already Registered Screen */}
+        {isAlreadyRegistered && step < 4 ? (
+          <div className="py-6 px-4 text-center space-y-5">
+            <div className="w-16 h-16 rounded-full bg-emerald-50 border-2 border-emerald-500 text-emerald-700 flex items-center justify-center text-2xl mx-auto shadow-sm">
+              ✓
+            </div>
+            <div className="space-y-1.5">
+              <span className="text-[10px] uppercase font-extrabold tracking-widest text-[#D9B24A] bg-[#D9B24A]/15 px-3 py-1 rounded-full border border-[#D9B24A]/30">
+                Already Registered
+              </span>
+              <h3 className="font-display font-extrabold text-xl sm:text-2xl text-[#0F5D46] mt-2">
+                You're already registered for this event!
+              </h3>
+              <p className="text-xs sm:text-sm text-[#5E6A68] max-w-md mx-auto leading-relaxed">
+                Your delegate pass for <strong className="text-[#0F5D46]">{event.title}</strong> has already been issued. You do not need to register again.
+              </p>
+            </div>
+
+            <div className="p-4 rounded-[20px] bg-[#FAF8F2] border border-[#0F5D46]/15 max-w-sm mx-auto text-xs space-y-2 text-left">
+              <div className="flex justify-between">
+                <span className="text-[#5E6A68]">Event:</span>
+                <span className="font-bold text-[#1F2937] truncate max-w-[180px]">{event.title}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-[#5E6A68]">Date:</span>
+                <span className="font-bold text-[#1F2937]">{event.date}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-[#5E6A68]">Status:</span>
+                <span className="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                  Confirmed
                 </span>
               </div>
+            </div>
 
-              {idx < stepsMeta.length - 1 && (
-                <div 
-                  className={`flex-1 h-[2px] mx-2 transition-colors ${
-                    step > idx + 1 ? 'bg-[#D9B24A]' : 'bg-gray-200'
-                  }`}
-                />
-              )}
-            </React.Fragment>
-          ))}
-        </div>
+            <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3 max-w-sm mx-auto">
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  if (onGoToTickets) onGoToTickets();
+                }}
+                className="w-full sm:flex-1 py-3 px-5 bg-[#0F5D46] hover:bg-[#0B4B3A] text-white font-bold text-xs rounded-[16px] shadow-sm cursor-pointer transition-all flex items-center justify-center gap-1.5"
+              >
+                <span>🎟 View Pass in My Tickets</span>
+              </button>
+              <button
+                type="button"
+                onClick={onClose}
+                className="w-full sm:w-auto py-3 px-5 bg-white hover:bg-gray-50 text-[#5E6A68] font-bold text-xs rounded-[16px] border border-gray-200 cursor-pointer shadow-2xs transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        ) : (
+          <>
+            {/* 4-Step Wizard Progress Indicator */}
+            <div className="flex items-center justify-between px-2">
+              {stepsMeta.map((s, idx) => (
+                <React.Fragment key={s.num}>
+                  <div className="flex flex-col items-center gap-1">
+                    <div 
+                      className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
+                        step === s.num
+                          ? 'bg-[#0F5D46] text-white ring-4 ring-[#0F5D46]/15 shadow-sm'
+                          : step > s.num
+                            ? 'bg-[#D9B24A] text-white'
+                            : 'bg-gray-100 text-gray-400'
+                      }`}
+                    >
+                      {step > s.num ? '✓' : s.num}
+                    </div>
+                    <span className={`text-[10px] uppercase font-bold tracking-wider ${
+                      step === s.num ? 'text-[#0F5D46]' : 'text-gray-400'
+                    }`}>
+                      {s.title}
+                    </span>
+                  </div>
 
-        {/* Step Views */}
-        <AnimatePresence mode="wait">
+                  {idx < stepsMeta.length - 1 && (
+                    <div 
+                      className={`flex-1 h-[2px] mx-2 transition-colors ${
+                        step > idx + 1 ? 'bg-[#D9B24A]' : 'bg-gray-200'
+                      }`}
+                    />
+                  )}
+                </React.Fragment>
+              ))}
+            </div>
+
+            {/* Step Views */}
+            <AnimatePresence mode="wait">
           {step === 1 && (
             <motion.div
               key="step1"
@@ -379,6 +508,8 @@ export default function CheckoutModal({
             </motion.div>
           )}
         </AnimatePresence>
+        </>
+        )}
       </motion.div>
     </div>
   )

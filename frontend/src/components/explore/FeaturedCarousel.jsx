@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useAuth } from '../../context/AuthContext';
 
 export default function FeaturedCarousel({
   events = [],
@@ -8,10 +9,11 @@ export default function FeaturedCarousel({
   wishlistIds = new Set(),
   onToggleWishlist
 }) {
+  const { isEventRegistered } = useAuth();
   // Use first 3 events as featured, or provide high-fidelity campus fallbacks if list is short
   const fallbackFeatured = [
     {
-      id: 'feat-1',
+      id: 1,
       title: 'AVENTO HackFest 2025',
       category: 'Hackathon',
       date: 'Mar 15-17, 2025',
@@ -23,7 +25,7 @@ export default function FeaturedCarousel({
       image: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80'
     },
     {
-      id: 'feat-2',
+      id: 2,
       title: 'UI/UX Design Workshop',
       category: 'Workshop',
       date: 'Apr 5, 2025',
@@ -35,7 +37,7 @@ export default function FeaturedCarousel({
       image: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=800&q=80'
     },
     {
-      id: 'feat-3',
+      id: 3,
       title: 'The Future of AI',
       category: 'Tech Talk',
       date: 'Apr 12, 2025',
@@ -196,12 +198,19 @@ export default function FeaturedCarousel({
                       </svg>
                     </button>
 
-                    <button
-                      onClick={() => { if (onRegister) onRegister(evt); }}
-                      className="px-4 py-2 rounded-full bg-[#D9B24A] hover:bg-[#cba43e] text-gray-900 font-semibold text-xs transition-colors shadow-xs cursor-pointer active:scale-97"
-                    >
-                      Register Now
-                    </button>
+                    {isEventRegistered(evt.id) ? (
+                      <span className="px-3 py-2 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-300 font-bold text-xs shadow-xs select-none flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                        <span>Registered</span>
+                      </span>
+                    ) : (
+                      <button
+                        onClick={() => { if (onRegister) onRegister(evt); }}
+                        className="px-4 py-2 rounded-full bg-[#D9B24A] hover:bg-[#cba43e] text-gray-900 font-semibold text-xs transition-colors shadow-xs cursor-pointer active:scale-97"
+                      >
+                        Register Now
+                      </button>
+                    )}
                   </div>
                 </div>
 

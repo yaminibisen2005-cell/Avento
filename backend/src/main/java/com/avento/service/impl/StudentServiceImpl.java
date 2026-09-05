@@ -93,8 +93,17 @@ public class StudentServiceImpl implements StudentService {
         if (req.getCollege() != null) user.setCollege(req.getCollege());
         if (req.getBranch() != null) user.setBranch(req.getBranch());
         if (req.getYear() != null) user.setYear(req.getYear());
+        if (req.getRollNumber() != null) user.setRollNumber(req.getRollNumber());
         if (req.getEmergencyContact() != null) user.setEmergencyContact(req.getEmergencyContact());
         if (req.getProfileImage() != null) user.setProfileImage(req.getProfileImage());
+        if (req.getBio() != null) user.setBio(req.getBio());
+        if (req.getGender() != null) user.setGender(req.getGender());
+        if (req.getDob() != null) user.setDob(req.getDob());
+        if (req.getCity() != null) user.setCity(req.getCity());
+        if (req.getState() != null) user.setState(req.getState());
+        if (req.getLinkedin() != null) user.setLinkedin(req.getLinkedin());
+        if (req.getGithub() != null) user.setGithub(req.getGithub());
+        if (req.getSkills() != null) user.setSkills(req.getSkills());
 
         return userRepository.save(user);
     }

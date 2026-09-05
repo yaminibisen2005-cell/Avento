@@ -1,26 +1,85 @@
 import axios from 'axios';
 import { auth, isFirebaseConfigured } from '../firebase/firebase';
 
-export const API_BASE_URL = 'http://localhost:8081/api';
+export const API_BASE_URL = 
+  import.meta.env.VITE_API_URL || 
+  (import.meta.env.PROD ? '/api' : 'http://localhost:8081/api');
 
 export const TOKEN_KEY = 'avento_firebase_token';
 export const USER_KEY = 'avento_user';
+export const SESSION_EXPIRY_KEY = 'avento_session_expiry';
+export const SESSION_REMEMBER_KEY = 'avento_remember_me';
+
+// Session durations: 30 days if "Remember Me" is enabled (default), 24 hours if disabled
+export const DEFAULT_SESSION_DURATION_MS = 30 * 24 * 60 * 60 * 1000;
+export const SHORT_SESSION_DURATION_MS = 24 * 60 * 60 * 1000;
 
 export const authStorage = {
+  isSessionExpired() {
+    try {
+      const rawUser = localStorage.getItem(USER_KEY) || localStorage.getItem('avento_auth_user');
+      if (!rawUser) {
+        return false;
+      }
+      const expiry = localStorage.getItem(SESSION_EXPIRY_KEY);
+      if (!expiry) {
+        // Automatically establish expiration window for existing active session
+        this.setSessionExpiry(true);
+        return false;
+      }
+      const isExpired = Date.now() > Number(expiry);
+      if (isExpired) {
+        this.clear();
+      }
+      return isExpired;
+    } catch {
+      return false;
+    }
+  },
+
+  setSessionExpiry(remember = true) {
+    try {
+      const duration = remember ? DEFAULT_SESSION_DURATION_MS : SHORT_SESSION_DURATION_MS;
+      const expiryTime = Date.now() + duration;
+      localStorage.setItem(SESSION_EXPIRY_KEY, String(expiryTime));
+      localStorage.setItem(SESSION_REMEMBER_KEY, remember ? 'true' : 'false');
+    } catch (e) {
+      console.warn('Could not store session expiry:', e);
+    }
+  },
+
+  getSessionExpiry() {
+    try {
+      const expiry = localStorage.getItem(SESSION_EXPIRY_KEY);
+      return expiry ? Number(expiry) : null;
+    } catch {
+      return null;
+    }
+  },
+
   getToken() {
+    if (this.isSessionExpired()) {
+      return null;
+    }
     return localStorage.getItem(TOKEN_KEY) || localStorage.getItem('avento_auth_token');
   },
+
   setToken(token) {
     if (token) {
       localStorage.setItem(TOKEN_KEY, token);
       localStorage.setItem('avento_auth_token', token);
     }
   },
+
   removeToken() {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem('avento_auth_token');
   },
+
   getUser() {
+    if (this.isSessionExpired()) {
+      return null;
+    }
     const raw = localStorage.getItem(USER_KEY) || localStorage.getItem('avento_auth_user');
     try {
       return raw ? JSON.parse(raw) : null;
@@ -28,20 +87,29 @@ export const authStorage = {
       return null;
     }
   },
-  setUser(user) {
+
+  setUser(user, remember = true) {
     if (user) {
       const s = JSON.stringify(user);
       localStorage.setItem(USER_KEY, s);
       localStorage.setItem('avento_auth_user', s);
+      this.setSessionExpiry(remember);
     }
   },
+
   removeUser() {
     localStorage.removeItem(USER_KEY);
     localStorage.removeItem('avento_auth_user');
   },
+
   clear() {
     this.removeToken();
     this.removeUser();
+    try {
+      localStorage.removeItem(SESSION_EXPIRY_KEY);
+      localStorage.removeItem(SESSION_REMEMBER_KEY);
+      sessionStorage.removeItem('avento_dashboard_tab');
+    } catch {}
   }
 };
 
@@ -69,6 +137,10 @@ apiClient.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    const currentUser = authStorage.getUser();
+    if (currentUser?.email) {
+      config.headers['X-User-Email'] = currentUser.email;
+    }
     return config;
   },
   (error) => Promise.reject(error)
@@ -93,6 +165,10 @@ apiClient.interceptors.response.use(
 // 1. AUTHENTICATION APIS (Firebase Integrated)
 // ==========================================
 export const authApi = {
+  login: async (credentials) => {
+    const res = await apiClient.post('/auth/login', credentials);
+    return res.data;
+  },
   sync: async (userData) => {
     const res = await apiClient.post('/auth/sync', userData);
     return res.data;
@@ -107,6 +183,13 @@ export const authApi = {
   },
   approveOrganizer: async (userId) => {
     const res = await apiClient.put(`/auth/approve/${userId}`);
+    return res.data;
+  },
+  updateProfile: async (data) => {
+    const res = await apiClient.put('/auth/profile', data);
+    if (res.data) {
+      authStorage.setUser(res.data);
+    }
     return res.data;
   },
   logout: () => {
@@ -190,6 +273,14 @@ export const registrationApi = {
   getTicketDetails: async (id) => {
     const res = await apiClient.get(`/tickets/${id}`);
     return res.data;
+  },
+  checkRegistration: async (eventId) => {
+    try {
+      const res = await apiClient.get(`/registrations/check/${eventId}`);
+      return res.data;
+    } catch {
+      return { eventId, isRegistered: false };
+    }
   }
 };
 

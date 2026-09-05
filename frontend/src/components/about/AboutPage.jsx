@@ -162,7 +162,9 @@ export default function AboutPage({
   onBackToLanding,
   onOpenEvents,
   onOpenAuth,
-  onLogout
+  onLogout,
+  onOpenDashboard,
+  onOpenProfile
 }) {
   // Testimonial carousel active index
   const [activeTestimonial, setActiveTestimonial] = useState(0);
@@ -185,7 +187,10 @@ export default function AboutPage({
         currentUser={currentUser}
         onLogout={onLogout}
         onBackToLanding={onBackToLanding}
+        onOpenDashboard={onOpenDashboard}
+        onOpenProfile={onOpenProfile}
         onOpenEvents={onOpenEvents}
+        onOpenAbout={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         activeTab="About"
       />
 

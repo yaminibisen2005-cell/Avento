@@ -17,7 +17,7 @@ import ExploreFooter from './ExploreFooter';
 import EventDetails from '../event/EventDetails';
 import CheckoutModal from '../checkout/CheckoutModal';
 
-export default function EventListingPage({ currentUser, onBackToLanding, onOpenAuth, onLogout, onOpenAbout }) {
+export default function EventListingPage({ currentUser, onBackToLanding, onOpenAuth, onLogout, onOpenAbout, onOpenDashboard, onOpenProfile }) {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -175,7 +175,11 @@ export default function EventListingPage({ currentUser, onBackToLanding, onOpenA
         }}
         onGoToTickets={() => {
           setViewingEventId(null);
-          toast.info('Access your pass in My Tickets tab');
+          if (onOpenDashboard) {
+            onOpenDashboard('tickets');
+          } else {
+            toast.info('Access your pass in My Tickets tab');
+          }
         }}
       />
     );
@@ -191,6 +195,8 @@ export default function EventListingPage({ currentUser, onBackToLanding, onOpenA
         currentUser={currentUser}
         onLogout={onLogout}
         onBackToLanding={onBackToLanding}
+        onOpenDashboard={onOpenDashboard}
+        onOpenProfile={onOpenProfile}
         onOpenEvents={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         onOpenAbout={onOpenAbout}
         activeTab="Events"
@@ -341,7 +347,11 @@ export default function EventListingPage({ currentUser, onBackToLanding, onOpenA
           }}
           onGoToTickets={() => {
             setRegisteringEvent(null);
-            toast.info('Pass generated. View in My Tickets.');
+            if (onOpenDashboard) {
+              onOpenDashboard('tickets');
+            } else {
+              toast.info('Pass generated. View in My Tickets.');
+            }
           }}
         />
       )}

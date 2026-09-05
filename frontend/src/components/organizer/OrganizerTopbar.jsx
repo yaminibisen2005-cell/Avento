@@ -5,6 +5,7 @@ export default function OrganizerTopbar({
   unreadCount = 3,
   onNavigateTab,
   onLogout,
+  onBackToLanding,
   onMenuToggle,
   searchQuery = '',
   setSearchQuery
@@ -161,6 +162,19 @@ export default function OrganizerTopbar({
                 <span>🏛</span>
                 <span>Organizer Profile</span>
               </button>
+              {onBackToLanding && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setProfileOpen(false)
+                    onBackToLanding()
+                  }}
+                  className="w-full px-3 py-2 rounded-[12px] text-[#0F5D46] hover:bg-[#EAF7F1] flex items-center gap-2 cursor-pointer"
+                >
+                  <span>🌐</span>
+                  <span>Landing Page</span>
+                </button>
+              )}
               <button
                 type="button"
                 onClick={() => {

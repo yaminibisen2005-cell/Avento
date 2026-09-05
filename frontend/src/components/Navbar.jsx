@@ -2,7 +2,18 @@ import React, { useState, useEffect } from 'react'
 import aventoLogo from '../assets/logo.png'
 import PremiumAuth from './PremiumAuth'
 
-export default function Navbar({ onOpenAuth, isSplashing = false, currentUser = null, onLogout, onOpenDashboard, onOpenEvents, onOpenAbout, onBackToLanding, activeTab: propActiveTab }) {
+export default function Navbar({ 
+  onOpenAuth, 
+  isSplashing = false, 
+  currentUser = null, 
+  onLogout, 
+  onOpenDashboard, 
+  onOpenProfile,
+  onOpenEvents, 
+  onOpenAbout, 
+  onBackToLanding, 
+  activeTab: propActiveTab 
+}) {
   const [localActiveTab, setLocalActiveTab] = useState('Home')
   const activeTab = propActiveTab || localActiveTab
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -10,12 +21,14 @@ export default function Navbar({ onOpenAuth, isSplashing = false, currentUser = 
   const [authModalOpen, setAuthModalOpen] = useState(false)
   const [authMode, setAuthMode] = useState('login')
   const [isScrolled, setIsScrolled] = useState(false)
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
+  const userMenuRef = React.useRef(null)
 
   const navLinks = [
     { name: 'Home', href: '#home' },
     { name: 'Events', href: '#events' },
     { name: 'About', href: '#about' },
-    { name: 'Features', href: '#about' },
+    { name: 'Features', href: '#features' },
     { name: 'Contact', href: '#contact' },
   ]
 
@@ -32,12 +45,22 @@ export default function Navbar({ onOpenAuth, isSplashing = false, currentUser = 
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target)) {
+        setUserMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
   return (
     <header 
-      className={`fixed top-0 left-0 w-full z-[999] transition-all duration-500 ease-out px-6 sm:px-10 lg:px-16 ${
+      className={`fixed top-0 left-0 w-full z-40 transition-all duration-300 ease-out px-4 sm:px-8 lg:px-12 ${
         isSplashing || !isScrolled
-          ? 'h-[86px] sm:h-[90px] bg-transparent border-b border-transparent shadow-none'
-          : 'h-[76px] bg-white/85 backdrop-blur-xl border-b border-[#0F5D46]/10 shadow-[0_8px_30px_rgba(15,93,70,0.06)]'
+          ? 'h-[72px] sm:h-[76px] bg-transparent border-b border-transparent shadow-none'
+          : 'h-[64px] sm:h-[68px] bg-white/90 backdrop-blur-xl border-b border-[#0F5D46]/10 shadow-[0_4px_24px_rgba(15,93,70,0.06)]'
       }`}
     >
       <div className="w-full max-w-[1440px] h-full mx-auto flex items-center justify-between">
@@ -65,7 +88,7 @@ export default function Navbar({ onOpenAuth, isSplashing = false, currentUser = 
             </div>
           </div>
           <div className="flex flex-col">
-            <span className="font-extrabold text-[21px] tracking-tight text-[#0F5D46] group-hover:text-[#0B4B3A] transition-colors leading-none font-sans">
+            <span className="font-extrabold text-[20px] tracking-tight text-[#0F5D46] group-hover:text-[#0B4B3A] transition-colors leading-none font-sans">
               AVENTO
             </span>
             <span className="text-[9px] tracking-widest uppercase font-mono font-bold text-[#D9B24A] leading-none mt-1">
@@ -74,8 +97,8 @@ export default function Navbar({ onOpenAuth, isSplashing = false, currentUser = 
           </div>
         </a>
 
-        {/* ================= CENTER: NAVIGATION (16PX, 600 WEIGHT) ================= */}
-        <nav className="hidden md:flex items-center gap-8 lg:gap-11">
+        {/* ================= CENTER: NAVIGATION ================= */}
+        <nav className="hidden md:flex items-center gap-6 lg:gap-8">
           {navLinks.map((item) => {
             const isActive = activeTab === item.name
             return (
@@ -86,12 +109,24 @@ export default function Navbar({ onOpenAuth, isSplashing = false, currentUser = 
                   if (item.name === 'Home' && onBackToLanding) {
                     e.preventDefault()
                     onBackToLanding()
+                  } else if (item.name === 'Dashboard' && onOpenDashboard) {
+                    e.preventDefault()
+                    onOpenDashboard('dashboard')
                   } else if (item.name === 'Events' && onOpenEvents) {
                     e.preventDefault()
                     onOpenEvents()
                   } else if (item.name === 'About' && onOpenAbout) {
                     e.preventDefault()
                     onOpenAbout()
+                  } else if ((item.name === 'Features' || item.name === 'Contact') && activeTab !== 'Home') {
+                    if (onBackToLanding) {
+                      e.preventDefault()
+                      onBackToLanding()
+                      setTimeout(() => {
+                        const el = document.querySelector(item.href)
+                        if (el) el.scrollIntoView({ behavior: 'smooth' })
+                      }, 100)
+                    }
                   } else {
                     setLocalActiveTab(item.name)
                   }
@@ -152,63 +187,152 @@ export default function Navbar({ onOpenAuth, isSplashing = false, currentUser = 
           </div>
 
           {currentUser ? (
-            <div className="flex items-center gap-2.5 sm:gap-3">
-              {onOpenDashboard && (
+            <div className="flex items-center gap-2 sm:gap-3" ref={userMenuRef}>
+              {/* Primary Profile Button (Directly opens profile / user details) */}
+              <div className="relative">
                 <button
                   type="button"
-                  onClick={onOpenDashboard}
-                  className="px-3.5 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-[13.5px] font-bold text-[#0F5D46] bg-[#EAF7F1] hover:bg-[#d4ede1] border border-[#0F5D46]/25 rounded-full transition-all duration-200 cursor-pointer shadow-2xs hover:shadow-xs flex items-center gap-1.5"
+                  onClick={() => {
+                    if (onOpenProfile) onOpenProfile();
+                    else if (onOpenDashboard) onOpenDashboard('profile');
+                  }}
+                  className="pl-2 pr-3.5 sm:pr-4 py-1.5 sm:py-2 text-xs sm:text-[14px] font-bold text-white bg-gradient-to-r from-[#0B4B3A] to-[#0F5D46] hover:from-[#083629] hover:to-[#0B4B3A] rounded-full shadow-[0_6px_20px_rgba(15,93,70,0.28)] hover:shadow-[0_10px_28px_rgba(15,93,70,0.4)] hover:-translate-y-0.5 transition-all duration-250 flex items-center gap-2.5 group border border-[#0F5D46]/30 cursor-pointer"
+                  title="Click to view Profile & User Details"
+                  aria-label="User Profile"
                 >
-                  <span>📊</span>
-                  <span>Dashboard</span>
+                  {/* User Avatar Circle */}
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white p-[1.5px] shadow-xs flex items-center justify-center shrink-0">
+                    <div className="w-full h-full rounded-full bg-[#FAF8F2] flex items-center justify-center font-extrabold text-xs sm:text-[13px] text-[#0F5D46]">
+                      {currentUser.fullName ? currentUser.fullName.charAt(0).toUpperCase() : '👤'}
+                    </div>
+                  </div>
+
+                  {/* User Name & Profile Badge */}
+                  <div className="flex flex-col items-start text-left leading-none">
+                    <span className="font-extrabold text-white text-xs sm:text-[13.5px] truncate max-w-[120px] sm:max-w-[150px]">
+                      {currentUser.fullName || 'My Profile'}
+                    </span>
+                    <span className="text-[9px] font-mono font-bold tracking-wider uppercase text-[#D9B24A] mt-0.5">
+                      👤 {currentUser.role || 'User'} Profile
+                    </span>
+                  </div>
+
+                  {/* Quick Dropdown Toggle Arrow */}
+                  <span 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setUserMenuOpen(!userMenuOpen);
+                    }}
+                    className={`p-1 -mr-1 hover:bg-white/20 rounded-full text-[10px] text-[#D9B24A] transition-transform duration-200 ${userMenuOpen ? 'rotate-180' : ''}`}
+                    title="Open options menu"
+                  >
+                    ▼
+                  </span>
                 </button>
-              )}
-              <div className="hidden sm:flex flex-col items-end text-right">
-                <span className="text-xs font-bold text-[#0F5D46] leading-tight">{currentUser.fullName}</span>
-                <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#D9B24A] bg-[#D9B24A]/10 px-2 py-0.5 rounded-full border border-[#D9B24A]/30 mt-0.5">
-                  {currentUser.role}
-                </span>
+
+                {/* Profile Dropdown Menu */}
+                {userMenuOpen && (
+                  <div className="absolute right-0 mt-3 w-64 bg-white/95 backdrop-blur-2xl rounded-[24px] shadow-[0_20px_50px_rgba(15,93,70,0.18)] border border-[#0F5D46]/15 p-3 z-50 text-left animate-fade-in">
+                    {/* User Card */}
+                    <div 
+                      onClick={() => {
+                        setUserMenuOpen(false);
+                        if (onOpenProfile) onOpenProfile();
+                        else if (onOpenDashboard) onOpenDashboard('profile');
+                      }}
+                      className="p-3 bg-[#FAF8F2] hover:bg-[#EAF7F1] rounded-[18px] border border-[#0F5D46]/10 mb-2 cursor-pointer transition-colors"
+                      title="Click to view full user profile & details"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-xs text-[#0F5D46] truncate">{currentUser.fullName}</span>
+                        <span className="text-[9px] font-extrabold uppercase bg-[#0F5D46] text-white px-2 py-0.5 rounded-full">
+                          {currentUser.role}
+                        </span>
+                      </div>
+                      <span className="text-[10.5px] text-[#5E6A68] truncate block mt-0.5">{currentUser.email}</span>
+                      <span className="text-[9.5px] text-[#D9B24A] font-bold block mt-1">Tap to open Profile & Details →</span>
+                    </div>
+
+                    <div className="space-y-1 text-xs font-semibold">
+                      {/* Direct View Profile Button */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setUserMenuOpen(false);
+                          if (onOpenProfile) onOpenProfile();
+                          else if (onOpenDashboard) onOpenDashboard('profile');
+                        }}
+                        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-[14px] bg-[#EAF7F1] text-[#0F5D46] font-bold hover:bg-[#d8efe5] transition-colors cursor-pointer"
+                      >
+                        <span className="text-base">👤</span>
+                        <div className="flex flex-col text-left leading-tight">
+                          <span>Profile & User Details</span>
+                          <span className="text-[10px] font-normal text-[#5E6A68]">Account details, credentials & stats</span>
+                        </div>
+                      </button>
+
+                      {currentUser.role === 'STUDENT' && onOpenDashboard && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setUserMenuOpen(false);
+                            onOpenDashboard('tickets');
+                          }}
+                          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-[12px] text-[#1F2937] hover:bg-[#FAF8F2] hover:text-[#0F5D46] transition-colors cursor-pointer"
+                        >
+                          <span>🎟</span>
+                          <span>My Passes & QR Tickets</span>
+                        </button>
+                      )}
+
+                      {currentUser.role === 'ORGANIZER' && onOpenDashboard && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setUserMenuOpen(false);
+                            onOpenDashboard('my-events');
+                          }}
+                          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-[12px] text-[#1F2937] hover:bg-[#FAF8F2] hover:text-[#0F5D46] transition-colors cursor-pointer"
+                        >
+                          <span>🏛</span>
+                          <span>My Hosted Events</span>
+                        </button>
+                      )}
+
+                      <div className="pt-2 mt-1 border-t border-[#0F5D46]/10">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setUserMenuOpen(false);
+                            if (onLogout) onLogout();
+                          }}
+                          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-[12px] text-red-700 hover:bg-red-50 transition-colors cursor-pointer font-bold"
+                        >
+                          <span>🚪</span>
+                          <span>Log Out</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
-              <button 
-                onClick={onLogout}
-                className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-[13px] font-bold text-red-700 bg-red-50 hover:bg-red-100 border border-red-200/80 rounded-full transition-all duration-200 cursor-pointer shadow-2xs hover:shadow-xs"
-              >
-                Log Out
-              </button>
             </div>
           ) : (
-            <>
-              {/* Login Button */}
-              <button 
-                onClick={() => {
-                  if (onOpenAuth) {
-                    onOpenAuth('login')
-                  } else {
-                    setAuthMode('login')
-                    setAuthModalOpen(true)
-                  }
-                }}
-                className="hidden sm:inline-flex px-5 py-2.5 text-[15px] font-semibold tracking-[-0.01em] text-[#0F5D46] bg-white/80 hover:bg-white border border-[#0F5D46]/20 rounded-full shadow-xs hover:shadow-sm hover:-translate-y-0.5 transition-all duration-250 cursor-pointer"
-              >
-                Log In
-              </button>
-
-              {/* Sign Up Button */}
-              <button 
-                onClick={() => {
-                  if (onOpenAuth) {
-                    onOpenAuth('signup')
-                  } else {
-                    setAuthMode('signup')
-                    setAuthModalOpen(true)
-                  }
-                }}
-                className="px-6 py-2.5 text-[15px] font-bold tracking-[-0.01em] text-white bg-gradient-to-r from-[#0B4B3A] to-[#0F5D46] hover:from-[#083629] hover:to-[#0B4B3A] rounded-full shadow-[0_6px_20px_rgba(15,93,70,0.28)] hover:shadow-[0_10px_28px_rgba(15,93,70,0.4)] hover:-translate-y-0.5 transition-all duration-250 flex items-center gap-1.5 group border border-[#0F5D46]/30 cursor-pointer"
-              >
-                <span>Sign Up</span>
-                <span className="text-[#D9B24A] group-hover:translate-x-1 transition-transform duration-200 font-bold">→</span>
-              </button>
-            </>
+            <button 
+              onClick={() => {
+                if (onOpenAuth) {
+                  onOpenAuth('login')
+                } else {
+                  setAuthMode('login')
+                  setAuthModalOpen(true)
+                }
+              }}
+              className="px-3 sm:px-3.5 py-1.5 text-[11px] sm:text-[12px] font-bold tracking-tight text-white bg-gradient-to-r from-[#0B4B3A] to-[#0F5D46] hover:from-[#083629] hover:to-[#0B4B3A] rounded-full shadow-[0_2px_10px_rgba(15,93,70,0.2)] hover:shadow-[0_4px_14px_rgba(15,93,70,0.3)] hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-1.5 group border border-[#0F5D46]/30 cursor-pointer"
+            >
+              <span className="text-[11px]">👤</span>
+              <span>Login / Sign Up</span>
+              <span className="text-[#D9B24A] text-[11px] group-hover:translate-x-0.5 transition-transform duration-200 font-bold">→</span>
+            </button>
           )}
 
           {/* Mobile Hamburger Menu Toggle */}
@@ -232,7 +356,7 @@ export default function Navbar({ onOpenAuth, isSplashing = false, currentUser = 
 
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
-        <div className="md:hidden absolute top-[88px] inset-x-4 bg-white/95 backdrop-blur-2xl rounded-2xl border border-[rgba(200,155,60,0.2)] shadow-[0_20px_40px_rgba(15,76,58,0.12)] p-6 flex flex-col gap-3">
+        <div className="md:hidden absolute top-[74px] inset-x-4 bg-white/95 backdrop-blur-2xl rounded-2xl border border-[rgba(200,155,60,0.2)] shadow-[0_20px_40px_rgba(15,76,58,0.12)] p-5 flex flex-col gap-2.5">
           {navLinks.map((item) => (
             <a 
               key={item.name} 
@@ -241,12 +365,24 @@ export default function Navbar({ onOpenAuth, isSplashing = false, currentUser = 
                 if (item.name === 'Home' && onBackToLanding) {
                   e.preventDefault()
                   onBackToLanding()
+                } else if (item.name === 'Dashboard' && onOpenDashboard) {
+                  e.preventDefault()
+                  onOpenDashboard('dashboard')
                 } else if (item.name === 'Events' && onOpenEvents) {
                   e.preventDefault()
                   onOpenEvents()
                 } else if (item.name === 'About' && onOpenAbout) {
                   e.preventDefault()
                   onOpenAbout()
+                } else if ((item.name === 'Features' || item.name === 'Contact') && activeTab !== 'Home') {
+                  if (onBackToLanding) {
+                    e.preventDefault()
+                    onBackToLanding()
+                    setTimeout(() => {
+                      const el = document.querySelector(item.href)
+                      if (el) el.scrollIntoView({ behavior: 'smooth' })
+                    }, 100)
+                  }
                 } else {
                   setLocalActiveTab(item.name)
                 }
@@ -263,7 +399,7 @@ export default function Navbar({ onOpenAuth, isSplashing = false, currentUser = 
             </a>
           ))}
           {currentUser ? (
-            <div className="pt-3 border-t border-gray-100 flex flex-col gap-2">
+            <div className="pt-3 border-t border-gray-100 flex flex-col gap-2.5">
               <div className="flex items-center justify-between px-1">
                 <span className="text-xs font-bold text-[#0F5D46]">{currentUser.fullName}</span>
                 <span className="text-[10px] font-extrabold uppercase bg-[#D9B24A]/15 text-[#8C6F1E] border border-[#D9B24A]/30 px-2.5 py-0.5 rounded-full">
@@ -271,30 +407,31 @@ export default function Navbar({ onOpenAuth, isSplashing = false, currentUser = 
                 </span>
               </div>
               <div className="flex gap-2 pt-1">
-                {onOpenDashboard && (
-                  <button 
-                    onClick={() => {
-                      onOpenDashboard()
-                      setMobileMenuOpen(false)
-                    }}
-                    className="flex-1 py-2.5 text-xs font-bold text-white bg-[#0F5D46] hover:bg-[#126B51] rounded-full shadow-xs cursor-pointer"
-                  >
-                    📊 Open Dashboard
-                  </button>
-                )}
+                <button 
+                  onClick={() => {
+                    if (onOpenProfile) onOpenProfile()
+                    else if (onOpenDashboard) onOpenDashboard('profile')
+                    setMobileMenuOpen(false)
+                  }}
+                  className="flex-1 py-2.5 text-xs font-bold text-[#0F5D46] bg-white border border-[#0F5D46]/25 rounded-xl shadow-2xs cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                  <span>👤</span>
+                  <span>My Profile</span>
+                </button>
                 <button 
                   onClick={() => {
                     if (onLogout) onLogout()
                     setMobileMenuOpen(false)
                   }}
-                  className="px-4 py-2.5 text-xs font-bold text-red-700 bg-red-50 hover:bg-red-100 border border-red-200 rounded-full cursor-pointer"
+                  className="flex-1 py-2.5 text-xs font-bold text-red-700 bg-red-50 hover:bg-red-100 border border-red-200 rounded-xl cursor-pointer flex items-center justify-center gap-1.5"
                 >
-                  Log Out
+                  <span>🚪</span>
+                  <span>Log Out</span>
                 </button>
               </div>
             </div>
           ) : (
-            <div className="pt-3 flex gap-3">
+            <div className="pt-2">
               <button 
                 onClick={() => {
                   if (onOpenAuth) {
@@ -305,23 +442,11 @@ export default function Navbar({ onOpenAuth, isSplashing = false, currentUser = 
                   }
                   setMobileMenuOpen(false)
                 }}
-                className="flex-1 py-2.5 text-xs font-semibold text-[#0F4C3A] border border-[#0F4C3A]/30 rounded-full hover:bg-[#F7E8C2]/60"
+                className="w-full py-2 px-3 text-[12px] font-bold tracking-wide rounded-xl text-white bg-gradient-to-r from-[#0F4C3A] via-[#14634d] to-[#0F4C3A] hover:from-[#14634d] hover:to-[#0B3A2C] border border-[#D9B24A]/40 shadow-xs flex items-center justify-center gap-1.5 cursor-pointer"
               >
-                Log In
-              </button>
-              <button 
-                onClick={() => {
-                  if (onOpenAuth) {
-                    onOpenAuth('signup')
-                  } else {
-                    setAuthMode('signup')
-                    setAuthModalOpen(true)
-                  }
-                  setMobileMenuOpen(false)
-                }}
-                className="flex-1 py-2.5 text-xs font-bold text-white bg-[#0F4C3A] rounded-full shadow-sm"
-              >
-                Sign Up
+                <span className="text-[11px]">👤</span>
+                <span>Login / Sign Up</span>
+                <span className="text-[#D9B24A] text-[11px]">→</span>
               </button>
             </div>
           )}

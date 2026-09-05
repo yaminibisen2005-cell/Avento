@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 
-export default function CertificateCard({ certificate, studentName = 'Aarav Sharma' }) {
+export default function CertificateCard({ certificate, studentName = 'Student' }) {
   const [downloading, setDownloading] = useState(false)
 
   const handleDownload = () => {

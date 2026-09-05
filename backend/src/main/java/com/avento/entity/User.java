@@ -77,6 +77,33 @@ public class User implements UserDetails {
     @Column(length = 25)
     private String emergencyContact;
 
+    @Column(length = 50)
+    private String rollNumber;
+
+    @Column(columnDefinition = "TEXT")
+    private String bio;
+
+    @Column(length = 20)
+    private String gender;
+
+    @Column(length = 30)
+    private String dob;
+
+    @Column(length = 100)
+    private String city;
+
+    @Column(length = 100)
+    private String state;
+
+    @Column(length = 255)
+    private String linkedin;
+
+    @Column(length = 255)
+    private String github;
+
+    @Column(length = 255)
+    private String skills;
+
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;

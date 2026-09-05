@@ -20,4 +20,6 @@ public interface RegistrationService {
     TicketDto getTicketById(Long id);
 
     TicketDto getTicketByNumber(String ticketNumber);
+
+    boolean isUserRegistered(Long eventId, User user);
 }

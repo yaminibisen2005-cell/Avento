@@ -1,13 +1,17 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useAuth } from '../../context/AuthContext';
 
 export default function EventCard({ 
   event, 
   onViewDetails, 
   onRegister, 
   isWishlisted = false, 
-  onToggleWishlist
+  onToggleWishlist,
+  isRegistered: propIsRegistered
 }) {
+  const { isEventRegistered } = useAuth();
+  const isRegistered = propIsRegistered !== undefined ? propIsRegistered : isEventRegistered(event.id);
   const totalSeats = event.seatsTotal || 100;
   const filledSeats = event.seatsFilled || 0;
   const seatsLeft = event.seatsLeft != null ? event.seatsLeft : Math.max(0, totalSeats - filledSeats);
@@ -131,12 +135,19 @@ export default function EventCard({
             </svg>
           </button>
 
-          <button
-            onClick={() => onRegister && onRegister(event)}
-            className="px-4 py-1.5 rounded-full bg-[#D9B24A] hover:bg-[#c9a23c] text-gray-900 text-xs font-semibold transition-colors cursor-pointer shadow-2xs active:scale-97"
-          >
-            Register
-          </button>
+          {isRegistered ? (
+            <span className="px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-300 text-[11px] font-bold shadow-2xs flex items-center gap-1 cursor-default select-none">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+              <span>Registered</span>
+            </span>
+          ) : (
+            <button
+              onClick={() => onRegister && onRegister(event)}
+              className="px-4 py-1.5 rounded-full bg-[#D9B24A] hover:bg-[#c9a23c] text-gray-900 text-xs font-semibold transition-colors cursor-pointer shadow-2xs active:scale-97"
+            >
+              Register
+            </button>
+          )}
         </div>
       </div>
     </motion.div>

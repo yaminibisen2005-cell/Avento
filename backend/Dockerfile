@@ -9,10 +9,12 @@ RUN mvn clean package -DskipTests
 # Stage 2: Production JRE
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
-RUN addgroup -S avento && adduser -S avento -G avento
+RUN addgroup -S avento && adduser -S avento -G avento \
+    && mkdir -p /app/uploads \
+    && chown -R avento:avento /app
 USER avento
 
-COPY --from=build /app/target/backend-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build --chown=avento:avento /app/target/backend-0.0.1-SNAPSHOT.jar app.jar
 EXPOSE 8081
 
 ENTRYPOINT ["java", "-XX:+UseG1GC", "-XX:MaxRAMPercentage=75", "-jar", "app.jar"]

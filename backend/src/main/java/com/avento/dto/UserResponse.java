@@ -24,6 +24,19 @@ public class UserResponse {
     private Boolean verified;
     private Boolean approved;
     private Boolean blocked;
+    private String college;
+    private String branch;
+    private String year;
+    private String rollNumber;
+    private String emergencyContact;
+    private String bio;
+    private String gender;
+    private String dob;
+    private String city;
+    private String state;
+    private String linkedin;
+    private String github;
+    private String skills;
     private LocalDateTime createdAt;
 
     public static UserResponse fromUser(User user) {
@@ -38,6 +51,19 @@ public class UserResponse {
                 .verified(user.getVerified())
                 .approved(user.getApproved())
                 .blocked(user.getBlocked())
+                .college(user.getCollege())
+                .branch(user.getBranch())
+                .year(user.getYear())
+                .rollNumber(user.getRollNumber())
+                .emergencyContact(user.getEmergencyContact())
+                .bio(user.getBio())
+                .gender(user.getGender())
+                .dob(user.getDob())
+                .city(user.getCity())
+                .state(user.getState())
+                .linkedin(user.getLinkedin())
+                .github(user.getGithub())
+                .skills(user.getSkills())
                 .createdAt(user.getCreatedAt())
                 .build();
     }

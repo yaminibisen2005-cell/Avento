@@ -14,23 +14,91 @@ import {
 } from 'firebase/auth';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, googleProvider, db, isFirebaseConfigured } from '../firebase/firebase';
-import { authApi, authStorage } from '../services/api';
+import { authApi, authStorage, studentApi } from '../services/api';
+import { promptGoogleSignIn } from '../services/googleAuthService';
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(() => authStorage.getUser());
+  const [user, setUser] = useState(() => {
+    const u = authStorage.getUser();
+    if (u) {
+      const resolvedName = u.fullName || u.name || (u.email ? u.email.split('@')[0] : 'AVENTO User');
+      return { ...u, fullName: resolvedName, name: resolvedName };
+    }
+    return null;
+  });
   const [token, setToken] = useState(() => authStorage.getToken());
   const [loading, setLoading] = useState(true);
+  const [registeredEventIds, setRegisteredEventIds] = useState(() => {
+    try {
+      const cached = localStorage.getItem('avento_registered_event_ids');
+      return cached ? JSON.parse(cached) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const refreshUserRegistrations = useCallback(async () => {
+    const activeUser = authStorage.getUser();
+    if (!activeUser?.email) {
+      setRegisteredEventIds([]);
+      try { localStorage.removeItem('avento_registered_event_ids'); } catch {}
+      return [];
+    }
+    try {
+      const list = await studentApi.getRegistrations();
+      if (Array.isArray(list)) {
+        const ids = list
+          .map(r => r.eventId || r.event?.id || r.id)
+          .filter(Boolean)
+          .map(id => Number(id));
+        const unique = Array.from(new Set(ids));
+        setRegisteredEventIds(unique);
+        try { localStorage.setItem('avento_registered_event_ids', JSON.stringify(unique)); } catch {}
+        return unique;
+      }
+    } catch {
+      // Keep existing cached state if request fails
+    }
+    return [];
+  }, []);
+
+  const isEventRegistered = useCallback((eventId) => {
+    if (!eventId) return false;
+    const numericId = Number(eventId);
+    return registeredEventIds.includes(numericId) || registeredEventIds.includes(String(eventId));
+  }, [registeredEventIds]);
+
+  const addRegisteredEventId = useCallback((eventId) => {
+    if (!eventId) return;
+    const numericId = Number(eventId);
+    setRegisteredEventIds(prev => {
+      const next = Array.from(new Set([...prev, numericId]));
+      try { localStorage.setItem('avento_registered_event_ids', JSON.stringify(next)); } catch {}
+      return next;
+    });
+  }, []);
+
+  useEffect(() => {
+    if (user?.email) {
+      refreshUserRegistrations();
+    } else {
+      setRegisteredEventIds([]);
+      try { localStorage.removeItem('avento_registered_event_ids'); } catch {}
+    }
+  }, [user?.email, refreshUserRegistrations]);
 
   // Helper to fetch or create user document in Firestore
   const syncFirestoreUser = useCallback(async (fbUser, overrides = {}) => {
     if (!fbUser) return null;
+    const resolvedName = overrides.fullName || overrides.name || fbUser.displayName || fbUser.email?.split('@')[0] || 'AVENTO User';
     if (!isFirebaseConfigured) {
       return {
         uid: fbUser.uid,
         email: fbUser.email,
-        name: overrides.name || fbUser.displayName || fbUser.email?.split('@')[0] || 'AVENTO User',
+        fullName: resolvedName,
+        name: resolvedName,
         role: overrides.role || 'STUDENT',
         approved: overrides.approved !== undefined ? overrides.approved : (overrides.role !== 'ORGANIZER'),
         blocked: overrides.blocked || false,
@@ -107,8 +175,17 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  // Subscribe to Firebase Auth state
+  // Subscribe to Firebase Auth state & manage session lifecycle
   useEffect(() => {
+    // If session has already expired according to TTL, clean up immediately
+    if (authStorage.isSessionExpired()) {
+      authStorage.clear();
+      setUser(null);
+      setToken(null);
+      setLoading(false);
+      return;
+    }
+
     // When Firebase credentials are not yet configured, bypass Google Identity Toolkit network calls
     if (!isFirebaseConfigured) {
       const storedUser = authStorage.getUser();
@@ -125,9 +202,17 @@ export const AuthProvider = ({ children }) => {
         setToken(null);
       };
 
+      const handleSessionExpired = () => {
+        authStorage.clear();
+        setUser(null);
+        setToken(null);
+      };
+
       window.addEventListener('avento_auth_unauthorized', handleUnauthorized);
+      window.addEventListener('avento_session_expired', handleSessionExpired);
       return () => {
         window.removeEventListener('avento_auth_unauthorized', handleUnauthorized);
+        window.removeEventListener('avento_session_expired', handleSessionExpired);
       };
     }
 
@@ -140,18 +225,23 @@ export const AuthProvider = ({ children }) => {
           setToken(idToken);
 
           const profile = await syncFirestoreUser(fbUser);
-          authStorage.setUser(profile);
+          const isRemember = localStorage.getItem('avento_remember_me') !== 'false';
+          authStorage.setUser(profile, isRemember);
           setUser(profile);
         } catch (error) {
           console.error('Error handling auth state change:', error);
+          if (authStorage.isSessionExpired()) {
+            authStorage.clear();
+            setUser(null);
+            setToken(null);
+          }
+        }
+      } else {
+        if (authStorage.isSessionExpired()) {
           authStorage.clear();
           setUser(null);
           setToken(null);
         }
-      } else {
-        authStorage.clear();
-        setUser(null);
-        setToken(null);
       }
       setLoading(false);
     });
@@ -163,82 +253,103 @@ export const AuthProvider = ({ children }) => {
       setToken(null);
     };
 
+    const handleSessionExpired = () => {
+      signOut(auth).catch(() => {});
+      authStorage.clear();
+      setUser(null);
+      setToken(null);
+    };
+
     window.addEventListener('avento_auth_unauthorized', handleUnauthorized);
+    window.addEventListener('avento_session_expired', handleSessionExpired);
     return () => {
       unsubscribe();
       window.removeEventListener('avento_auth_unauthorized', handleUnauthorized);
+      window.removeEventListener('avento_session_expired', handleSessionExpired);
     };
   }, [syncFirestoreUser]);
+
+  // Periodic background check to guarantee session automatically expires when TTL passes
+  useEffect(() => {
+    const checkSessionValidity = () => {
+      if (authStorage.isSessionExpired()) {
+        authStorage.clear();
+        setUser(null);
+        setToken(null);
+        window.dispatchEvent(new CustomEvent('avento_session_expired'));
+      }
+    };
+
+    const interval = setInterval(checkSessionValidity, 30000);
+    window.addEventListener('focus', checkSessionValidity);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('focus', checkSessionValidity);
+    };
+  }, []);
 
   // Login with Email and Password
   const login = useCallback(async (email, password, remember = true, preferredRole = 'STUDENT') => {
     setLoading(true);
     try {
+      const trimmedEmail = email ? email.trim() : '';
+      if (!trimmedEmail || !password) {
+        throw new Error('Please enter both email and password.');
+      }
+
       if (!isFirebaseConfigured) {
-        const trimmedEmail = email.trim();
-        const existingStored = authStorage.getUser();
-        const role = (existingStored && existingStored.email?.toLowerCase() === trimmedEmail.toLowerCase())
-          ? (existingStored.role || preferredRole)
-          : preferredRole;
-        const isOrganizer = role === 'ORGANIZER';
-        const displayName = (existingStored && existingStored.email?.toLowerCase() === trimmedEmail.toLowerCase() && existingStored.name)
-          ? existingStored.name
-          : trimmedEmail.split('@')[0].replace(/[._-]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-
-        const mockUid = 'avento_dev_' + Math.abs(trimmedEmail.split('').reduce((a, b) => ((a << 5) - a) + b.charCodeAt(0), 0)).toString(36);
-        const mockToken = 'mock_fb_token_' + Date.now();
-
-        let profile = {
-          uid: mockUid,
-          email: trimmedEmail,
-          name: displayName || 'AVENTO User',
-          role: role,
-          approved: !isOrganizer,
-          blocked: false,
-          phoneNumber: existingStored?.phoneNumber || '',
-          college: existingStored?.college || '',
-          branch: existingStored?.branch || '',
-          year: existingStored?.year || ''
-        };
-
-        // Sync with Spring Boot backend if running
+        // Authenticate against MySQL Database via authApi.login
         try {
-          const backendUser = await authApi.sync({
-            firebaseUid: mockUid,
+          const dbUser = await authApi.login({
             email: trimmedEmail,
-            fullName: profile.name,
-            phoneNumber: profile.phoneNumber,
-            role: profile.role,
-            approved: profile.approved,
-            blocked: profile.blocked,
-            college: profile.college,
-            branch: profile.branch,
-            year: profile.year
+            password: password
           });
-          if (backendUser) {
-            profile = { ...profile, ...backendUser, uid: mockUid };
+
+          if (dbUser) {
+            const role = dbUser.role || preferredRole;
+            const uid = dbUser.firebaseUid || ('avento_db_' + dbUser.id);
+            const sessionToken = 'avento_session_' + Date.now() + '_' + dbUser.id;
+
+            const resolvedName = dbUser.fullName || dbUser.name || trimmedEmail.split('@')[0];
+            const profile = {
+              uid: uid,
+              id: dbUser.id,
+              email: dbUser.email,
+              fullName: resolvedName,
+              name: resolvedName,
+              role: role,
+              approved: dbUser.approved !== false,
+              blocked: Boolean(dbUser.blocked),
+              phoneNumber: dbUser.phoneNumber || '',
+              college: dbUser.college || '',
+              branch: dbUser.branch || '',
+              year: dbUser.year || ''
+            };
+
+            authStorage.setToken(sessionToken);
+            authStorage.setUser(profile, remember);
+            setUser(profile);
+            setToken(sessionToken);
+
+            return { user: profile, token: sessionToken };
           }
-        } catch (syncErr) {
-          console.warn('Backend sync note (dev mode):', syncErr.message);
+        } catch (dbErr) {
+          const errMsg = dbErr.response?.data?.message || dbErr.message || 'Invalid email or password.';
+          throw new Error(errMsg);
         }
 
-        authStorage.setToken(mockToken);
-        authStorage.setUser(profile);
-        setUser(profile);
-        setToken(mockToken);
-
-        return { user: profile, token: mockToken };
+        throw new Error(`User with email "${trimmedEmail}" does not exist in database. Please sign up first.`);
       }
 
       await setPersistence(auth, remember ? browserLocalPersistence : browserSessionPersistence);
-      const userCredential = await signInWithEmailAndPassword(auth, email.trim(), password);
+      const userCredential = await signInWithEmailAndPassword(auth, trimmedEmail, password);
       const fbUser = userCredential.user;
       const idToken = await fbUser.getIdToken();
       authStorage.setToken(idToken);
       setToken(idToken);
 
       const profile = await syncFirestoreUser(fbUser);
-      authStorage.setUser(profile);
+      authStorage.setUser(profile, remember);
       setUser(profile);
 
       return { user: profile, token: idToken };
@@ -252,52 +363,62 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     try {
       const { email, password, fullName, phoneNumber, role, college, branch, year } = userData;
-      const trimmedEmail = email.trim();
+      const trimmedEmail = email ? email.trim() : '';
+      if (!trimmedEmail || !password) {
+        throw new Error('Please fill in all required fields.');
+      }
       const isOrganizer = role === 'ORGANIZER';
 
       if (!isFirebaseConfigured) {
-        const mockUid = 'avento_dev_' + Math.abs(trimmedEmail.split('').reduce((a, b) => ((a << 5) - a) + b.charCodeAt(0), 0)).toString(36);
-        const mockToken = 'mock_fb_token_' + Date.now();
-
-        let profile = {
-          uid: mockUid,
-          email: trimmedEmail,
-          name: fullName?.trim() || trimmedEmail.split('@')[0],
-          role: role || 'STUDENT',
-          approved: !isOrganizer,
-          blocked: false,
-          phoneNumber: phoneNumber?.trim() || '',
-          college: college || '',
-          branch: branch || '',
-          year: year || ''
-        };
-
+        // Persist new User directly into MySQL Database with encrypted password
+        let backendUser;
         try {
-          const backendUser = await authApi.sync({
-            firebaseUid: mockUid,
+          backendUser = await authApi.sync({
             email: trimmedEmail,
-            fullName: profile.name,
-            phoneNumber: profile.phoneNumber,
-            role: profile.role,
-            approved: profile.approved,
-            blocked: profile.blocked,
-            college: profile.college,
-            branch: profile.branch,
-            year: profile.year
+            password: password,
+            fullName: fullName?.trim() || trimmedEmail.split('@')[0],
+            phoneNumber: phoneNumber?.trim() || '',
+            role: role || 'STUDENT',
+            approved: !isOrganizer,
+            blocked: false,
+            college: college || '',
+            branch: branch || '',
+            year: year || ''
           });
-          if (backendUser) {
-            profile = { ...profile, ...backendUser, uid: mockUid };
-          }
         } catch (syncErr) {
-          console.warn('Backend sync note (dev mode):', syncErr.message);
+          const errMsg = syncErr.response?.data?.message || syncErr.message || 'Registration failed in database.';
+          throw new Error(errMsg);
         }
 
-        authStorage.setToken(mockToken);
-        authStorage.setUser(profile);
-        setUser(profile);
-        setToken(mockToken);
+        if (!backendUser) {
+          throw new Error('Failed to create account in database. Please try again.');
+        }
 
-        return { user: profile, token: mockToken };
+        const uid = backendUser.firebaseUid || ('avento_db_' + backendUser.id);
+        const sessionToken = 'avento_session_' + Date.now() + '_' + backendUser.id;
+        const resolvedName = backendUser.fullName || fullName?.trim() || trimmedEmail.split('@')[0];
+
+        const profile = {
+          uid: uid,
+          id: backendUser.id,
+          email: backendUser.email,
+          fullName: resolvedName,
+          name: resolvedName,
+          role: backendUser.role || role || 'STUDENT',
+          approved: backendUser.approved !== false,
+          blocked: Boolean(backendUser.blocked),
+          phoneNumber: backendUser.phoneNumber || phoneNumber?.trim() || '',
+          college: backendUser.college || college || '',
+          branch: backendUser.branch || branch || '',
+          year: backendUser.year || year || ''
+        };
+
+        authStorage.setToken(sessionToken);
+        authStorage.setUser(profile, true);
+        setUser(profile);
+        setToken(sessionToken);
+
+        return { user: profile, token: sessionToken };
       }
 
       const userCredential = await createUserWithEmailAndPassword(auth, trimmedEmail, password);
@@ -313,6 +434,7 @@ export const AuthProvider = ({ children }) => {
       });
 
       const overrides = {
+        fullName: fullName?.trim() || '',
         name: fullName?.trim() || '',
         phoneNumber: phoneNumber?.trim() || '',
         role: role || 'STUDENT',
@@ -328,7 +450,7 @@ export const AuthProvider = ({ children }) => {
       setToken(idToken);
 
       const profile = await syncFirestoreUser(fbUser, overrides);
-      authStorage.setUser(profile);
+      authStorage.setUser(profile, true);
       setUser(profile);
 
       return { user: profile, token: idToken };
@@ -341,62 +463,71 @@ export const AuthProvider = ({ children }) => {
   const loginWithGoogle = useCallback(async () => {
     setLoading(true);
     try {
-      if (!isFirebaseConfigured) {
-        const mockUid = 'avento_google_' + Date.now().toString(36);
-        const mockToken = 'mock_google_token_' + Date.now();
-        let profile = {
-          uid: mockUid,
-          email: 'alex.morgan@campus.edu',
-          name: 'Alex Morgan',
-          role: 'STUDENT',
-          approved: true,
-          blocked: false,
-          phoneNumber: '+91 98765 43210',
-          college: 'Campus Tech Institute',
-          branch: 'Computer Science',
-          year: '3rd Year'
-        };
+      const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
+      // 1. Direct Google OAuth 2.0 via Google Identity Services
+      if (googleClientId && !googleClientId.includes('your_google_client_id')) {
+        const { accessToken, userInfo } = await promptGoogleSignIn(googleClientId);
+        const googleUid = 'google_' + userInfo.id;
+
+        // Persist user to MySQL database
+        let backendUser = null;
         try {
-          const backendUser = await authApi.sync({
-            firebaseUid: mockUid,
-            email: profile.email,
-            fullName: profile.name,
-            phoneNumber: profile.phoneNumber,
-            role: profile.role,
-            approved: profile.approved,
-            blocked: profile.blocked,
-            college: profile.college,
-            branch: profile.branch,
-            year: profile.year
+          backendUser = await authApi.sync({
+            firebaseUid: googleUid,
+            email: userInfo.email,
+            fullName: userInfo.name,
+            role: 'STUDENT',
+            approved: true,
+            blocked: false
           });
-          if (backendUser) {
-            profile = { ...profile, ...backendUser, uid: mockUid };
-          }
         } catch (syncErr) {
-          console.warn('Backend sync note (dev mode):', syncErr.message);
+          const errMsg = syncErr.response?.data?.message || syncErr.message;
+          console.warn('Database sync response:', errMsg);
         }
 
-        authStorage.setToken(mockToken);
-        authStorage.setUser(profile);
-        setUser(profile);
-        setToken(mockToken);
+        const resolvedName = userInfo.name || backendUser?.fullName || userInfo.email?.split('@')[0];
+        const profile = {
+          uid: googleUid,
+          id: backendUser?.id,
+          email: userInfo.email,
+          fullName: resolvedName,
+          name: resolvedName,
+          role: backendUser?.role || 'STUDENT',
+          approved: backendUser?.approved !== false,
+          blocked: Boolean(backendUser?.blocked),
+          phoneNumber: backendUser?.phoneNumber || '',
+          college: backendUser?.college || '',
+          branch: backendUser?.branch || '',
+          year: backendUser?.year || '',
+          avatar: userInfo.picture
+        };
 
-        return { user: profile, token: mockToken };
+        authStorage.setToken(accessToken);
+        authStorage.setUser(profile, true);
+        setUser(profile);
+        setToken(accessToken);
+
+        return { user: profile, token: accessToken };
       }
 
-      await setPersistence(auth, browserLocalPersistence);
-      const userCredential = await signInWithPopup(auth, googleProvider);
-      const fbUser = userCredential.user;
-      const idToken = await fbUser.getIdToken();
-      authStorage.setToken(idToken);
-      setToken(idToken);
+      // 2. Firebase Google Authentication (if Firebase credentials configured)
+      if (isFirebaseConfigured) {
+        await setPersistence(auth, browserLocalPersistence);
+        const userCredential = await signInWithPopup(auth, googleProvider);
+        const fbUser = userCredential.user;
+        const idToken = await fbUser.getIdToken();
+        authStorage.setToken(idToken);
+        setToken(idToken);
 
-      const profile = await syncFirestoreUser(fbUser);
-      authStorage.setUser(profile);
-      setUser(profile);
+        const profile = await syncFirestoreUser(fbUser);
+        authStorage.setUser(profile, true);
+        setUser(profile);
 
-      return { user: profile, token: idToken };
+        return { user: profile, token: idToken };
+      }
+
+      throw new Error('Google Sign-In is not configured. Please verify your Google Client ID.');
     } finally {
       setLoading(false);
     }
@@ -404,16 +535,22 @@ export const AuthProvider = ({ children }) => {
 
   // Forgot Password
   const forgotPassword = useCallback(async (email) => {
-    if (!isFirebaseConfigured) {
-      return { success: true, message: 'Password reset link sent (dev mode).' };
+    setLoading(true);
+    try {
+      if (!isFirebaseConfigured) {
+        return { success: true, message: 'Password reset link sent (dev mode)' };
+      }
+      await sendPasswordResetEmail(auth, email.trim());
+      return { success: true, message: 'Password reset link dispatched to your email' };
+    } finally {
+      setLoading(false);
     }
-    return await sendPasswordResetEmail(auth, email.trim());
   }, []);
 
   // Send Email Verification
   const sendVerification = useCallback(async () => {
     if (!isFirebaseConfigured) {
-      return { success: true, message: 'Email verification dispatched (dev mode).' };
+      return { success: true, message: 'Email verification sent (dev mode)' };
     }
     if (auth.currentUser) {
       return await sendEmailVerification(auth.currentUser);
@@ -431,6 +568,8 @@ export const AuthProvider = ({ children }) => {
       }
     }
     authStorage.clear();
+    try { localStorage.removeItem('avento_registered_event_ids'); } catch {}
+    setRegisteredEventIds([]);
     setUser(null);
     setToken(null);
   }, []);
@@ -438,7 +577,8 @@ export const AuthProvider = ({ children }) => {
   const updateUser = useCallback((updatedUserData) => {
     setUser((prev) => {
       const updated = { ...prev, ...updatedUserData };
-      authStorage.setUser(updated);
+      const isRemember = localStorage.getItem('avento_remember_me') !== 'false';
+      authStorage.setUser(updated, isRemember);
       return updated;
     });
   }, []);
@@ -455,7 +595,11 @@ export const AuthProvider = ({ children }) => {
     forgotPassword,
     sendVerification,
     logout,
-    updateUser
+    updateUser,
+    registeredEventIds,
+    isEventRegistered,
+    addRegisteredEventId,
+    refreshUserRegistrations
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

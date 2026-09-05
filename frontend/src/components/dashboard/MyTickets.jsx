@@ -1,7 +1,7 @@
 import React from 'react'
 import TicketCard from './TicketCard'
 
-export default function MyTickets({ tickets = [], studentName = 'Aarav Sharma' }) {
+export default function MyTickets({ tickets = [], studentName = 'Student' }) {
   return (
     <div className="space-y-6 text-left select-none pb-12">
       {/* Page Title */}

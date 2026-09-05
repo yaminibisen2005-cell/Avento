@@ -16,8 +16,8 @@ import ChatDrawer from '../chat/ChatDrawer'
 import GlobalSearchModal from '../search/GlobalSearchModal'
 import { studentDashboardApi } from '../../services/api'
 
-export default function StudentDashboard({ user, onLogout, onBackToLanding }) {
-  const [activeTab, setActiveTab] = useState('dashboard')
+export default function StudentDashboard({ user, onLogout, onBackToLanding, initialTab = 'dashboard' }) {
+  const [activeTab, setActiveTab] = useState(initialTab || 'dashboard')
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [dashboardData, setDashboardData] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
@@ -25,12 +25,26 @@ export default function StudentDashboard({ user, onLogout, onBackToLanding }) {
   const [searchModalOpen, setSearchModalOpen] = useState(false)
 
   useEffect(() => {
+    if (initialTab) {
+      setActiveTab(initialTab)
+    }
+  }, [initialTab])
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab)
+    try { sessionStorage.setItem('avento_dashboard_tab', tab) } catch {}
+    if (window.history) {
+      window.history.replaceState({}, '', `/dashboard#${tab}`)
+    }
+  }
+
+  useEffect(() => {
     studentDashboardApi.getDashboardData().then(data => {
       setDashboardData(data)
     })
   }, [])
 
-  const studentName = user?.fullName || 'Aarav Sharma'
+  const studentName = user?.fullName || user?.name || (user?.email ? user.email.split('@')[0] : 'Student')
 
   const handleRegistrationCompleted = (_newReg) => {
     studentDashboardApi.getDashboardData().then(data => {
@@ -48,8 +62,12 @@ export default function StudentDashboard({ user, onLogout, onBackToLanding }) {
         eventId={selectedEventId}
         onBack={() => setSelectedEventId(null)}
         currentUser={user}
-        onRegistrationSuccess={(reg) => {
+        onRegisterSuccess={(reg) => {
           handleRegistrationCompleted(reg)
+          setSelectedEventId(null)
+          setActiveTab('tickets')
+        }}
+        onGoToTickets={() => {
           setSelectedEventId(null)
           setActiveTab('tickets')
         }}
@@ -85,7 +103,7 @@ export default function StudentDashboard({ user, onLogout, onBackToLanding }) {
       {/* 1. FIXED GLASS SIDEBAR (280px) */}
       <Sidebar
         activeTab={activeTab}
-        setActiveTab={setActiveTab}
+        setActiveTab={handleTabChange}
         unreadCount={unreadNotificationsCount}
         onLogout={onLogout}
         onBackToLanding={onBackToLanding}
@@ -98,10 +116,10 @@ export default function StudentDashboard({ user, onLogout, onBackToLanding }) {
         {/* Topbar (80px) */}
         <Topbar
           studentName={studentName}
-          userEmail={user?.email || 'aarav@student.edu'}
+          userEmail={user?.email || ''}
           unreadCount={unreadNotificationsCount}
           notifications={dashboardData?.notifications || []}
-          onNavigateTab={(tab) => setActiveTab(tab)}
+          onNavigateTab={handleTabChange}
           onLogout={onLogout}
           onBackToLanding={onBackToLanding}
           onMenuToggle={() => setMobileMenuOpen(true)}
