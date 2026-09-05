@@ -119,22 +119,18 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
   }
 
   const handleGoogleLogin = async () => {
-    setToast({ type: '', message: '' })
     setLoading(true)
+    setToast({ type: '', message: '' })
     try {
       const res = await loginWithGoogle()
-      if (res.user?.blocked) {
-        setToast({ type: 'error', message: 'Your account has been blocked by an administrator.' })
-        return
-      }
-      setToast({ type: 'success', message: 'Signed in with Google! Entering AVENTO...' })
+      setToast({ type: 'success', message: 'Signed in with Google successfully!' })
       setTimeout(() => {
         if (onLoginSuccess) {
           onLoginSuccess(res.user)
         }
       }, 600)
     } catch (err) {
-      setToast({ type: 'error', message: err.message || 'Google sign-in failed' })
+      setToast({ type: 'error', message: err.message || 'Google Sign-In failed' })
     } finally {
       setLoading(false)
     }

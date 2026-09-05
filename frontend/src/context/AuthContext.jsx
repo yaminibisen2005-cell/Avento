@@ -512,7 +512,7 @@ export const AuthProvider = ({ children }) => {
       }
 
       // 2. Firebase Google Authentication (if Firebase credentials configured)
-      if (isFirebaseConfigured) {
+      if (isFirebaseConfigured && auth && googleProvider) {
         await setPersistence(auth, browserLocalPersistence);
         const userCredential = await signInWithPopup(auth, googleProvider);
         const fbUser = userCredential.user;
@@ -527,7 +527,7 @@ export const AuthProvider = ({ children }) => {
         return { user: profile, token: idToken };
       }
 
-      throw new Error('Google Sign-In is not configured. Please verify your Google Client ID.');
+      throw new Error('Google Sign-In is not configured. Please add VITE_GOOGLE_CLIENT_ID to your environment variables.');
     } finally {
       setLoading(false);
     }

@@ -300,6 +300,12 @@ export const organizerApi = {
     const res = await apiClient.get(`/organizer/events/${eventId}/registrations`);
     return res.data;
   },
+  getRegistrations: async (eventId) => {
+    const res = await apiClient.get('/organizer/registrations', {
+      params: eventId ? { eventId } : {}
+    });
+    return res.data;
+  },
   scanAttendance: async (data) => {
     const res = await apiClient.post('/attendance/scan', data);
     return res.data;

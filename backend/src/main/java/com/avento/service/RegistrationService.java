@@ -14,6 +14,7 @@ public interface RegistrationService {
     List<RegistrationResponse> getStudentRegistrations(User user);
 
     List<RegistrationResponse> getEventRegistrations(Long eventId, User organizer);
+    List<RegistrationResponse> getOrganizerRegistrations(User organizer);
 
     List<TicketDto> getStudentTickets(User user);
 

@@ -134,6 +134,11 @@ export default function OrganizerDashboard({
           {activeTab === 'registrations' && (
             <TabRegistrations
               registrations={registrations}
+              events={events}
+              onSelectEvent={async (eventId) => {
+                const regs = await organizerService.getRegistrations(eventId);
+                setRegistrations(regs);
+              }}
             />
           )}
 

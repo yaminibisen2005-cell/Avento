@@ -31,39 +31,54 @@ public class OrganizerServiceImpl implements OrganizerService {
     @Override
     @Transactional(readOnly = true)
     public OrganizerDashboardResponse getOrganizerDashboard(User organizer) {
-        List<EventDto> events = eventService.getOrganizerEvents(organizer);
+        List<Event> myEntities = organizer != null ? eventRepository.findByOrganizerOrderByCreatedAtDesc(organizer) : Collections.emptyList();
+        List<EventDto> events = myEntities.stream().map(EventDto::fromEntity).collect(Collectors.toList());
 
-        long activeCount = events.stream().filter(e -> "PUBLISHED".equalsIgnoreCase(e.getStatus())).count();
-        long totalRegistrations = events.stream().mapToLong(e -> e.getSeatsFilled() != null ? e.getSeatsFilled() : 0).sum();
-        long totalRevenue = 481454L;
-        int avgAttendanceRate = 91;
+        long activeCount = myEntities.stream().filter(e -> "PUBLISHED".equalsIgnoreCase(e.getStatus())).count();
+        long totalRegistrations = 0;
+        long totalRevenue = 0;
+        long attendedCount = 0;
+
+        for (Event e : myEntities) {
+            long regCount = registrationRepository.countByEvent(e);
+            totalRegistrations += regCount;
+            attendedCount += registrationRepository.countByEventAndAttendedTrue(e);
+            long feeNum = 0;
+            if (e.getFee() != null && !e.getFee().equalsIgnoreCase("Free") && !e.getFee().equals("₹0")) {
+                try { feeNum = Long.parseLong(e.getFee().replaceAll("[^0-9]", "")); } catch (Exception ignored) {}
+            }
+            totalRevenue += (regCount * feeNum);
+        }
+
+        int avgAttendanceRate = totalRegistrations > 0 ? (int) Math.round(((double) attendedCount / totalRegistrations) * 100) : 92;
 
         Map<String, Object> stats = new HashMap<>();
-        stats.put("activeEvents", activeCount > 0 ? activeCount : events.size());
-        stats.put("totalRegistrations", totalRegistrations > 0 ? totalRegistrations : 1194);
+        stats.put("totalEvents", events.size());
+        stats.put("activeEvents", activeCount);
+        stats.put("totalRegistrations", totalRegistrations);
         stats.put("totalRevenue", totalRevenue);
         stats.put("avgAttendanceRate", avgAttendanceRate);
+        stats.put("todayAttendance", avgAttendanceRate);
+        stats.put("certificatesIssued", certificateRepository.count());
+        stats.put("pendingApprovals", 0);
 
         List<Map<String, Object>> recentRegs = new ArrayList<>();
-        Map<String, Object> r1 = new HashMap<>();
-        r1.put("id", 1);
-        r1.put("name", "Aarav Sharma");
-        r1.put("email", "aarav@iitd.ac.in");
-        r1.put("event", events.isEmpty() ? "National AI Hackathon" : events.get(0).getTitle());
-        r1.put("time", "12m ago");
-        r1.put("amount", "Free Tier");
-        r1.put("status", "Confirmed");
-        recentRegs.add(r1);
-
-        Map<String, Object> r2 = new HashMap<>();
-        r2.put("id", 2);
-        r2.put("name", "Sneha Patel");
-        r2.put("email", "sneha.p@iitb.ac.in");
-        r2.put("event", events.size() > 1 ? events.get(1).getTitle() : "DevOps Masterclass");
-        r2.put("time", "45m ago");
-        r2.put("amount", "₹499");
-        r2.put("status", "Confirmed");
-        recentRegs.add(r2);
+        if (!myEntities.isEmpty()) {
+            List<Registration> recentEntities = registrationRepository.findByEventInOrderByRegisteredAtDesc(myEntities);
+            int count = 0;
+            for (Registration reg : recentEntities) {
+                if (count++ >= 10) break;
+                Map<String, Object> rMap = new HashMap<>();
+                rMap.put("id", reg.getId());
+                rMap.put("name", reg.getUser() != null ? reg.getUser().getFullName() : "Student Attendee");
+                rMap.put("email", reg.getUser() != null ? reg.getUser().getEmail() : "");
+                rMap.put("event", reg.getEvent() != null ? reg.getEvent().getTitle() : "Campus Event");
+                rMap.put("time", reg.getRegisteredAt() != null ? reg.getRegisteredAt().format(DateTimeFormatter.ofPattern("MMM dd, HH:mm")) : "Recent");
+                rMap.put("amount", reg.getPaymentStatus() != null ? reg.getPaymentStatus() : "Free");
+                rMap.put("status", "Confirmed");
+                recentRegs.add(rMap);
+            }
+        }
 
         Map<String, Object> quickAnalytics = new HashMap<>();
         quickAnalytics.put("verifiedRate", 92);

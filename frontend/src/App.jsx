@@ -348,7 +348,11 @@ export default function App() {
           onBackToLanding={handleBackToLanding}
           onLoginSuccess={(user) => {
             setCurrentUser(user)
-            handleBackToLanding()
+            if (user?.role === 'ORGANIZER' || user?.role === 'ADMIN') {
+              handleOpenDashboard('dashboard')
+            } else {
+              handleBackToLanding()
+            }
           }}
         />
       </div>

@@ -85,7 +85,7 @@ public class AuthServiceImpl implements AuthService {
 
         // Auto-create newly registered Firebase/Database user in MySQL
         boolean isOrganizer = (assignedRole == Role.ORGANIZER);
-        boolean isApproved = request.getApproved() != null ? request.getApproved() : !isOrganizer;
+        boolean isApproved = request.getApproved() != null ? request.getApproved() : true;
 
         String encodedPassword = StringUtils.hasText(request.getPassword()) ?
                 passwordEncoder.encode(request.getPassword()) : null;

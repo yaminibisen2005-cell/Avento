@@ -188,6 +188,28 @@ export default function Navbar({
 
           {currentUser ? (
             <div className="flex items-center gap-2 sm:gap-3" ref={userMenuRef}>
+              {/* Direct Dashboard shortcut for Organizer or Admin */}
+              {currentUser.role === 'ORGANIZER' && onOpenDashboard && (
+                <button
+                  type="button"
+                  onClick={() => onOpenDashboard('dashboard')}
+                  className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-[#0F5D46] bg-[#D9B24A]/25 hover:bg-[#D9B24A]/35 border border-[#D9B24A]/50 rounded-full transition-all cursor-pointer shadow-xs hover:scale-[1.02]"
+                >
+                  <span>🏛</span>
+                  <span>Organizer Dashboard</span>
+                </button>
+              )}
+              {currentUser.role === 'ADMIN' && onOpenDashboard && (
+                <button
+                  type="button"
+                  onClick={() => onOpenDashboard('dashboard')}
+                  className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-white bg-[#0F5D46] hover:bg-[#126B51] rounded-full transition-all cursor-pointer shadow-xs hover:scale-[1.02]"
+                >
+                  <span>🛡</span>
+                  <span>Admin Console</span>
+                </button>
+              )}
+
               {/* Primary Profile Button (Directly opens profile / user details) */}
               <div className="relative">
                 <button
@@ -286,17 +308,52 @@ export default function Navbar({
                       )}
 
                       {currentUser.role === 'ORGANIZER' && onOpenDashboard && (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setUserMenuOpen(false);
-                            onOpenDashboard('my-events');
-                          }}
-                          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-[12px] text-[#1F2937] hover:bg-[#FAF8F2] hover:text-[#0F5D46] transition-colors cursor-pointer"
-                        >
-                          <span>🏛</span>
-                          <span>My Hosted Events</span>
-                        </button>
+                        <>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setUserMenuOpen(false);
+                              onOpenDashboard('dashboard');
+                            }}
+                            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-[12px] text-[#1F2937] hover:bg-[#FAF8F2] hover:text-[#0F5D46] transition-colors cursor-pointer"
+                          >
+                            <span>📊</span>
+                            <span>Organizer Dashboard</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setUserMenuOpen(false);
+                              onOpenDashboard('create-event');
+                            }}
+                            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-[12px] text-[#1F2937] hover:bg-[#FAF8F2] hover:text-[#0F5D46] transition-colors cursor-pointer"
+                          >
+                            <span>➕</span>
+                            <span>Create / Add Event</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setUserMenuOpen(false);
+                              onOpenDashboard('registrations');
+                            }}
+                            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-[12px] text-[#1F2937] hover:bg-[#FAF8F2] hover:text-[#0F5D46] transition-colors cursor-pointer"
+                          >
+                            <span>👥</span>
+                            <span>Track Registrations</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setUserMenuOpen(false);
+                              onOpenDashboard('my-events');
+                            }}
+                            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-[12px] text-[#1F2937] hover:bg-[#FAF8F2] hover:text-[#0F5D46] transition-colors cursor-pointer"
+                          >
+                            <span>🗓</span>
+                            <span>My Hosted Events</span>
+                          </button>
+                        </>
                       )}
 
                       <div className="pt-2 mt-1 border-t border-[#0F5D46]/10">

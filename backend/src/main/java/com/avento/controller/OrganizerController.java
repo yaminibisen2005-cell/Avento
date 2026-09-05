@@ -54,6 +54,17 @@ public class OrganizerController {
         return ResponseEntity.ok(list);
     }
 
+    @GetMapping("/organizer/registrations")
+    public ResponseEntity<List<RegistrationResponse>> getAllRegistrations(
+            @RequestParam(required = false) Long eventId,
+            @AuthenticationPrincipal User currentUser
+    ) {
+        if (eventId != null) {
+            return ResponseEntity.ok(registrationService.getEventRegistrations(eventId, currentUser));
+        }
+        return ResponseEntity.ok(registrationService.getOrganizerRegistrations(currentUser));
+    }
+
     @PostMapping("/attendance/scan")
     public ResponseEntity<AttendanceScanResponse> scanAttendance(
             @Valid @RequestBody AttendanceScanRequest request,

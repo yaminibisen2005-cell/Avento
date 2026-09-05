@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -185,6 +186,24 @@ public class RegistrationServiceImpl implements RegistrationService {
                 .orElseThrow(() -> new ResourceNotFoundException("Event not found with ID: " + eventId));
 
         return registrationRepository.findByEventOrderByRegisteredAtDesc(event).stream()
+                .map(r -> {
+                    Ticket t = ticketRepository.findByRegistration(r).orElse(null);
+                    return RegistrationResponse.fromEntity(r, t != null ? t.getTicketNumber() : "");
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<RegistrationResponse> getOrganizerRegistrations(User organizer) {
+        if (organizer == null) {
+            return Collections.emptyList();
+        }
+        List<Event> myEvents = eventRepository.findByOrganizerOrderByCreatedAtDesc(organizer);
+        if (myEvents.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return registrationRepository.findByEventInOrderByRegisteredAtDesc(myEvents).stream()
                 .map(r -> {
                     Ticket t = ticketRepository.findByRegistration(r).orElse(null);
                     return RegistrationResponse.fromEntity(r, t != null ? t.getTicketNumber() : "");
