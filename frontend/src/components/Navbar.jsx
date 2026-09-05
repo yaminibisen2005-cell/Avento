@@ -83,15 +83,15 @@ export default function Navbar({
               <img 
                 src={aventoLogo} 
                 alt="Avento Logo" 
-                className="w-4 h-4 sm:w-5 sm:h-5 object-contain group-hover:rotate-6 transition-transform duration-300" 
+                className="w-4.5 h-4.5 sm:w-5 sm:h-5 object-contain group-hover:rotate-6 transition-transform duration-300" 
               />
             </div>
           </div>
           <div className="flex flex-col">
-            <span className="font-extrabold text-[17px] sm:text-[20px] tracking-tight text-[#0F5D46] group-hover:text-[#0B4B3A] transition-colors leading-none font-sans">
+            <span className="font-extrabold text-[18px] sm:text-[20px] tracking-tight text-[#0F5D46] group-hover:text-[#0B4B3A] transition-colors leading-none font-sans">
               AVENTO
             </span>
-            <span className="hidden xs:block text-[8.5px] sm:text-[9px] tracking-widest uppercase font-mono font-bold text-[#D9B24A] leading-none mt-1">
+            <span className="hidden sm:block text-[9px] tracking-widest uppercase font-mono font-bold text-[#D9B24A] leading-none mt-1">
               Smart Events
             </span>
           </div>
@@ -153,7 +153,7 @@ export default function Navbar({
         </nav>
 
         {/* ================= RIGHT: SEARCH + LOGIN + SIGN UP ================= */}
-        <div className="flex items-center gap-1.5 xs:gap-2.5 sm:gap-4 shrink-0">
+        <div className="flex items-center gap-2 sm:gap-4 shrink-0">
           
           {/* Search Icon */}
           <div className="relative">
@@ -187,7 +187,7 @@ export default function Navbar({
           </div>
 
           {currentUser ? (
-            <div className="flex items-center gap-1.5 sm:gap-3" ref={userMenuRef}>
+            <div className="flex items-center gap-2 sm:gap-3" ref={userMenuRef}>
               {/* Direct Dashboard shortcut for Organizer or Admin */}
               {currentUser.role === 'ORGANIZER' && onOpenDashboard && (
                 <button
@@ -210,7 +210,7 @@ export default function Navbar({
                 </button>
               )}
 
-              {/* Primary Profile Button (Responsive layout for mobile & desktop) */}
+              {/* Primary Profile Button: Mobile shows ONLY photo/avatar circle, desktop shows full expanded pill */}
               <div className="relative">
                 <button
                   type="button"
@@ -218,34 +218,34 @@ export default function Navbar({
                     if (onOpenProfile) onOpenProfile();
                     else if (onOpenDashboard) onOpenDashboard('profile');
                   }}
-                  className="pl-1.5 sm:pl-2 pr-2.5 sm:pr-4 py-1 sm:py-2 text-xs sm:text-[14px] font-bold text-white bg-gradient-to-r from-[#0B4B3A] to-[#0F5D46] hover:from-[#083629] hover:to-[#0B4B3A] rounded-full shadow-[0_4px_16px_rgba(15,93,70,0.25)] hover:shadow-[0_8px_24px_rgba(15,93,70,0.35)] transition-all duration-250 flex items-center gap-1.5 sm:gap-2.5 group border border-[#0F5D46]/30 cursor-pointer"
+                  className="p-1 sm:pl-2 sm:pr-4 sm:py-2 text-xs sm:text-[14px] font-bold text-white bg-gradient-to-r from-[#0B4B3A] to-[#0F5D46] hover:from-[#083629] hover:to-[#0B4B3A] rounded-full shadow-[0_4px_16px_rgba(15,93,70,0.25)] hover:shadow-[0_8px_24px_rgba(15,93,70,0.35)] transition-all duration-250 flex items-center gap-2.5 group border border-[#0F5D46]/30 cursor-pointer"
                   title="Click to view Profile & User Details"
                   aria-label="User Profile"
                 >
-                  {/* User Avatar Circle */}
-                  <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-white p-[1.5px] shadow-xs flex items-center justify-center shrink-0">
-                    <div className="w-full h-full rounded-full bg-[#FAF8F2] flex items-center justify-center font-extrabold text-[11px] sm:text-[13px] text-[#0F5D46]">
+                  {/* User Avatar Circle (Photo/Initial only on Mobile) */}
+                  <div className="w-8 h-8 rounded-full bg-white p-[1.5px] shadow-xs flex items-center justify-center shrink-0">
+                    <div className="w-full h-full rounded-full bg-[#FAF8F2] flex items-center justify-center font-extrabold text-xs sm:text-[13px] text-[#0F5D46]">
                       {currentUser.fullName ? currentUser.fullName.charAt(0).toUpperCase() : '👤'}
                     </div>
                   </div>
 
-                  {/* User Name & Profile Badge */}
-                  <div className="flex flex-col items-start text-left leading-none">
-                    <span className="font-extrabold text-white text-[11px] sm:text-[13.5px] truncate max-w-[65px] xs:max-w-[95px] sm:max-w-[150px]">
-                      {currentUser.fullName || 'Profile'}
+                  {/* User Name & Profile Badge (Hidden on Mobile) */}
+                  <div className="hidden sm:flex flex-col items-start text-left leading-none">
+                    <span className="font-extrabold text-white text-[13.5px] truncate max-w-[150px]">
+                      {currentUser.fullName || 'My Profile'}
                     </span>
-                    <span className="hidden sm:block text-[9px] font-mono font-bold tracking-wider uppercase text-[#D9B24A] mt-0.5">
+                    <span className="text-[9px] font-mono font-bold tracking-wider uppercase text-[#D9B24A] mt-0.5">
                       👤 {currentUser.role || 'User'} Profile
                     </span>
                   </div>
 
-                  {/* Quick Dropdown Toggle Arrow */}
+                  {/* Dropdown Arrow (Hidden on Mobile) */}
                   <span 
                     onClick={(e) => {
                       e.stopPropagation();
                       setUserMenuOpen(!userMenuOpen);
                     }}
-                    className={`p-0.5 sm:p-1 -mr-0.5 sm:-mr-1 hover:bg-white/20 rounded-full text-[9px] sm:text-[10px] text-[#D9B24A] transition-transform duration-200 ${userMenuOpen ? 'rotate-180' : ''}`}
+                    className="hidden sm:inline-block p-1 -mr-1 hover:bg-white/20 rounded-full text-[10px] text-[#D9B24A] transition-transform duration-200"
                     title="Open options menu"
                   >
                     ▼
