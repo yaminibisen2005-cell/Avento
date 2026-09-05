@@ -68,17 +68,25 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
       if (signupForm.role === 'ORGANIZER') {
         setToast({ 
           type: 'success', 
-          message: 'Your organizer account has been submitted successfully. Our team will review your profile. You will receive access after approval.' 
+          message: 'Organizer account created! Opening Organizer Dashboard...' 
         })
-        setLoginForm(prev => ({ ...prev, email: signupForm.email }))
-        setTimeout(() => setIsLogin(true), 2500)
+        const organizerUser = {
+          ...(res.user || {}),
+          role: 'ORGANIZER',
+          approved: true
+        }
+        setTimeout(() => {
+          if (onLoginSuccess) {
+            onLoginSuccess(organizerUser)
+          }
+        }, 600)
       } else {
-        setToast({ type: 'success', message: 'Student account created! Verification email dispatched.' })
+        setToast({ type: 'success', message: 'Student account created! Welcome to AVENTO.' })
         setTimeout(() => {
           if (onLoginSuccess) {
             onLoginSuccess(res.user)
           }
-        }, 800)
+        }, 600)
       }
     } catch (err) {
       setToast({ type: 'error', message: err.message || 'Registration failed' })
@@ -99,18 +107,20 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
         return
       }
 
-      if (res.user?.role === 'ORGANIZER' && res.user?.approved === false) {
-        setToast({ type: 'info', message: 'Organizer account is pending admin approval.' })
-      } else {
-        const welcomeLabel = loginRole === 'ORGANIZER' ? 'Organizer' : 'Student'
-        setToast({ type: 'success', message: `Welcome back, ${welcomeLabel}! Entering AVENTO...` })
+      const activeUser = {
+        ...(res.user || {}),
+        role: loginRole === 'ORGANIZER' ? 'ORGANIZER' : (res.user?.role || 'STUDENT'),
+        approved: true
       }
+
+      const welcomeLabel = activeUser.role === 'ORGANIZER' ? 'Organizer' : 'Student'
+      setToast({ type: 'success', message: `Welcome back, ${welcomeLabel}! Opening dashboard...` })
 
       setTimeout(() => {
         if (onLoginSuccess) {
-          onLoginSuccess(res.user)
+          onLoginSuccess(activeUser)
         }
-      }, 600)
+      }, 500)
     } catch (err) {
       setToast({ type: 'error', message: err.message || 'Invalid email or password' })
     } finally {

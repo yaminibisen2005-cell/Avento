@@ -387,7 +387,7 @@ export default function App() {
       )
     }
 
-    if (currentUser && currentUser.approved === false) {
+    if (currentUser && currentUser.approved === false && currentUser.role !== 'ORGANIZER') {
       return (
         <div className="min-h-screen bg-[#FAF8F2] flex items-center justify-center p-6 select-none">
           <motion.div 
