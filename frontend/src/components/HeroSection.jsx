@@ -273,9 +273,9 @@ export default function HeroSection({ currentUser, onOpenProfile, onOpenEvents, 
               className="mb-7 max-w-[560px]"
             >
               <h1 
-                className="font-black text-5xl sm:text-6xl md:text-7xl xl:text-[76px] 2xl:text-[84px] uppercase tracking-[-0.06em] text-left"
+                className="font-black text-3.5xl xs:text-4.5xl sm:text-6xl md:text-7xl xl:text-[76px] 2xl:text-[84px] uppercase tracking-[-0.06em] text-left"
                 style={{ 
-                  lineHeight: '0.92',
+                  lineHeight: '0.94',
                   textShadow: '0 10px 35px rgba(15, 93, 70, 0.08)'
                 }}
               >
@@ -296,7 +296,7 @@ export default function HeroSection({ currentUser, onOpenProfile, onOpenEvents, 
               initial={{ opacity: 0, y: 22 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
-              className="text-[17.5px] sm:text-[19px] font-normal leading-[1.65] max-w-[500px] text-[#5E6A68] text-left mb-10"
+              className="text-[15.5px] sm:text-[19px] font-normal leading-[1.65] max-w-[500px] text-[#5E6A68] text-left mb-10"
             >
               Manage registrations, participants, QR attendance, secure payments and automated certificates from one intelligent platform.
             </motion.p>
@@ -312,7 +312,7 @@ export default function HeroSection({ currentUser, onOpenProfile, onOpenEvents, 
                 damping: 18, 
                 delay: 0.22 
               }}
-              className="flex flex-wrap items-center gap-[18px] mb-10"
+              className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-[18px] mb-10"
             >
               {/* Primary Button */}
               <motion.a 

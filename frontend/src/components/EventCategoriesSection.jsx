@@ -154,14 +154,14 @@ export default function EventCategoriesSection({ onCategoryClick }) {
               /* Stable grid slot: Keeps the grid layout completely stable without shifting other cards */
               <div 
                 key={index}
-                className="relative h-[245px] sm:h-[250px]"
+                className="relative min-h-[220px] sm:h-[250px]"
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
               >
                 {/* 
                   Interactive Expanding Card:
-                  - Default State: Compact 245px height (icon, title, badge, short desc).
-                  - Hover State: Expands downward smoothly to reveal 4 features, CTA, and accent line.
+                  - Default State: Compact height (icon, title, badge, short desc).
+                  - Hover State: Expands downward smoothly to reveal features, CTA, and accent line.
                   - 300ms smooth animation duration.
                   - Sibling cards remain unblurred and at full opacity.
                 */}
@@ -178,7 +178,7 @@ export default function EventCategoriesSection({ onCategoryClick }) {
                       : '#ffffff',
                     zIndex: isHovered ? 30 : 10
                   }}
-                  className="absolute top-0 left-0 right-0 rounded-[28px] border p-7 sm:p-8 flex flex-col justify-between cursor-pointer overflow-hidden backdrop-blur-md"
+                  className="relative sm:absolute top-0 left-0 right-0 rounded-[24px] sm:rounded-[28px] border p-5 sm:p-8 flex flex-col justify-between cursor-pointer overflow-hidden backdrop-blur-md"
                 >
                   {/* Top Portion: Icon, Badge, Title, Short Description */}
                   <div>

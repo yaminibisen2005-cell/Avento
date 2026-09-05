@@ -148,7 +148,7 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
 
   return (
     <main 
-      className="relative w-full h-screen h-[100dvh] overflow-hidden bg-[#FAF8F2] text-[#1F2937] antialiased selection:bg-[#D9B24A]/25 selection:text-[#0B4B3A] flex flex-col items-center justify-center p-2 sm:p-4 lg:p-5"
+      className="relative w-full min-h-screen min-h-[100dvh] overflow-y-auto bg-[#FAF8F2] text-[#1F2937] antialiased selection:bg-[#D9B24A]/25 selection:text-[#0B4B3A] flex flex-col items-center justify-center p-2 sm:p-4 lg:p-5"
       style={{ 
         fontFamily: 'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
       }}
@@ -486,7 +486,7 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
         {/* ======================================================================= */}
         {/* RIGHT PANEL (50%): COMPACT & ELEGANT AUTHENTICATION FORM                */}
         {/* ======================================================================= */}
-        <div className="auth-right-panel-bg w-full lg:w-1/2 h-auto lg:h-full relative p-4 sm:p-6 lg:p-6 xl:p-8 flex items-center justify-center">
+        <div className="auth-right-panel-bg w-full lg:w-1/2 h-auto lg:h-full relative p-4 sm:p-6 lg:p-6 xl:p-8 flex items-center justify-center overflow-y-auto custom-scrollbar">
           
           <div className="w-full max-w-[480px] sm:max-w-[500px] h-full flex flex-col justify-between relative z-10">
             {/* Top-Level Unified Switcher: Sign In | Sign Up in the Same Card */}

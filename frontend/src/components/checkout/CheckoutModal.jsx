@@ -308,7 +308,7 @@ export default function CheckoutModal({
           backdropFilter: 'blur(30px)',
           WebkitBackdropFilter: 'blur(30px)'
         }}
-        className="w-full max-w-xl max-h-[92vh] overflow-y-auto rounded-[32px] p-5 sm:p-7 pb-8 border border-white shadow-2xl space-y-4 sm:space-y-5 relative my-auto custom-scrollbar"
+        className="w-full max-w-xl max-h-[92dvh] overflow-y-auto rounded-[24px] sm:rounded-[32px] p-4 sm:p-7 pb-8 border border-white shadow-2xl space-y-4 sm:space-y-5 relative my-auto custom-scrollbar"
       >
         {/* Top Header & Close */}
         <div className="flex items-center justify-between border-b border-[#0F5D46]/10 pb-4">

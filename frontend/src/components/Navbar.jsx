@@ -169,7 +169,7 @@ export default function Navbar({
 
             {/* Search Dropdown */}
             {searchOpen && (
-              <div className="absolute right-0 mt-3 w-72 bg-white/95 backdrop-blur-xl rounded-2xl shadow-[0_20px_40px_rgba(15,93,70,0.12)] border border-[#0F5D46]/15 p-2.5 z-50">
+              <div className="absolute right-0 mt-3 w-[calc(100vw-32px)] max-w-72 sm:w-72 bg-white/95 backdrop-blur-xl rounded-2xl shadow-[0_20px_40px_rgba(15,93,70,0.12)] border border-[#0F5D46]/15 p-2.5 z-50">
                 <div className="flex items-center gap-2 bg-[#FAF8F3] px-3 py-2 rounded-xl border border-gray-200/80">
                   <svg className="w-3.5 h-3.5 text-[#D9B24A]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -231,7 +231,7 @@ export default function Navbar({
 
                   {/* User Name & Profile Badge */}
                   <div className="flex flex-col items-start text-left leading-none">
-                    <span className="font-extrabold text-white text-xs sm:text-[13.5px] truncate max-w-[120px] sm:max-w-[150px]">
+                    <span className="font-extrabold text-white text-xs sm:text-[13.5px] truncate max-w-[85px] xs:max-w-[120px] sm:max-w-[150px]">
                       {currentUser.fullName || 'My Profile'}
                     </span>
                     <span className="text-[9px] font-mono font-bold tracking-wider uppercase text-[#D9B24A] mt-0.5">
