@@ -1,9 +1,16 @@
 import axios from 'axios';
 import { auth, isFirebaseConfigured } from '../firebase/firebase';
 
-export const API_BASE_URL = 
-  import.meta.env.VITE_API_URL || 
-  (import.meta.env.PROD ? '/api' : 'http://localhost:8081/api');
+const getApiBaseUrl = () => {
+  const envUrl = import.meta.env.VITE_API_URL;
+  if (envUrl && typeof envUrl === 'string' && envUrl.trim() !== '') {
+    const cleaned = envUrl.trim().replace(/\/+$/, '');
+    return cleaned.endsWith('/api') ? cleaned : `${cleaned}/api`;
+  }
+  return import.meta.env.PROD ? '/api' : 'http://localhost:8081/api';
+};
+
+export const API_BASE_URL = getApiBaseUrl();
 
 export const TOKEN_KEY = 'avento_firebase_token';
 export const USER_KEY = 'avento_user';
