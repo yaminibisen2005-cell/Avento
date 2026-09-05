@@ -482,7 +482,7 @@ export default function App() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-          className="min-h-screen bg-[#FAF8F2] text-[#1F2937] font-sans antialiased selection:bg-[#C89B3C]/25 selection:text-[#0F4C3A] relative"
+          className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#FAF8F2] text-[#1F2937] font-sans antialiased selection:bg-[#C89B3C]/25 selection:text-[#0F4C3A] relative"
         >
           {/* ==================== 1. FLOATING GLASS NAVBAR ==================== */}
           <Navbar 

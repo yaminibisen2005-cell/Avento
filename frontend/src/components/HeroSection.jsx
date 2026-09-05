@@ -394,10 +394,10 @@ export default function HeroSection({ currentUser, onOpenProfile, onOpenEvents, 
 
           {/* ================= RIGHT COLUMN: MACBOOK DASHBOARD WITH 3D DEPTH - Slides in from right ================= */}
           <motion.div 
-            initial={{ opacity: 0, x: 70 }}
-            animate={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, type: 'spring', stiffness: 110, damping: 18, delay: 0.18 }}
-            className="xl:col-span-7 relative flex items-center justify-center z-20 mt-10 xl:mt-0 xl:translate-y-4 xl:translate-x-3"
+            className="xl:col-span-7 relative flex items-center justify-center z-20 mt-10 xl:mt-0 xl:translate-y-4 xl:translate-x-3 max-w-full overflow-hidden"
           >
             
             {/* 7. Radial Light Behind Laptop for Floating Depth */}
