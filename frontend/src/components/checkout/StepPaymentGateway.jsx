@@ -6,7 +6,8 @@ export default function StepPaymentGateway({
   onPaymentComplete,
   isProcessing = false,
   errorMessage = '',
-  onClearError
+  onClearError,
+  registrationData = {}
 }) {
   const [selectedMethod, setSelectedMethod] = useState('upi')
   const [upiId, setUpiId] = useState('student@oksbi')

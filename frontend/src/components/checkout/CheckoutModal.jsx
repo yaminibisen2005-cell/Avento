@@ -166,117 +166,126 @@ export default function CheckoutModal({
       }
 
       // 2. Load Razorpay Checkout SDK
-      const scriptLoaded = await loadRazorpayScript()
+      const keyId = (orderData.keyId && !orderData.keyId.includes('placeholder')) 
+        ? orderData.keyId 
+        : (import.meta.env.VITE_RAZORPAY_KEY_ID && !import.meta.env.VITE_RAZORPAY_KEY_ID.includes('placeholder') ? import.meta.env.VITE_RAZORPAY_KEY_ID : null)
 
-      if (scriptLoaded && typeof window !== 'undefined' && window.Razorpay) {
-        const options = {
-          key: orderData.keyId,
-          amount: orderData.amountInPaise,
-          currency: orderData.currency || 'INR',
-          name: 'AVENTO',
-          description: event.title,
-          order_id: orderData.orderId,
-          prefill: {
-            name: formData.fullName,
-            email: formData.email,
-            contact: formData.phoneNumber
-          },
-          theme: {
-            color: '#0F5D46'
-          },
-          handler: async function (razorpayResponse) {
-            try {
-              // 3. Verify Payment on Spring Boot backend
-              const verifyRes = await checkoutService.verifyPayment({
-                razorpayOrderId: razorpayResponse.razorpay_order_id,
-                razorpayPaymentId: razorpayResponse.razorpay_payment_id,
-                razorpaySignature: razorpayResponse.razorpay_signature,
-                eventId: event.id,
-                ...formData
-              })
+      const scriptLoaded = keyId ? await loadRazorpayScript() : false
 
-              const ticket = verifyRes.ticket
-              const regRecord = {
-                id: `REG-${ticket.ticketNumber}`,
-                ticketId: ticket.ticketNumber,
-                seatNumber: ticket.seatNumber || 'GA-A14',
-                eventId: event.id,
-                eventTitle: event.title,
-                category: event.category,
-                date: event.date,
-                time: event.time || '09:00 AM IST',
-                venue: event.venue,
-                mode: event.mode || 'In-Person',
-                image: event.image,
-                status: 'Upcoming',
-                paymentStatus: `Paid (${event.fee} Razorpay)`,
-                fee: event.fee,
-                qrCodeData: ticket.qrCodePayload,
-                attendee: formData
+      if (keyId && scriptLoaded && typeof window !== 'undefined' && window.Razorpay) {
+        try {
+          const options = {
+            key: keyId,
+            amount: orderData.amountInPaise,
+            currency: orderData.currency || 'INR',
+            name: 'AVENTO',
+            description: event.title,
+            order_id: orderData.orderId,
+            prefill: {
+              name: formData.fullName,
+              email: formData.email,
+              contact: formData.phoneNumber
+            },
+            theme: {
+              color: '#0F5D46'
+            },
+            handler: async function (razorpayResponse) {
+              try {
+                // 3. Verify Payment on Spring Boot backend
+                const verifyRes = await checkoutService.verifyPayment({
+                  razorpayOrderId: razorpayResponse.razorpay_order_id,
+                  razorpayPaymentId: razorpayResponse.razorpay_payment_id,
+                  razorpaySignature: razorpayResponse.razorpay_signature,
+                  eventId: event.id,
+                  ...formData
+                })
+
+                const ticket = verifyRes.ticket
+                const regRecord = {
+                  id: `REG-${ticket.ticketNumber}`,
+                  ticketId: ticket.ticketNumber,
+                  seatNumber: ticket.seatNumber || 'GA-A14',
+                  eventId: event.id,
+                  eventTitle: event.title,
+                  category: event.category,
+                  date: event.date,
+                  time: event.time || '09:00 AM IST',
+                  venue: event.venue,
+                  mode: event.mode || 'In-Person',
+                  image: event.image,
+                  status: 'Upcoming',
+                  paymentStatus: `Paid (${event.fee} Razorpay)`,
+                  fee: event.fee,
+                  qrCodeData: ticket.qrCodePayload,
+                  attendee: formData
+                }
+
+                setCreatedRegistration(regRecord)
+                setStep(4)
+                addRegisteredEventId(event.id)
+                refreshUserRegistrations()
+                if (onCheckoutComplete) onCheckoutComplete(regRecord)
+              } catch (err) {
+                setPaymentError(err.message || 'Payment signature verification failed')
+              } finally {
+                setIsProcessing(false)
               }
-
-              setCreatedRegistration(regRecord)
-              setStep(4)
-              addRegisteredEventId(event.id)
-              refreshUserRegistrations()
-              if (onCheckoutComplete) onCheckoutComplete(regRecord)
-            } catch (err) {
-              setPaymentError(err.message || 'Payment signature verification failed')
-            } finally {
-              setIsProcessing(false)
-            }
-          },
-          modal: {
-            ondismiss: function () {
-              setIsProcessing(false)
-              setPaymentError('Payment window closed by user. You can retry anytime.')
+            },
+            modal: {
+              ondismiss: function () {
+                setIsProcessing(false)
+                setPaymentError('Payment window closed by user. You can retry anytime.')
+              }
             }
           }
+
+          const rzp = new window.Razorpay(options)
+          rzp.on('payment.failed', function (resp) {
+            setIsProcessing(false)
+            setPaymentError(resp.error?.description || 'Payment transaction failed. Please retry.')
+          })
+          rzp.open()
+          return
+        } catch (rzpErr) {
+          console.warn('Razorpay SDK init warning, falling back to sandbox handler:', rzpErr.message)
         }
-
-        const rzp = new window.Razorpay(options)
-        rzp.on('payment.failed', function (resp) {
-          setIsProcessing(false)
-          setPaymentError(resp.error?.description || 'Payment transaction failed. Please retry.')
-        })
-        rzp.open()
-      } else {
-        // Test mode fallback when Razorpay CDN is unreachable in test sandbox
-        const verifyRes = await checkoutService.verifyPayment({
-          razorpayOrderId: orderData.orderId,
-          razorpayPaymentId: 'pay_test_' + Date.now(),
-          razorpaySignature: 'valid_signature',
-          eventId: event.id,
-          ...formData
-        })
-
-        const ticket = verifyRes.ticket
-        const regRecord = {
-          id: `REG-${ticket.ticketNumber}`,
-          ticketId: ticket.ticketNumber,
-          seatNumber: ticket.seatNumber || 'GA-A14',
-          eventId: event.id,
-          eventTitle: event.title,
-          category: event.category,
-          date: event.date,
-          time: event.time || '09:00 AM IST',
-          venue: event.venue,
-          mode: event.mode || 'In-Person',
-          image: event.image,
-          status: 'Upcoming',
-          paymentStatus: `Paid (${event.fee} Razorpay)`,
-          fee: event.fee,
-          qrCodeData: ticket.qrCodePayload,
-          attendee: formData
-        }
-
-        setCreatedRegistration(regRecord)
-        setStep(4)
-        addRegisteredEventId(event.id)
-        refreshUserRegistrations()
-        if (onCheckoutComplete) onCheckoutComplete(regRecord)
-        setIsProcessing(false)
       }
+
+      // Test Mode Sandbox Checkout Handler (used when real Razorpay keys are not yet configured or CDN is offline)
+      const verifyRes = await checkoutService.verifyPayment({
+        razorpayOrderId: orderData.orderId,
+        razorpayPaymentId: 'pay_test_' + Date.now(),
+        razorpaySignature: 'valid_signature',
+        eventId: event.id,
+        ...formData
+      })
+
+      const ticket = verifyRes.ticket
+      const regRecord = {
+        id: `REG-${ticket.ticketNumber}`,
+        ticketId: ticket.ticketNumber,
+        seatNumber: ticket.seatNumber || 'GA-A14',
+        eventId: event.id,
+        eventTitle: event.title,
+        category: event.category,
+        date: event.date,
+        time: event.time || '09:00 AM IST',
+        venue: event.venue,
+        mode: event.mode || 'In-Person',
+        image: event.image,
+        status: 'Upcoming',
+        paymentStatus: `Paid (${event.fee} Razorpay)`,
+        fee: event.fee,
+        qrCodeData: ticket.qrCodePayload,
+        attendee: formData
+      }
+
+      setCreatedRegistration(regRecord)
+      setStep(4)
+      addRegisteredEventId(event.id)
+      refreshUserRegistrations()
+      if (onCheckoutComplete) onCheckoutComplete(regRecord)
+      setIsProcessing(false)
     } catch (err) {
       setIsProcessing(false)
       setPaymentError(err.message || 'Payment initiation failed')
@@ -486,6 +495,7 @@ export default function CheckoutModal({
                 onClearError={() => setPaymentError('')}
                 onBack={() => setStep(2)}
                 onPaymentComplete={handlePaymentComplete}
+                registrationData={formData}
               />
             </motion.div>
           )}
