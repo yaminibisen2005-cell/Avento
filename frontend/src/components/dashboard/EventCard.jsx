@@ -19,7 +19,7 @@ export default function EventCard({ event, onRegister, onDetails, isWishlisted: 
       className="rounded-[24px] border border-white/70 shadow-[0_12px_36px_rgba(15,93,70,0.06)] hover:shadow-[0_24px_50px_rgba(15,93,70,0.14)] overflow-hidden flex flex-col justify-between group cursor-pointer transition-all duration-300 relative select-none"
     >
       {/* Top Image Banner */}
-      <div className="relative h-48 w-full overflow-hidden rounded-t-[24px]">
+      <div className="relative h-36 sm:h-48 w-full overflow-hidden rounded-t-[24px]">
         <img 
           src={event.image} 
           alt={event.title} 
@@ -72,7 +72,7 @@ export default function EventCard({ event, onRegister, onDetails, isWishlisted: 
       </div>
 
       {/* Content */}
-      <div className="p-4 sm:p-5 flex flex-col flex-1 justify-between">
+      <div className="p-3.5 sm:p-5 flex flex-col flex-1 justify-between">
         <div>
           <h3 className="font-display font-bold text-lg text-[#0F5D46] group-hover:text-[#0A3B2E] transition-colors leading-snug line-clamp-1">
             {event.title}

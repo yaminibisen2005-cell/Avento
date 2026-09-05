@@ -203,7 +203,7 @@ export default function EventDetails({
       </nav>
 
       {/* ================= MAIN CONTAINER ================= */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-8 sm:py-12 space-y-12">
+      <main className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-10 py-6 sm:py-12 space-y-6 sm:space-y-12">
         
         {/* 1. HERO SECTION */}
         <HeroSection

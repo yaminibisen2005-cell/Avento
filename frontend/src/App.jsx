@@ -527,15 +527,15 @@ export default function App() {
           {/* Glowing Timeline Connector Line */}
           <div className="hidden lg:block absolute top-1/2 left-[12%] right-[12%] h-[2px] bg-gradient-to-r from-[#0F4C3A] via-[#C89B3C] to-[#0F4C3A] -translate-y-1/2 opacity-70"></div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 relative z-10">
             {steps.map((st, i) => (
-              <div key={i} className="glass-card-premium p-6 flex flex-col items-center text-center group transition-all duration-300">
+              <div key={i} className="glass-card-premium p-4.5 sm:p-6 flex flex-col items-center text-center group transition-all duration-300">
                 {/* Step Badge */}
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#0F4C3A] to-[#0A3629] text-[#C89B3C] flex items-center justify-center shadow-md font-display font-bold text-lg mb-5 border border-[#C89B3C]/30 group-hover:scale-110 transition-transform duration-300">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-[#0F4C3A] to-[#0A3629] text-[#C89B3C] flex items-center justify-center shadow-md font-display font-bold text-base sm:text-lg mb-4 sm:mb-5 border border-[#C89B3C]/30 group-hover:scale-110 transition-transform duration-300">
                   {st.number}
                 </div>
 
-                <h3 className="font-display font-bold text-lg text-[#0F4C3A] mb-2">
+                <h3 className="font-display font-bold text-base sm:text-lg text-[#0F4C3A] mb-2">
                   {st.title}
                 </h3>
                 <p className="text-[#1F2937]/75 text-xs sm:text-sm leading-relaxed">
@@ -561,21 +561,21 @@ export default function App() {
           </p>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {features.map((feat, idx) => (
             <div 
               key={idx} 
-              className="glass-card-premium p-8 flex flex-col items-start text-left group transition-all duration-300"
+              className="glass-card-premium p-5 sm:p-8 flex flex-col items-start text-left group transition-all duration-300"
             >
-              <div className="p-3.5 bg-[#0F4C3A]/10 border border-[#0F4C3A]/15 rounded-2xl mb-5 group-hover:bg-[#0F4C3A] transition-colors duration-300">
+              <div className="p-3 bg-[#0F4C3A]/10 border border-[#0F4C3A]/15 rounded-2xl mb-4 sm:mb-5 group-hover:bg-[#0F4C3A] transition-colors duration-300">
                 <div className="group-hover:text-white transition-colors duration-300">
                   {feat.icon}
                 </div>
               </div>
-              <h3 className="font-display font-bold text-xl text-[#0F4C3A] mb-2.5">
+              <h3 className="font-display font-bold text-lg sm:text-xl text-[#0F4C3A] mb-2 sm:mb-2.5">
                 {feat.title}
               </h3>
-              <p className="text-[#1F2937]/75 text-sm leading-relaxed">
+              <p className="text-[#1F2937]/75 text-xs sm:text-sm leading-relaxed">
                 {feat.desc}
               </p>
             </div>
@@ -584,27 +584,27 @@ export default function App() {
       </section>
 
       {/* ==================== 8. LIVE SPOTLIGHT EVENT ==================== */}
-      <section className="py-10 sm:py-12 max-w-6xl mx-auto px-6">
-        <div className="bg-gradient-to-br from-[#0F4C3A] via-[#0B382B] to-[#062018] rounded-[32px] text-white p-8 md:p-12 shadow-[0_30px_70px_rgba(15,76,58,0.25)] relative overflow-hidden text-left flex flex-col lg:flex-row items-center justify-between gap-8 border border-white/15">
+      <section className="py-10 sm:py-12 max-w-6xl mx-auto px-4 sm:px-6">
+        <div className="bg-gradient-to-br from-[#0F4C3A] via-[#0B382B] to-[#062018] rounded-[24px] sm:rounded-[32px] text-white p-5 sm:p-8 md:p-12 shadow-[0_30px_70px_rgba(15,76,58,0.25)] relative overflow-hidden text-left flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-8 border border-white/15">
           
           {/* Subtle Ambient Gold Glow inside Container */}
           <div className="absolute top-0 right-0 w-96 h-96 bg-[#C89B3C]/10 rounded-full blur-3xl pointer-events-none"></div>
 
-          <div className="flex flex-col gap-4 relative z-10 max-w-xl">
+          <div className="flex flex-col gap-3 sm:gap-4 relative z-10 max-w-xl">
             <span className="w-fit inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold text-[#C89B3C] bg-white/10 border border-[#C89B3C]/30 tracking-wider uppercase">
               <span className="w-2 h-2 rounded-full bg-[#C89B3C] animate-ping"></span>
               Live Spotlight Event
             </span>
-            <h2 className="font-display text-3xl md:text-4xl font-bold tracking-tight text-white">
+            <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-white">
               AI Innovation Hackathon 2026
             </h2>
-            <p className="text-white/75 text-sm sm:text-base leading-relaxed">
+            <p className="text-white/75 text-xs sm:text-base leading-relaxed">
               Join top engineers and student founders across the country. Powered by Avento for instant 0.3s check-in, real-time escrow prize delivery, and blockchain certificates.
             </p>
 
             {/* Registration Capacity Progress bar */}
-            <div className="mt-3">
-              <div className="flex justify-between items-center text-xs font-semibold text-white/80 mb-2">
+            <div className="mt-2 sm:mt-3">
+              <div className="flex justify-between items-center text-xs font-semibold text-white/80 mb-1.5 sm:mb-2">
                 <span>432 Registered</span>
                 <span className="text-[#C89B3C]">500 Capacity Cap (86.4%)</span>
               </div>
@@ -615,30 +615,30 @@ export default function App() {
           </div>
 
           {/* Countdown & CTA Box */}
-          <div className="flex flex-col items-center gap-5 relative z-10 w-full lg:w-auto shrink-0 bg-white/10 border border-white/20 backdrop-blur-xl rounded-2xl p-6 shadow-xl">
+          <div className="flex flex-col items-center gap-4 sm:gap-5 relative z-10 w-full lg:w-auto shrink-0 bg-white/10 border border-white/20 backdrop-blur-xl rounded-2xl p-4.5 sm:p-6 shadow-xl">
             <div className="text-center">
-              <div className="text-[11px] uppercase font-extrabold tracking-wider text-[#C89B3C] mb-3">
+              <div className="text-[11px] uppercase font-extrabold tracking-wider text-[#C89B3C] mb-2.5 sm:mb-3">
                 Registration Closes In
               </div>
               
               {/* Countdown Digits */}
               <div className="flex items-center gap-2.5">
                 <div className="flex flex-col items-center">
-                  <div className="bg-black/30 border border-white/10 w-14 h-12 flex items-center justify-center text-xl font-bold rounded-lg text-white font-mono">
+                  <div className="bg-black/30 border border-white/10 w-12 h-11 sm:w-14 sm:h-12 flex items-center justify-center text-lg sm:text-xl font-bold rounded-lg text-white font-mono">
                     {String(timeLeft.days).padStart(2, '0')}
                   </div>
                   <span className="text-[10px] text-white/60 mt-1 uppercase font-semibold">Days</span>
                 </div>
                 <span className="text-xl font-bold -mt-4 text-[#C89B3C]">:</span>
                 <div className="flex flex-col items-center">
-                  <div className="bg-black/30 border border-white/10 w-14 h-12 flex items-center justify-center text-xl font-bold rounded-lg text-white font-mono">
+                  <div className="bg-black/30 border border-white/10 w-12 h-11 sm:w-14 sm:h-12 flex items-center justify-center text-lg sm:text-xl font-bold rounded-lg text-white font-mono">
                     {String(timeLeft.hours).padStart(2, '0')}
                   </div>
                   <span className="text-[10px] text-white/60 mt-1 uppercase font-semibold">Hours</span>
                 </div>
                 <span className="text-xl font-bold -mt-4 text-[#C89B3C]">:</span>
                 <div className="flex flex-col items-center">
-                  <div className="bg-black/30 border border-white/10 w-14 h-12 flex items-center justify-center text-xl font-bold rounded-lg text-white font-mono">
+                  <div className="bg-black/30 border border-white/10 w-12 h-11 sm:w-14 sm:h-12 flex items-center justify-center text-lg sm:text-xl font-bold rounded-lg text-white font-mono">
                     {String(timeLeft.minutes).padStart(2, '0')}
                   </div>
                   <span className="text-[10px] text-white/60 mt-1 uppercase font-semibold">Mins</span>
@@ -649,7 +649,7 @@ export default function App() {
             <button 
               type="button"
               onClick={handleOpenEvents}
-              className="w-full py-3.5 bg-[#C89B3C] hover:bg-[#B3872E] text-[#0F4C3A] font-extrabold text-xs sm:text-sm rounded-full shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
+              className="w-full py-3 sm:py-3.5 bg-[#C89B3C] hover:bg-[#B3872E] text-[#0F4C3A] font-extrabold text-xs sm:text-sm rounded-full shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
             >
               Claim Hackathon Ticket
             </button>
@@ -672,34 +672,34 @@ export default function App() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-3 gap-4 sm:gap-6">
           {testimonials.map((t, index) => (
             <div 
               key={index} 
-              className="glass-card-premium p-7 text-left flex flex-col justify-between group transition-all duration-300"
+              className="glass-card-premium p-5 sm:p-7 text-left flex flex-col justify-between group transition-all duration-300"
             >
               <div>
                 {/* Gold Stars */}
-                <div className="flex gap-1 mb-4 text-[#C89B3C]">
+                <div className="flex gap-1 mb-3 sm:mb-4 text-[#C89B3C]">
                   {Array.from({ length: t.stars }).map((_, i) => (
-                    <span key={i} className="text-base">★</span>
+                    <span key={i} className="text-sm sm:text-base">★</span>
                   ))}
                 </div>
-                <p className="text-[#1F2937]/80 text-sm leading-relaxed italic mb-6">
+                <p className="text-[#1F2937]/80 text-xs sm:text-sm leading-relaxed italic mb-4 sm:mb-6">
                   "{t.review}"
                 </p>
               </div>
 
               {/* Author Info */}
-              <div className="flex items-center gap-3.5 border-t border-[#0F4C3A]/10 pt-4">
+              <div className="flex items-center gap-3 border-t border-[#0F4C3A]/10 pt-3.5 sm:pt-4">
                 <img 
                   src={t.image} 
                   alt={t.name} 
-                  className="w-11 h-11 rounded-full object-cover border border-[#0F4C3A]/20 shadow-xs" 
+                  className="w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover border border-[#0F4C3A]/20 shadow-xs" 
                 />
                 <div className="text-left">
-                  <div className="font-bold text-sm text-[#0F4C3A]">{t.name}</div>
-                  <div className="text-[11px] text-[#1F2937]/60 font-medium truncate max-w-[200px]">
+                  <div className="font-bold text-xs sm:text-sm text-[#0F4C3A]">{t.name}</div>
+                  <div className="text-[10.5px] sm:text-[11px] text-[#1F2937]/60 font-medium truncate max-w-[180px] sm:max-w-[200px]">
                     {t.college}
                   </div>
                 </div>
@@ -710,7 +710,7 @@ export default function App() {
       </section>
 
       {/* ==================== 10. FAQ ACCORDION ==================== */}
-      <section className="py-12 sm:py-14 max-w-3xl mx-auto px-6 text-center relative">
+      <section className="py-12 sm:py-14 max-w-3xl mx-auto px-4 sm:px-6 text-center relative">
         <div className="mb-8 sm:mb-10">
           <span className="text-[11px] font-extrabold text-[#0F4C3A] tracking-widest uppercase bg-[#0F4C3A]/10 px-3.5 py-1.5 rounded-full border border-[#0F4C3A]/15">
             Clear Answers
@@ -724,7 +724,7 @@ export default function App() {
         </div>
 
         {/* Accordion Container */}
-        <div className="space-y-4 text-left">
+        <div className="space-y-3 sm:space-y-4 text-left">
           {faqs.map((faq, idx) => {
             const isOpen = faqOpen === idx
             return (
@@ -734,17 +734,17 @@ export default function App() {
               >
                 <button 
                   onClick={() => toggleFaq(idx)}
-                  className="w-full px-6 py-5 flex items-center justify-between font-bold text-sm sm:text-base text-[#0F4C3A] hover:text-[#0A3629] transition-colors duration-200 focus:outline-none"
+                  className="w-full px-4.5 py-3.5 sm:px-6 sm:py-5 flex items-center justify-between font-bold text-xs sm:text-base text-[#0F4C3A] hover:text-[#0A3629] transition-colors duration-200 focus:outline-none"
                 >
-                  <span className="pr-4">{faq.q}</span>
-                  <span className={`transform transition-transform duration-300 font-mono text-sm ${isOpen ? 'rotate-180 text-[#C89B3C]' : 'text-gray-400'}`}>
+                  <span className="pr-3 sm:pr-4">{faq.q}</span>
+                  <span className={`transform transition-transform duration-300 font-mono text-xs sm:text-sm ${isOpen ? 'rotate-180 text-[#C89B3C]' : 'text-gray-400'}`}>
                     ▼
                   </span>
                 </button>
 
                 {/* Answer Block */}
                 <div className={`transition-all duration-300 ease-in-out ${isOpen ? 'max-h-60 opacity-100 border-t border-[#0F4C3A]/10' : 'max-h-0 opacity-0'} overflow-hidden`}>
-                  <p className="px-6 py-5 text-sm text-[#1F2937]/80 leading-relaxed bg-white/40">
+                  <p className="px-4.5 py-3.5 sm:px-6 sm:py-5 text-xs sm:text-sm text-[#1F2937]/80 leading-relaxed bg-white/40">
                     {faq.a}
                   </p>
                 </div>

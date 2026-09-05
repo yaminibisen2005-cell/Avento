@@ -24,12 +24,12 @@ export default function TabOrganizerProfile({
   }
 
   return (
-    <div className="max-w-3xl space-y-6 text-left select-none pb-12">
+    <div className="max-w-3xl space-y-4 sm:space-y-6 text-left select-none pb-12">
       <div>
-        <h2 className="font-display font-bold text-2xl sm:text-3xl text-[#0F5D46] tracking-tight">
+        <h2 className="font-display font-bold text-xl sm:text-3xl text-[#0F5D46] tracking-tight">
           Organization Profile & Compliance
         </h2>
-        <p className="text-xs sm:text-sm text-[#5E6A68] mt-1">
+        <p className="text-xs sm:text-sm text-[#5E6A68] mt-0.5 sm:mt-1">
           Institutional identity, verified host badge credentials, and settlement account
         </p>
       </div>
@@ -40,18 +40,18 @@ export default function TabOrganizerProfile({
         </div>
       )}
 
-      <form onSubmit={handleSave} className="p-6 sm:p-8 rounded-[28px] bg-white/95 border border-white/80 shadow-xs space-y-5">
+      <form onSubmit={handleSave} className="p-4.5 sm:p-8 rounded-[20px] sm:rounded-[28px] bg-white/95 border border-white/80 shadow-xs space-y-4 sm:space-y-5">
         {/* Organization Name & Verified Badge */}
-        <div className="flex items-center justify-between pb-4 border-b border-gray-100">
+        <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-gray-100">
           <div className="flex items-center gap-3">
-            <div className="w-14 h-14 rounded-[18px] bg-[#EAF7F1] text-[#0F5D46] flex items-center justify-center text-2xl border border-[#0F5D46]/20 shadow-2xs">
+            <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-[14px] sm:rounded-[18px] bg-[#EAF7F1] text-[#0F5D46] flex items-center justify-center text-xl sm:text-2xl border border-[#0F5D46]/20 shadow-2xs shrink-0">
               🏛
             </div>
             <div>
-              <h3 className="font-display font-bold text-base text-[#0F5D46]">
+              <h3 className="font-display font-bold text-sm sm:text-base text-[#0F5D46]">
                 {profile.name}
               </h3>
-              <span className="text-[10px] uppercase font-extrabold text-[#D9B24A] bg-[#D9B24A]/10 border border-[#D9B24A]/30 px-2 py-0.5 rounded-full">
+              <span className="text-[9.5px] sm:text-[10px] uppercase font-extrabold text-[#D9B24A] bg-[#D9B24A]/10 border border-[#D9B24A]/30 px-2 py-0.5 rounded-full inline-block">
                 ✓ Verified Academic Host
               </span>
             </div>

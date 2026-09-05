@@ -154,23 +154,23 @@ export default function Profile({ user }) {
   return (
     <div className="space-y-6 text-left select-none pb-12">
       {/* Top Header Row */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <div>
-          <h2 className="font-display font-bold text-2xl sm:text-3xl text-[#0F5D46] tracking-tight">
+          <h2 className="font-display font-bold text-xl sm:text-3xl text-[#0F5D46] tracking-tight">
             Personal Profile
           </h2>
-          <p className="text-xs sm:text-sm text-[#5E6A68] mt-1">
+          <p className="text-xs sm:text-sm text-[#5E6A68] mt-0.5 sm:mt-1">
             Manage and update your personal information, academic credentials, and contact details.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
           {isEditing ? (
             <>
               <button
                 type="button"
                 onClick={() => setIsEditing(false)}
-                className="px-4 py-2 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 text-xs font-bold rounded-[14px] shadow-2xs transition-all cursor-pointer"
+                className="flex-1 sm:flex-initial px-3.5 sm:px-4 py-2 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 text-xs font-bold rounded-[14px] shadow-2xs transition-all cursor-pointer"
               >
                 Cancel
               </button>
@@ -178,7 +178,7 @@ export default function Profile({ user }) {
                 type="button"
                 onClick={handleSave}
                 disabled={saveLoading}
-                className="px-5 py-2 bg-[#0F5D46] hover:bg-[#0B3D2E] text-white text-xs font-bold rounded-[14px] shadow-sm hover:shadow transition-all cursor-pointer flex items-center gap-1.5 disabled:opacity-60"
+                className="flex-1 sm:flex-initial px-4 sm:px-5 py-2 bg-[#0F5D46] hover:bg-[#0B3D2E] text-white text-xs font-bold rounded-[14px] shadow-sm hover:shadow transition-all cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-60"
               >
                 <span>💾</span>
                 <span>{saveLoading ? 'Saving...' : 'Save Details'}</span>
@@ -188,7 +188,7 @@ export default function Profile({ user }) {
             <button
               type="button"
               onClick={() => setIsEditing(true)}
-              className="px-5 py-2.5 bg-[#0F5D46] hover:bg-[#0B3D2E] text-white text-xs font-bold rounded-[14px] shadow-sm hover:shadow transition-all cursor-pointer flex items-center gap-2"
+              className="w-full sm:w-auto px-4.5 sm:px-5 py-2 sm:py-2.5 bg-[#0F5D46] hover:bg-[#0B3D2E] text-white text-xs font-bold rounded-[14px] shadow-sm hover:shadow transition-all cursor-pointer flex items-center justify-center gap-2"
             >
               <span>✏️</span>
               <span>Edit Personal Details</span>
@@ -198,7 +198,7 @@ export default function Profile({ user }) {
       </div>
 
       {savedMsg && (
-        <div className="p-3.5 rounded-[16px] bg-emerald-50 text-emerald-800 text-xs font-bold border border-emerald-200 shadow-2xs flex items-center gap-2">
+        <div className="p-3 sm:p-3.5 rounded-[16px] bg-emerald-50 text-emerald-800 text-xs font-bold border border-emerald-200 shadow-2xs flex items-center gap-2">
           <span>✅</span>
           <span>Your personal details have been updated and saved successfully!</span>
         </div>
@@ -211,12 +211,12 @@ export default function Profile({ user }) {
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)'
         }}
-        className="p-6 sm:p-7 rounded-[26px] border border-[#0F5D46]/15 shadow-[0_8px_30px_rgba(15,93,70,0.06)] flex flex-col md:flex-row md:items-center justify-between gap-6"
+        className="p-4.5 sm:p-7 rounded-[20px] sm:rounded-[26px] border border-[#0F5D46]/15 shadow-[0_8px_30px_rgba(15,93,70,0.06)] flex flex-col md:flex-row md:items-center justify-between gap-5 sm:gap-6"
       >
-        <div className="flex items-center gap-5">
+        <div className="flex items-center gap-3.5 sm:gap-5">
           {/* Avatar with Camera Overlay */}
-          <div className="relative w-20 h-20 sm:w-22 sm:h-22 rounded-full bg-gradient-to-tr from-[#0F5D46] via-[#165A46] to-[#D9B24A] p-[2.5px] shadow-md shrink-0 group">
-            <div className="w-full h-full rounded-full bg-[#EAF7F1] flex items-center justify-center text-2xl sm:text-3xl font-bold text-[#0F5D46] overflow-hidden">
+          <div className="relative w-16 h-16 sm:w-22 sm:h-22 rounded-full bg-gradient-to-tr from-[#0F5D46] via-[#165A46] to-[#D9B24A] p-[2px] sm:p-[2.5px] shadow-md shrink-0 group">
+            <div className="w-full h-full rounded-full bg-[#EAF7F1] flex items-center justify-center text-xl sm:text-3xl font-bold text-[#0F5D46] overflow-hidden">
               {profile.avatarUrl ? (
                 <img src={profile.avatarUrl} alt="Profile" className="w-full h-full object-cover" />
               ) : (
@@ -225,29 +225,29 @@ export default function Profile({ user }) {
             </div>
             <label 
               title="Click to change profile picture"
-              className="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-[#0F5D46] hover:bg-[#073327] text-white flex items-center justify-center text-xs cursor-pointer shadow-md border-2 border-white transition-all transform hover:scale-105"
+              className="absolute bottom-0 right-0 w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#0F5D46] hover:bg-[#073327] text-white flex items-center justify-center text-[10px] sm:text-xs cursor-pointer shadow-md border-2 border-white transition-all transform hover:scale-105"
             >
               📷
               <input type="file" accept="image/*" onChange={handleAvatarUpload} className="hidden" />
             </label>
           </div>
 
-          <div className="space-y-1">
-            <div className="flex items-center gap-2.5 flex-wrap">
-              <h3 className="font-display font-bold text-xl sm:text-2xl text-[#0F5D46]">
+          <div className="space-y-0.5 sm:space-y-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h3 className="font-display font-bold text-lg sm:text-2xl text-[#0F5D46] truncate">
                 {profile.fullName || 'Student User'}
               </h3>
-              <span className="text-[10px] uppercase font-extrabold tracking-wide text-[#0F5D46] bg-[#EAF7F1] px-2.5 py-0.5 rounded-full border border-[#0F5D46]/20">
-                ✓ Verified Account
+              <span className="text-[9.5px] sm:text-[10px] uppercase font-extrabold tracking-wide text-[#0F5D46] bg-[#EAF7F1] px-2 sm:px-2.5 py-0.5 rounded-full border border-[#0F5D46]/20 shrink-0">
+                ✓ Verified
               </span>
             </div>
-            <p className="text-xs text-[#5E6A68] flex items-center gap-2 flex-wrap">
+            <p className="text-[11.5px] sm:text-xs text-[#5E6A68] flex items-center gap-1.5 sm:gap-2 flex-wrap break-all">
               <span>📧 {profile.email || 'No email set'}</span>
               {profile.phoneNumber && <span>• 📱 {profile.phoneNumber}</span>}
               {profile.city && <span>• 📍 {profile.city}{profile.state ? `, ${profile.state}` : ''}</span>}
             </p>
             {profile.college && (
-              <p className="text-[11px] text-[#0F5D46] font-semibold">
+              <p className="text-[10.5px] sm:text-[11px] text-[#0F5D46] font-semibold truncate">
                 🏛 {profile.college} {profile.branch ? `• ${profile.branch}` : ''}
               </p>
             )}
@@ -255,12 +255,12 @@ export default function Profile({ user }) {
         </div>
 
         {/* Profile Completeness Pill */}
-        <div className="bg-[#FAF8F2] border border-[#0F5D46]/15 rounded-[20px] p-4 min-w-[200px] sm:min-w-[230px]">
+        <div className="bg-[#FAF8F2] border border-[#0F5D46]/15 rounded-[16px] sm:rounded-[20px] p-3.5 sm:p-4 w-full sm:min-w-[230px]">
           <div className="flex items-center justify-between text-xs font-bold text-[#0F5D46] mb-1.5">
             <span>Profile Completeness</span>
             <span className="text-[#D9B24A] font-mono">{completeness}%</span>
           </div>
-          <div className="w-full bg-[#EAF7F1] h-2 rounded-full overflow-hidden mb-2">
+          <div className="w-full bg-[#EAF7F1] h-2 rounded-full overflow-hidden mb-1.5 sm:mb-2">
             <div 
               className="bg-gradient-to-r from-[#0F5D46] to-[#D9B24A] h-full rounded-full transition-all duration-700" 
               style={{ width: `${completeness}%` }} 
@@ -562,13 +562,13 @@ export default function Profile({ user }) {
         </form>
       ) : (
         /* View Mode: Bento Grid Display */
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* Card 1: 👤 Personal Information Grid */}
-          <div className="p-6 sm:p-7 rounded-[26px] bg-white border border-[#0F5D46]/15 shadow-xs space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+          <div className="p-4.5 sm:p-7 rounded-[20px] sm:rounded-[26px] bg-white border border-[#0F5D46]/15 shadow-xs space-y-3.5 sm:space-y-4">
+            <div className="flex items-center justify-between pb-2.5 sm:pb-3 border-b border-gray-100">
               <div className="flex items-center gap-2">
                 <span className="text-base">👤</span>
-                <h3 className="font-display font-bold text-base text-[#0F5D46]">
+                <h3 className="font-display font-bold text-sm sm:text-base text-[#0F5D46]">
                   Personal Details
                 </h3>
               </div>
@@ -581,45 +581,45 @@ export default function Profile({ user }) {
               </button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
-              <div className="p-3.5 rounded-[16px] bg-[#FAF8F2] border border-[#0F5D46]/10">
-                <span className="text-[10px] font-bold text-[#5E6A68] uppercase tracking-wider block mb-1">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 text-xs">
+              <div className="p-3 sm:p-3.5 rounded-[14px] sm:rounded-[16px] bg-[#FAF8F2] border border-[#0F5D46]/10">
+                <span className="text-[9.5px] sm:text-[10px] font-bold text-[#5E6A68] uppercase tracking-wider block mb-0.5 sm:mb-1">
                   Full Name
                 </span>
-                <span className="font-bold text-[#1F2937] text-sm block">
+                <span className="font-bold text-[#1F2937] text-xs sm:text-sm block break-words">
                   {profile.fullName || 'Not specified'}
                 </span>
               </div>
 
-              <div className="p-3.5 rounded-[16px] bg-[#FAF8F2] border border-[#0F5D46]/10">
-                <span className="text-[10px] font-bold text-[#5E6A68] uppercase tracking-wider block mb-1">
+              <div className="p-3 sm:p-3.5 rounded-[14px] sm:rounded-[16px] bg-[#FAF8F2] border border-[#0F5D46]/10">
+                <span className="text-[9.5px] sm:text-[10px] font-bold text-[#5E6A68] uppercase tracking-wider block mb-0.5 sm:mb-1">
                   Phone Number
                 </span>
-                <span className="font-bold text-[#1F2937] text-sm block font-mono">
+                <span className="font-bold text-[#1F2937] text-xs sm:text-sm block font-mono break-all">
                   {profile.phoneNumber || 'Not specified'}
                 </span>
               </div>
 
-              <div className="p-3.5 rounded-[16px] bg-[#FAF8F2] border border-[#0F5D46]/10">
-                <span className="text-[10px] font-bold text-[#5E6A68] uppercase tracking-wider block mb-1">
+              <div className="p-3 sm:p-3.5 rounded-[14px] sm:rounded-[16px] bg-[#FAF8F2] border border-[#0F5D46]/10">
+                <span className="text-[9.5px] sm:text-[10px] font-bold text-[#5E6A68] uppercase tracking-wider block mb-0.5 sm:mb-1">
                   Emergency Contact
                 </span>
-                <span className="font-bold text-[#1F2937] text-sm block font-mono">
+                <span className="font-bold text-[#1F2937] text-xs sm:text-sm block font-mono break-all">
                   {profile.emergencyContact || 'Add contact ➕'}
                 </span>
               </div>
 
-              <div className="p-3.5 rounded-[16px] bg-[#FAF8F2] border border-[#0F5D46]/10">
-                <span className="text-[10px] font-bold text-[#5E6A68] uppercase tracking-wider block mb-1">
+              <div className="p-3 sm:p-3.5 rounded-[14px] sm:rounded-[16px] bg-[#FAF8F2] border border-[#0F5D46]/10">
+                <span className="text-[9.5px] sm:text-[10px] font-bold text-[#5E6A68] uppercase tracking-wider block mb-0.5 sm:mb-1">
                   Gender & DOB
                 </span>
-                <span className="font-bold text-[#1F2937] text-sm block">
+                <span className="font-bold text-[#1F2937] text-xs sm:text-sm block">
                   {profile.gender || 'Not specified'} {profile.dob ? `• ${profile.dob}` : ''}
                 </span>
               </div>
 
-              <div className="p-3.5 rounded-[16px] bg-[#FAF8F2] border border-[#0F5D46]/10 sm:col-span-2">
-                <span className="text-[10px] font-bold text-[#5E6A68] uppercase tracking-wider block mb-1">
+              <div className="p-3 sm:p-3.5 rounded-[14px] sm:rounded-[16px] bg-[#FAF8F2] border border-[#0F5D46]/10 sm:col-span-2">
+                <span className="text-[9.5px] sm:text-[10px] font-bold text-[#5E6A68] uppercase tracking-wider block mb-0.5 sm:mb-1">
                   Email Address
                 </span>
                 <span className="font-semibold text-[#0F5D46] text-xs block truncate">
@@ -627,11 +627,11 @@ export default function Profile({ user }) {
                 </span>
               </div>
 
-              <div className="p-3.5 rounded-[16px] bg-[#FAF8F2] border border-[#0F5D46]/10 sm:col-span-2">
-                <span className="text-[10px] font-bold text-[#5E6A68] uppercase tracking-wider block mb-1">
+              <div className="p-3 sm:p-3.5 rounded-[14px] sm:rounded-[16px] bg-[#FAF8F2] border border-[#0F5D46]/10 sm:col-span-2">
+                <span className="text-[9.5px] sm:text-[10px] font-bold text-[#5E6A68] uppercase tracking-wider block mb-0.5 sm:mb-1">
                   Location (City, State)
                 </span>
-                <span className="font-bold text-[#1F2937] text-sm block">
+                <span className="font-bold text-[#1F2937] text-xs sm:text-sm block">
                   {profile.city || profile.state ? `${profile.city || ''}${profile.city && profile.state ? ', ' : ''}${profile.state || ''}` : 'Add location ➕'}
                 </span>
               </div>
@@ -639,11 +639,11 @@ export default function Profile({ user }) {
           </div>
 
           {/* Card 2: 🎓 Academic Information Grid */}
-          <div className="p-6 sm:p-7 rounded-[26px] bg-white border border-[#0F5D46]/15 shadow-xs space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+          <div className="p-4.5 sm:p-7 rounded-[20px] sm:rounded-[26px] bg-white border border-[#0F5D46]/15 shadow-xs space-y-3.5 sm:space-y-4">
+            <div className="flex items-center justify-between pb-2.5 sm:pb-3 border-b border-gray-100">
               <div className="flex items-center gap-2">
                 <span className="text-base">🎓</span>
-                <h3 className="font-display font-bold text-base text-[#0F5D46]">
+                <h3 className="font-display font-bold text-sm sm:text-base text-[#0F5D46]">
                   Academic & Student Identity
                 </h3>
               </div>
@@ -656,39 +656,39 @@ export default function Profile({ user }) {
               </button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
-              <div className="p-3.5 rounded-[16px] bg-[#FAF8F2] border border-[#0F5D46]/10 sm:col-span-2">
-                <span className="text-[10px] font-bold text-[#5E6A68] uppercase tracking-wider block mb-1">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 text-xs">
+              <div className="p-3 sm:p-3.5 rounded-[14px] sm:rounded-[16px] bg-[#FAF8F2] border border-[#0F5D46]/10 sm:col-span-2">
+                <span className="text-[9.5px] sm:text-[10px] font-bold text-[#5E6A68] uppercase tracking-wider block mb-0.5 sm:mb-1">
                   University / College
                 </span>
-                <span className="font-bold text-[#1F2937] text-sm block">
+                <span className="font-bold text-[#1F2937] text-xs sm:text-sm block">
                   {profile.college || 'Add your college ➕'}
                 </span>
               </div>
 
-              <div className="p-3.5 rounded-[16px] bg-[#FAF8F2] border border-[#0F5D46]/10">
-                <span className="text-[10px] font-bold text-[#5E6A68] uppercase tracking-wider block mb-1">
+              <div className="p-3 sm:p-3.5 rounded-[14px] sm:rounded-[16px] bg-[#FAF8F2] border border-[#0F5D46]/10">
+                <span className="text-[9.5px] sm:text-[10px] font-bold text-[#5E6A68] uppercase tracking-wider block mb-0.5 sm:mb-1">
                   Major / Branch
                 </span>
-                <span className="font-bold text-[#1F2937] text-sm block">
+                <span className="font-bold text-[#1F2937] text-xs sm:text-sm block">
                   {profile.branch || 'Add branch ➕'}
                 </span>
               </div>
 
-              <div className="p-3.5 rounded-[16px] bg-[#FAF8F2] border border-[#0F5D46]/10">
-                <span className="text-[10px] font-bold text-[#5E6A68] uppercase tracking-wider block mb-1">
+              <div className="p-3 sm:p-3.5 rounded-[14px] sm:rounded-[16px] bg-[#FAF8F2] border border-[#0F5D46]/10">
+                <span className="text-[9.5px] sm:text-[10px] font-bold text-[#5E6A68] uppercase tracking-wider block mb-0.5 sm:mb-1">
                   Academic Year
                 </span>
-                <span className="font-bold text-[#0F5D46] text-sm block">
+                <span className="font-bold text-[#0F5D46] text-xs sm:text-sm block">
                   {profile.year || 'Select year ➕'}
                 </span>
               </div>
 
-              <div className="p-3.5 rounded-[16px] bg-[#FAF8F2] border border-[#0F5D46]/10 sm:col-span-2">
-                <span className="text-[10px] font-bold text-[#5E6A68] uppercase tracking-wider block mb-1">
+              <div className="p-3 sm:p-3.5 rounded-[14px] sm:rounded-[16px] bg-[#FAF8F2] border border-[#0F5D46]/10 sm:col-span-2">
+                <span className="text-[9.5px] sm:text-[10px] font-bold text-[#5E6A68] uppercase tracking-wider block mb-0.5 sm:mb-1">
                   Enrollment / Roll ID
                 </span>
-                <span className="font-mono font-bold text-[#0F5D46] text-sm block">
+                <span className="font-mono font-bold text-[#0F5D46] text-xs sm:text-sm block break-all">
                   {profile.rollNumber || 'Add Roll ID ➕'}
                 </span>
               </div>
@@ -696,11 +696,11 @@ export default function Profile({ user }) {
           </div>
 
           {/* Card 3: 🌐 Professional Bio, Skills & Links */}
-          <div className="p-6 sm:p-7 rounded-[26px] bg-white border border-[#0F5D46]/15 shadow-xs space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+          <div className="p-4.5 sm:p-7 rounded-[20px] sm:rounded-[26px] bg-white border border-[#0F5D46]/15 shadow-xs space-y-3.5 sm:space-y-4">
+            <div className="flex items-center justify-between pb-2.5 sm:pb-3 border-b border-gray-100">
               <div className="flex items-center gap-2">
                 <span className="text-base">🌐</span>
-                <h3 className="font-display font-bold text-base text-[#0F5D46]">
+                <h3 className="font-display font-bold text-sm sm:text-base text-[#0F5D46]">
                   Professional Showcase & Links
                 </h3>
               </div>
@@ -713,10 +713,10 @@ export default function Profile({ user }) {
               </button>
             </div>
 
-            <div className="space-y-4 text-xs">
+            <div className="space-y-3.5 sm:space-y-4 text-xs">
               {/* Bio */}
-              <div className="p-4 rounded-[16px] bg-[#FAF8F2] border border-[#0F5D46]/10">
-                <span className="text-[10px] font-bold text-[#5E6A68] uppercase tracking-wider block mb-1">
+              <div className="p-3.5 sm:p-4 rounded-[14px] sm:rounded-[16px] bg-[#FAF8F2] border border-[#0F5D46]/10">
+                <span className="text-[9.5px] sm:text-[10px] font-bold text-[#5E6A68] uppercase tracking-wider block mb-1">
                   About Me / Bio
                 </span>
                 <p className="text-xs text-[#1F2937]/80 leading-relaxed">
@@ -725,8 +725,8 @@ export default function Profile({ user }) {
               </div>
 
               {/* Skills */}
-              <div className="p-4 rounded-[16px] bg-[#FAF8F2] border border-[#0F5D46]/10">
-                <span className="text-[10px] font-bold text-[#5E6A68] uppercase tracking-wider block mb-1.5">
+              <div className="p-3.5 sm:p-4 rounded-[14px] sm:rounded-[16px] bg-[#FAF8F2] border border-[#0F5D46]/10">
+                <span className="text-[9.5px] sm:text-[10px] font-bold text-[#5E6A68] uppercase tracking-wider block mb-1.5">
                   Core Skills & Interests
                 </span>
                 {profile.skills ? (
@@ -737,7 +737,7 @@ export default function Profile({ user }) {
                       return (
                         <span 
                           key={idx} 
-                          className="px-2.5 py-1 rounded-full bg-[#EAF7F1] text-[#0F5D46] font-bold text-[11px] border border-[#0F5D46]/20"
+                          className="px-2.5 py-1 rounded-full bg-[#EAF7F1] text-[#0F5D46] font-bold text-[10.5px] sm:text-[11px] border border-[#0F5D46]/20"
                         >
                           ⚡ {trimmed}
                         </span>
@@ -750,18 +750,18 @@ export default function Profile({ user }) {
               </div>
 
               {/* Links Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="p-3.5 rounded-[16px] bg-[#FAF8F2] border border-[#0F5D46]/10 flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <span className="text-lg">💼</span>
-                    <div>
-                      <span className="text-[10px] font-bold text-[#5E6A68] uppercase block">LinkedIn</span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <div className="p-3 sm:p-3.5 rounded-[14px] sm:rounded-[16px] bg-[#FAF8F2] border border-[#0F5D46]/10 flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+                    <span className="text-base sm:text-lg shrink-0">💼</span>
+                    <div className="min-w-0">
+                      <span className="text-[9.5px] sm:text-[10px] font-bold text-[#5E6A68] uppercase block">LinkedIn</span>
                       {profile.linkedin ? (
                         <a 
                           href={profile.linkedin} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="text-xs font-bold text-[#0F5D46] hover:underline truncate max-w-[200px] block"
+                          className="text-xs font-bold text-[#0F5D46] hover:underline truncate max-w-[150px] sm:max-w-[200px] block"
                         >
                           {profile.linkedin}
                         </a>
@@ -771,21 +771,21 @@ export default function Profile({ user }) {
                     </div>
                   </div>
                   {profile.linkedin && (
-                    <span className="text-xs text-[#0F5D46] font-bold">↗</span>
+                    <span className="text-xs text-[#0F5D46] font-bold shrink-0">↗</span>
                   )}
                 </div>
 
-                <div className="p-3.5 rounded-[16px] bg-[#FAF8F2] border border-[#0F5D46]/10 flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <span className="text-lg">💻</span>
-                    <div>
-                      <span className="text-[10px] font-bold text-[#5E6A68] uppercase block">GitHub / Portfolio</span>
+                <div className="p-3 sm:p-3.5 rounded-[14px] sm:rounded-[16px] bg-[#FAF8F2] border border-[#0F5D46]/10 flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+                    <span className="text-base sm:text-lg shrink-0">💻</span>
+                    <div className="min-w-0">
+                      <span className="text-[9.5px] sm:text-[10px] font-bold text-[#5E6A68] uppercase block">GitHub / Portfolio</span>
                       {profile.github ? (
                         <a 
                           href={profile.github} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="text-xs font-bold text-[#0F5D46] hover:underline truncate max-w-[200px] block"
+                          className="text-xs font-bold text-[#0F5D46] hover:underline truncate max-w-[150px] sm:max-w-[200px] block"
                         >
                           {profile.github}
                         </a>
@@ -794,9 +794,6 @@ export default function Profile({ user }) {
                       )}
                     </div>
                   </div>
-                  {profile.github && (
-                    <span className="text-xs text-[#0F5D46] font-bold">↗</span>
-                  )}
                 </div>
               </div>
             </div>

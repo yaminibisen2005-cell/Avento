@@ -129,7 +129,7 @@ export default function StudentDashboard({ user, onLogout, onBackToLanding, init
         />
 
         {/* Dynamic Page Views */}
-        <main className="flex-1 p-6 sm:p-8 lg:p-10 max-w-7xl w-full mx-auto">
+        <main className="flex-1 p-3.5 sm:p-8 lg:p-10 max-w-7xl w-full mx-auto">
           {activeTab === 'dashboard' && (
             <DashboardHome
               data={dashboardData}

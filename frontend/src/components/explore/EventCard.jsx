@@ -31,7 +31,7 @@ export default function EventCard({
       {/* Top Cover Image Area */}
       <div 
         onClick={() => onViewDetails && onViewDetails(event.id)}
-        className="relative h-44 sm:h-48 w-full overflow-hidden bg-gray-100 cursor-pointer"
+        className="relative h-36 sm:h-48 w-full overflow-hidden bg-gray-100 cursor-pointer"
       >
         <img 
           src={event.image || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=800&q=80'} 
@@ -68,7 +68,7 @@ export default function EventCard({
       </div>
 
       {/* Content Area */}
-      <div className="p-4 sm:p-4.5 flex-1 flex flex-col justify-between">
+      <div className="p-3.5 sm:p-4.5 flex-1 flex flex-col justify-between">
         <div>
           {/* Event Title */}
           <h3 

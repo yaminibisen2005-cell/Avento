@@ -218,21 +218,21 @@ export default function AboutPage({
               </div>
 
               {/* Large Monumental Heading */}
-              <h1 className="text-4xl sm:text-5xl lg:text-[56px] font-extrabold text-[#111827] tracking-tight leading-[1.12] mb-6 font-sans">
+              <h1 className="text-3xl sm:text-5xl lg:text-[56px] font-extrabold text-[#111827] tracking-tight leading-[1.12] mb-5 sm:mb-6 font-sans">
                 Empowering Every Student Through{' '}
                 <span className="font-serif italic font-normal text-[#D9B24A]">Campus Innovation.</span>
               </h1>
 
               {/* Description */}
-              <p className="text-base sm:text-lg text-gray-600 max-w-xl leading-relaxed mb-8">
+              <p className="text-sm sm:text-lg text-gray-600 max-w-xl leading-relaxed mb-6 sm:mb-8">
                 AVENTO is India's modern campus event platform where students discover competitions, hackathons, workshops, conferences, cultural festivals, and career opportunities from universities across the country.
               </p>
 
               {/* CTA Action Buttons */}
-              <div className="flex flex-wrap items-center gap-4">
+              <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-3 sm:gap-4">
                 <button
                   onClick={onOpenEvents}
-                  className="px-7 py-3.5 rounded-full bg-[#0F5D46] hover:bg-[#0B4B3A] text-white font-bold text-sm tracking-wide shadow-md hover:shadow-lg transition-all active:scale-98 cursor-pointer flex items-center gap-2"
+                  className="px-7 py-3 sm:py-3.5 rounded-full bg-[#0F5D46] hover:bg-[#0B4B3A] text-white font-bold text-xs sm:text-sm tracking-wide shadow-md hover:shadow-lg transition-all active:scale-98 cursor-pointer flex items-center justify-center gap-2"
                 >
                   <span>Explore Events</span>
                   <span className="text-base leading-none">→</span>
@@ -240,7 +240,7 @@ export default function AboutPage({
 
                 <button
                   onClick={() => onOpenAuth && onOpenAuth('signup')}
-                  className="px-7 py-3.5 rounded-full bg-white hover:bg-[#EAF7F1]/60 border border-[#0F5D46]/25 text-[#0F5D46] font-bold text-sm tracking-wide transition-all shadow-2xs cursor-pointer hover:border-[#0F5D46]"
+                  className="px-7 py-3 sm:py-3.5 rounded-full bg-white hover:bg-[#EAF7F1]/60 border border-[#0F5D46]/25 text-[#0F5D46] font-bold text-xs sm:text-sm tracking-wide transition-all shadow-2xs cursor-pointer hover:border-[#0F5D46] flex items-center justify-center"
                 >
                   Become Organizer
                 </button>

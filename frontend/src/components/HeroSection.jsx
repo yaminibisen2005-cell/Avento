@@ -252,37 +252,37 @@ export default function HeroSection({ currentUser, onOpenProfile, onOpenEvents, 
           {/* ================= LEFT COLUMN: HERO CONTENT (ALIGNED LEFT) ================= */}
           <div className="xl:col-span-5 flex flex-col justify-center text-left z-20">
             
-            {/* Badge: 32px bottom spacing */}
+            {/* Badge: 16px mobile / 32px desktop spacing */}
             <motion.div 
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-              className="mb-8"
+              className="mb-4 sm:mb-8"
             >
-              <span className="inline-flex items-center gap-2.5 px-4.5 py-1.5 rounded-full text-[11.5px] font-bold tracking-[0.16em] text-[#0F5D46] bg-white/80 backdrop-blur-md border border-[#0F5D46]/18 shadow-xs uppercase">
+              <span className="inline-flex items-center gap-2 px-3.5 sm:px-4.5 py-1 sm:py-1.5 rounded-full text-[10.5px] sm:text-[11.5px] font-bold tracking-[0.14em] sm:tracking-[0.16em] text-[#0F5D46] bg-white/80 backdrop-blur-md border border-[#0F5D46]/18 shadow-xs uppercase">
                 <span className="w-2 h-2 rounded-full bg-[#D9B24A] animate-pulse" />
                 EVENT REGISTRATION PLATFORM
               </span>
             </motion.div>
 
-            {/* Main Heading: 28px bottom spacing - Fades and glides upward */}
+            {/* Main Heading: 16px mobile / 28px desktop spacing */}
             <motion.div 
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.9, type: 'spring', stiffness: 120, damping: 18, delay: 0.1 }}
-              className="mb-7 max-w-[560px]"
+              className="mb-4 sm:mb-7 max-w-[560px]"
             >
               <h1 
-                className="font-black text-3.5xl xs:text-4.5xl sm:text-6xl md:text-7xl xl:text-[76px] 2xl:text-[84px] uppercase tracking-[-0.06em] text-left"
+                className="font-black text-3xl xs:text-4xl sm:text-6xl md:text-7xl xl:text-[76px] 2xl:text-[84px] uppercase tracking-[-0.05em] sm:tracking-[-0.06em] text-left"
                 style={{ 
-                  lineHeight: '0.94',
+                  lineHeight: '0.96',
                   textShadow: '0 10px 35px rgba(15, 93, 70, 0.08)'
                 }}
               >
-                <span className="text-[#0F5D46] block mb-1">
+                <span className="text-[#0F5D46] block mb-0.5 sm:mb-1">
                   BUILD.
                 </span>
-                <span className="text-[#0F5D46] block mb-1">
+                <span className="text-[#0F5D46] block mb-0.5 sm:mb-1">
                   CONNECT.
                 </span>
                 <span className="bg-gradient-to-r from-[#D9B24A] via-[#F5D66D] to-[#C9971D] bg-clip-text text-transparent inline-block">
@@ -291,17 +291,17 @@ export default function HeroSection({ currentUser, onOpenProfile, onOpenEvents, 
               </h1>
             </motion.div>
 
-            {/* Description: 40px bottom spacing */}
+            {/* Description: 24px mobile / 40px desktop spacing */}
             <motion.p 
               initial={{ opacity: 0, y: 22 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
-              className="text-[15.5px] sm:text-[19px] font-normal leading-[1.65] max-w-[500px] text-[#5E6A68] text-left mb-10"
+              className="text-sm sm:text-[19px] font-normal leading-[1.6] sm:leading-[1.65] max-w-[500px] text-[#5E6A68] text-left mb-6 sm:mb-10"
             >
               Manage registrations, participants, QR attendance, secure payments and automated certificates from one intelligent platform.
             </motion.p>
 
-            {/* CTA Buttons: 40px bottom spacing, 18px gap - Spring Motion */}
+            {/* CTA Buttons: Responsive 48px mobile height */}
             <motion.div 
               initial={{ opacity: 0, y: 25, scale: 0.94 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -312,7 +312,7 @@ export default function HeroSection({ currentUser, onOpenProfile, onOpenEvents, 
                 damping: 18, 
                 delay: 0.22 
               }}
-              className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-[18px] mb-10"
+              className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-[18px] mb-6 sm:mb-10"
             >
               {/* Primary Button */}
               <motion.a 
@@ -325,24 +325,24 @@ export default function HeroSection({ currentUser, onOpenProfile, onOpenEvents, 
                 }}
                 whileHover={{ y: -3, scale: 1.015 }}
                 whileTap={{ scale: 0.985 }}
-                className="h-[58px] px-8 sm:px-9 rounded-[18px] bg-gradient-to-r from-[#0B4B3A] to-[#0F5D46] text-white font-bold text-[16.5px] tracking-[-0.01em] shadow-[0_14px_35px_-6px_rgba(15,93,70,0.45)] hover:shadow-[0_20px_45px_-4px_rgba(15,93,70,0.55)] flex items-center justify-center gap-3 transition-all duration-200 border border-[#0F5D46]/30 group cursor-pointer"
+                className="h-[48px] sm:h-[58px] px-6 sm:px-9 rounded-[16px] sm:rounded-[18px] bg-gradient-to-r from-[#0B4B3A] to-[#0F5D46] text-white font-bold text-sm sm:text-[16.5px] tracking-[-0.01em] shadow-[0_8px_24px_-4px_rgba(15,93,70,0.35)] sm:shadow-[0_14px_35px_-6px_rgba(15,93,70,0.45)] hover:shadow-[0_20px_45px_-4px_rgba(15,93,70,0.55)] flex items-center justify-center gap-2.5 sm:gap-3 transition-all duration-200 border border-[#0F5D46]/30 group cursor-pointer"
               >
                 <span>Explore Events</span>
-                <span className="text-[#D9B24A] text-lg font-bold transform group-hover:translate-x-1.5 transition-transform duration-200">
+                <span className="text-[#D9B24A] text-base sm:text-lg font-bold transform group-hover:translate-x-1.5 transition-transform duration-200">
                   →
                 </span>
               </motion.a>
 
-              {/* Secondary Button: Profile when logged in, Host Event when guest */}
+              {/* Secondary Button */}
               {currentUser ? (
                 <motion.button 
                   type="button"
                   onClick={onOpenProfile}
                   whileHover={{ y: -3, scale: 1.015 }}
                   whileTap={{ scale: 0.985 }}
-                  className="h-[58px] px-7 sm:px-8 rounded-[18px] bg-white/90 hover:bg-white text-[#0F5D46] font-bold text-[16px] tracking-[-0.01em] border border-[#0F5D46]/25 hover:border-[#0F5D46]/45 shadow-xs hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2.5 backdrop-blur-md cursor-pointer"
+                  className="h-[48px] sm:h-[58px] px-5 sm:px-8 rounded-[16px] sm:rounded-[18px] bg-white/90 hover:bg-white text-[#0F5D46] font-bold text-sm sm:text-[16px] tracking-[-0.01em] border border-[#0F5D46]/25 hover:border-[#0F5D46]/45 shadow-2xs hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 backdrop-blur-md cursor-pointer"
                 >
-                  <div className="w-6 h-6 rounded-full bg-[#EAF7F1] border border-[#0F5D46]/20 flex items-center justify-center text-xs font-extrabold text-[#0F5D46]">
+                  <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#EAF7F1] border border-[#0F5D46]/20 flex items-center justify-center text-[10px] sm:text-xs font-extrabold text-[#0F5D46]">
                     {currentUser.fullName ? currentUser.fullName.charAt(0).toUpperCase() : '👤'}
                   </div>
                   <span>View My Profile</span>
@@ -354,9 +354,9 @@ export default function HeroSection({ currentUser, onOpenProfile, onOpenEvents, 
                   onClick={() => onOpenAuth ? onOpenAuth('signup') : null}
                   whileHover={{ y: -3, scale: 1.015 }}
                   whileTap={{ scale: 0.985 }}
-                  className="h-[58px] px-7 sm:px-8 rounded-[18px] bg-white/80 hover:bg-white text-[#0F5D46] font-semibold text-[16.5px] tracking-[-0.01em] border border-[#0F5D46]/20 hover:border-[#0F5D46]/40 shadow-xs hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2.5 backdrop-blur-md cursor-pointer"
+                  className="h-[48px] sm:h-[58px] px-5 sm:px-8 rounded-[16px] sm:rounded-[18px] bg-white/80 hover:bg-white text-[#0F5D46] font-semibold text-sm sm:text-[16.5px] tracking-[-0.01em] border border-[#0F5D46]/20 hover:border-[#0F5D46]/40 shadow-2xs hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 backdrop-blur-md cursor-pointer"
                 >
-                  <svg className="w-4.5 h-4.5 text-[#D9B24A]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="w-4 h-4 text-[#D9B24A]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M12 4v16m8-8H4" />
                   </svg>
                   <span>Host Event</span>
@@ -364,27 +364,27 @@ export default function HeroSection({ currentUser, onOpenProfile, onOpenEvents, 
               )}
             </motion.div>
 
-            {/* Stats Row: 4 Glass Chips */}
+            {/* Stats Row: 4 Compact Glass Chips */}
             <motion.div 
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
-              className="flex flex-wrap items-center gap-2.5 sm:gap-3"
+              className="flex flex-wrap items-center gap-2 sm:gap-3"
             >
-              <div className="bg-white/75 backdrop-blur-md rounded-full shadow-xs border border-[#0F5D46]/12 px-4 py-1.5 text-[13px] font-semibold text-[#0F5D46] flex items-center gap-1.5">
-                <span className="text-[#0F5D46] font-bold text-xs">✔</span>
-                <span>Trusted by 200+ Colleges</span>
+              <div className="bg-white/75 backdrop-blur-md rounded-full shadow-2xs border border-[#0F5D46]/12 px-3 sm:px-4 py-1 sm:py-1.5 text-xs sm:text-[13px] font-semibold text-[#0F5D46] flex items-center gap-1.5">
+                <span className="text-[#0F5D46] font-bold text-[11px] sm:text-xs">✔</span>
+                <span>200+ Colleges</span>
               </div>
-              <div className="bg-white/75 backdrop-blur-md rounded-full shadow-xs border border-[#0F5D46]/12 px-4 py-1.5 text-[13px] font-semibold text-[#0F5D46] flex items-center gap-1.5">
-                <span className="text-[#0F5D46] font-bold text-xs">✔</span>
+              <div className="bg-white/75 backdrop-blur-md rounded-full shadow-2xs border border-[#0F5D46]/12 px-3 sm:px-4 py-1 sm:py-1.5 text-xs sm:text-[13px] font-semibold text-[#0F5D46] flex items-center gap-1.5">
+                <span className="text-[#0F5D46] font-bold text-[11px] sm:text-xs">✔</span>
                 <span>20K+ Participants</span>
               </div>
-              <div className="bg-white/75 backdrop-blur-md rounded-full shadow-xs border border-[#0F5D46]/12 px-4 py-1.5 text-[13px] font-semibold text-[#0F5D46] flex items-center gap-1.5">
-                <span className="text-[#0F5D46] font-bold text-xs">✔</span>
+              <div className="bg-white/75 backdrop-blur-md rounded-full shadow-2xs border border-[#0F5D46]/12 px-3 sm:px-4 py-1 sm:py-1.5 text-xs sm:text-[13px] font-semibold text-[#0F5D46] flex items-center gap-1.5">
+                <span className="text-[#0F5D46] font-bold text-[11px] sm:text-xs">✔</span>
                 <span>98% Attendance</span>
               </div>
-              <div className="bg-white/75 backdrop-blur-md rounded-full shadow-xs border border-[#0F5D46]/12 px-4 py-1.5 text-[13px] font-semibold text-[#0F5D46] flex items-center gap-1.5">
-                <span className="text-[#0F5D46] font-bold text-xs">✔</span>
+              <div className="bg-white/75 backdrop-blur-md rounded-full shadow-2xs border border-[#0F5D46]/12 px-3 sm:px-4 py-1 sm:py-1.5 text-xs sm:text-[13px] font-semibold text-[#0F5D46] flex items-center gap-1.5">
+                <span className="text-[#0F5D46] font-bold text-[11px] sm:text-xs">✔</span>
                 <span>99.9% Uptime</span>
               </div>
             </motion.div>

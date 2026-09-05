@@ -178,15 +178,15 @@ export default function EventCategoriesSection({ onCategoryClick }) {
                       : '#ffffff',
                     zIndex: isHovered ? 30 : 10
                   }}
-                  className="relative sm:absolute top-0 left-0 right-0 rounded-[24px] sm:rounded-[28px] border p-5 sm:p-8 flex flex-col justify-between cursor-pointer overflow-hidden backdrop-blur-md"
+                  className="relative sm:absolute top-0 left-0 right-0 rounded-[20px] sm:rounded-[28px] border p-4.5 sm:p-8 flex flex-col justify-between cursor-pointer overflow-hidden backdrop-blur-md"
                 >
                   {/* Top Portion: Icon, Badge, Title, Short Description */}
                   <div>
-                    <div className="flex items-center justify-between mb-4 relative z-10">
+                    <div className="flex items-center justify-between mb-3.5 sm:mb-4 relative z-10">
                       
                       {/* Large Icon Container */}
                       <div 
-                        className={`w-14 h-14 rounded-[20px] border flex items-center justify-center text-3xl shadow-xs transition-colors duration-300 ${
+                        className={`w-11 h-11 sm:w-14 sm:h-14 rounded-[16px] sm:rounded-[20px] border flex items-center justify-center text-2xl sm:text-3xl shadow-xs transition-colors duration-300 ${
                           isHovered 
                             ? 'bg-[#0F5D46]/[0.08] border-[#0F5D46]/[0.15]' 
                             : 'bg-[#0F5D46]/[0.05] border-[#0F5D46]/[0.10]'
@@ -197,7 +197,7 @@ export default function EventCategoriesSection({ onCategoryClick }) {
 
                       {/* Event Count Badge */}
                       <span 
-                        className={`text-xs font-bold px-3.5 py-1.5 rounded-full border transition-all duration-300 ${
+                        className={`text-[11px] sm:text-xs font-bold px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full border transition-all duration-300 ${
                           isHovered 
                             ? 'bg-[#0F5D46] text-white border-[#0F5D46] shadow-sm' 
                             : 'bg-[#0F5D46]/[0.07] text-[#0F5D46] border-[#0F5D46]/[0.12]'
@@ -208,12 +208,12 @@ export default function EventCategoriesSection({ onCategoryClick }) {
                     </div>
 
                     {/* Title */}
-                    <h3 className="font-display font-bold text-2xl sm:text-[25px] text-[#0F5D46] tracking-tight mb-2">
+                    <h3 className="font-display font-bold text-xl sm:text-[25px] text-[#0F5D46] tracking-tight mb-1.5 sm:mb-2">
                       {cat.title}
                     </h3>
 
                     {/* Short Description */}
-                    <p className="text-[#1F2937]/75 text-[14px] leading-relaxed">
+                    <p className="text-[#1F2937]/75 text-xs sm:text-[14px] leading-relaxed">
                       {cat.shortDesc}
                     </p>
                   </div>
