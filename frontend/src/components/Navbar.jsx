@@ -57,10 +57,10 @@ export default function Navbar({
 
   return (
     <header 
-      className={`fixed top-0 left-0 w-full z-40 transition-all duration-300 ease-out px-4 sm:px-8 lg:px-12 ${
+      className={`fixed top-0 left-0 w-full z-40 transition-all duration-300 ease-out px-2.5 sm:px-6 lg:px-12 ${
         isSplashing || !isScrolled
-          ? 'h-[72px] sm:h-[76px] bg-transparent border-b border-transparent shadow-none'
-          : 'h-[64px] sm:h-[68px] bg-white/90 backdrop-blur-xl border-b border-[#0F5D46]/10 shadow-[0_4px_24px_rgba(15,93,70,0.06)]'
+          ? 'h-[68px] sm:h-[76px] bg-transparent border-b border-transparent shadow-none'
+          : 'h-[60px] sm:h-[68px] bg-white/90 backdrop-blur-xl border-b border-[#0F5D46]/10 shadow-[0_4px_24px_rgba(15,93,70,0.06)]'
       }`}
     >
       <div className="w-full max-w-[1440px] h-full mx-auto flex items-center justify-between">
@@ -76,22 +76,22 @@ export default function Navbar({
               setLocalActiveTab('Home')
             }
           }}
-          className="flex items-center gap-3 group shrink-0"
+          className="flex items-center gap-2 sm:gap-3 group shrink-0"
         >
-          <div className="relative w-9 h-9 rounded-full bg-gradient-to-tr from-[#0F5D46] via-[#165A46] to-[#D9B24A] p-[1.5px] shadow-xs group-hover:scale-105 transition-transform duration-300">
+          <div className="relative w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-tr from-[#0F5D46] via-[#165A46] to-[#D9B24A] p-[1.5px] shadow-xs group-hover:scale-105 transition-transform duration-300">
             <div className="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden">
               <img 
                 src={aventoLogo} 
                 alt="Avento Logo" 
-                className="w-5 h-5 object-contain group-hover:rotate-6 transition-transform duration-300" 
+                className="w-4 h-4 sm:w-5 sm:h-5 object-contain group-hover:rotate-6 transition-transform duration-300" 
               />
             </div>
           </div>
           <div className="flex flex-col">
-            <span className="font-extrabold text-[20px] tracking-tight text-[#0F5D46] group-hover:text-[#0B4B3A] transition-colors leading-none font-sans">
+            <span className="font-extrabold text-[17px] sm:text-[20px] tracking-tight text-[#0F5D46] group-hover:text-[#0B4B3A] transition-colors leading-none font-sans">
               AVENTO
             </span>
-            <span className="text-[9px] tracking-widest uppercase font-mono font-bold text-[#D9B24A] leading-none mt-1">
+            <span className="hidden xs:block text-[8.5px] sm:text-[9px] tracking-widest uppercase font-mono font-bold text-[#D9B24A] leading-none mt-1">
               Smart Events
             </span>
           </div>
@@ -153,13 +153,13 @@ export default function Navbar({
         </nav>
 
         {/* ================= RIGHT: SEARCH + LOGIN + SIGN UP ================= */}
-        <div className="flex items-center gap-3 sm:gap-4">
+        <div className="flex items-center gap-1.5 xs:gap-2.5 sm:gap-4 shrink-0">
           
           {/* Search Icon */}
           <div className="relative">
             <button 
               onClick={() => setSearchOpen(!searchOpen)} 
-              className="p-2.5 rounded-full text-[#0F5D46] hover:text-[#0B4B3A] hover:bg-[#0F5D46]/8 transition-all duration-200 cursor-pointer"
+              className="p-2 sm:p-2.5 rounded-full text-[#0F5D46] hover:text-[#0B4B3A] hover:bg-[#0F5D46]/8 transition-all duration-200 cursor-pointer"
               aria-label="Search events"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -169,7 +169,7 @@ export default function Navbar({
 
             {/* Search Dropdown */}
             {searchOpen && (
-              <div className="absolute right-0 mt-3 w-[calc(100vw-32px)] max-w-72 sm:w-72 bg-white/95 backdrop-blur-xl rounded-2xl shadow-[0_20px_40px_rgba(15,93,70,0.12)] border border-[#0F5D46]/15 p-2.5 z-50">
+              <div className="absolute right-0 mt-3 w-[calc(100vw-24px)] max-w-72 sm:w-72 bg-white/95 backdrop-blur-xl rounded-2xl shadow-[0_20px_40px_rgba(15,93,70,0.12)] border border-[#0F5D46]/15 p-2.5 z-50">
                 <div className="flex items-center gap-2 bg-[#FAF8F3] px-3 py-2 rounded-xl border border-gray-200/80">
                   <svg className="w-3.5 h-3.5 text-[#D9B24A]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -187,13 +187,13 @@ export default function Navbar({
           </div>
 
           {currentUser ? (
-            <div className="flex items-center gap-2 sm:gap-3" ref={userMenuRef}>
+            <div className="flex items-center gap-1.5 sm:gap-3" ref={userMenuRef}>
               {/* Direct Dashboard shortcut for Organizer or Admin */}
               {currentUser.role === 'ORGANIZER' && onOpenDashboard && (
                 <button
                   type="button"
                   onClick={() => onOpenDashboard('dashboard')}
-                  className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-[#0F5D46] bg-[#D9B24A]/25 hover:bg-[#D9B24A]/35 border border-[#D9B24A]/50 rounded-full transition-all cursor-pointer shadow-xs hover:scale-[1.02]"
+                  className="hidden md:flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-[#0F5D46] bg-[#D9B24A]/25 hover:bg-[#D9B24A]/35 border border-[#D9B24A]/50 rounded-full transition-all cursor-pointer shadow-xs hover:scale-[1.02]"
                 >
                   <span>🏛</span>
                   <span>Organizer Dashboard</span>
@@ -203,14 +203,14 @@ export default function Navbar({
                 <button
                   type="button"
                   onClick={() => onOpenDashboard('dashboard')}
-                  className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-white bg-[#0F5D46] hover:bg-[#126B51] rounded-full transition-all cursor-pointer shadow-xs hover:scale-[1.02]"
+                  className="hidden md:flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-white bg-[#0F5D46] hover:bg-[#126B51] rounded-full transition-all cursor-pointer shadow-xs hover:scale-[1.02]"
                 >
                   <span>🛡</span>
                   <span>Admin Console</span>
                 </button>
               )}
 
-              {/* Primary Profile Button (Directly opens profile / user details) */}
+              {/* Primary Profile Button (Responsive layout for mobile & desktop) */}
               <div className="relative">
                 <button
                   type="button"
@@ -218,23 +218,23 @@ export default function Navbar({
                     if (onOpenProfile) onOpenProfile();
                     else if (onOpenDashboard) onOpenDashboard('profile');
                   }}
-                  className="pl-2 pr-3.5 sm:pr-4 py-1.5 sm:py-2 text-xs sm:text-[14px] font-bold text-white bg-gradient-to-r from-[#0B4B3A] to-[#0F5D46] hover:from-[#083629] hover:to-[#0B4B3A] rounded-full shadow-[0_6px_20px_rgba(15,93,70,0.28)] hover:shadow-[0_10px_28px_rgba(15,93,70,0.4)] hover:-translate-y-0.5 transition-all duration-250 flex items-center gap-2.5 group border border-[#0F5D46]/30 cursor-pointer"
+                  className="pl-1.5 sm:pl-2 pr-2.5 sm:pr-4 py-1 sm:py-2 text-xs sm:text-[14px] font-bold text-white bg-gradient-to-r from-[#0B4B3A] to-[#0F5D46] hover:from-[#083629] hover:to-[#0B4B3A] rounded-full shadow-[0_4px_16px_rgba(15,93,70,0.25)] hover:shadow-[0_8px_24px_rgba(15,93,70,0.35)] transition-all duration-250 flex items-center gap-1.5 sm:gap-2.5 group border border-[#0F5D46]/30 cursor-pointer"
                   title="Click to view Profile & User Details"
                   aria-label="User Profile"
                 >
                   {/* User Avatar Circle */}
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white p-[1.5px] shadow-xs flex items-center justify-center shrink-0">
-                    <div className="w-full h-full rounded-full bg-[#FAF8F2] flex items-center justify-center font-extrabold text-xs sm:text-[13px] text-[#0F5D46]">
+                  <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-white p-[1.5px] shadow-xs flex items-center justify-center shrink-0">
+                    <div className="w-full h-full rounded-full bg-[#FAF8F2] flex items-center justify-center font-extrabold text-[11px] sm:text-[13px] text-[#0F5D46]">
                       {currentUser.fullName ? currentUser.fullName.charAt(0).toUpperCase() : '👤'}
                     </div>
                   </div>
 
                   {/* User Name & Profile Badge */}
                   <div className="flex flex-col items-start text-left leading-none">
-                    <span className="font-extrabold text-white text-xs sm:text-[13.5px] truncate max-w-[85px] xs:max-w-[120px] sm:max-w-[150px]">
-                      {currentUser.fullName || 'My Profile'}
+                    <span className="font-extrabold text-white text-[11px] sm:text-[13.5px] truncate max-w-[65px] xs:max-w-[95px] sm:max-w-[150px]">
+                      {currentUser.fullName || 'Profile'}
                     </span>
-                    <span className="text-[9px] font-mono font-bold tracking-wider uppercase text-[#D9B24A] mt-0.5">
+                    <span className="hidden sm:block text-[9px] font-mono font-bold tracking-wider uppercase text-[#D9B24A] mt-0.5">
                       👤 {currentUser.role || 'User'} Profile
                     </span>
                   </div>
@@ -245,7 +245,7 @@ export default function Navbar({
                       e.stopPropagation();
                       setUserMenuOpen(!userMenuOpen);
                     }}
-                    className={`p-1 -mr-1 hover:bg-white/20 rounded-full text-[10px] text-[#D9B24A] transition-transform duration-200 ${userMenuOpen ? 'rotate-180' : ''}`}
+                    className={`p-0.5 sm:p-1 -mr-0.5 sm:-mr-1 hover:bg-white/20 rounded-full text-[9px] sm:text-[10px] text-[#D9B24A] transition-transform duration-200 ${userMenuOpen ? 'rotate-180' : ''}`}
                     title="Open options menu"
                   >
                     ▼
@@ -254,7 +254,7 @@ export default function Navbar({
 
                 {/* Profile Dropdown Menu */}
                 {userMenuOpen && (
-                  <div className="absolute right-0 mt-3 w-64 bg-white/95 backdrop-blur-2xl rounded-[24px] shadow-[0_20px_50px_rgba(15,93,70,0.18)] border border-[#0F5D46]/15 p-3 z-50 text-left animate-fade-in">
+                  <div className="absolute right-0 mt-3 w-[calc(100vw-24px)] max-w-64 sm:w-64 bg-white/95 backdrop-blur-2xl rounded-[24px] shadow-[0_20px_50px_rgba(15,93,70,0.18)] border border-[#0F5D46]/15 p-3 z-50 text-left animate-fade-in">
                     {/* User Card */}
                     <div 
                       onClick={() => {
@@ -384,11 +384,14 @@ export default function Navbar({
                   setAuthModalOpen(true)
                 }
               }}
-              className="px-3 sm:px-3.5 py-1.5 text-[11px] sm:text-[12px] font-bold tracking-tight text-white bg-gradient-to-r from-[#0B4B3A] to-[#0F5D46] hover:from-[#083629] hover:to-[#0B4B3A] rounded-full shadow-[0_2px_10px_rgba(15,93,70,0.2)] hover:shadow-[0_4px_14px_rgba(15,93,70,0.3)] hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-1.5 group border border-[#0F5D46]/30 cursor-pointer"
+              className="px-2.5 xs:px-3 sm:px-3.5 py-1.5 text-[10.5px] xs:text-[11.5px] sm:text-[12px] font-bold tracking-tight text-white bg-gradient-to-r from-[#0B4B3A] to-[#0F5D46] hover:from-[#083629] hover:to-[#0B4B3A] rounded-full shadow-[0_2px_10px_rgba(15,93,70,0.2)] hover:shadow-[0_4px_14px_rgba(15,93,70,0.3)] transition-all duration-200 flex items-center gap-1 sm:gap-1.5 group border border-[#0F5D46]/30 cursor-pointer"
             >
-              <span className="text-[11px]">👤</span>
-              <span>Login / Sign Up</span>
-              <span className="text-[#D9B24A] text-[11px] group-hover:translate-x-0.5 transition-transform duration-200 font-bold">→</span>
+              <span className="text-[10px] sm:text-[11px]">👤</span>
+              <span>
+                <span className="xs:hidden">Login</span>
+                <span className="hidden xs:inline">Login / Sign Up</span>
+              </span>
+              <span className="text-[#D9B24A] text-[10px] sm:text-[11px] group-hover:translate-x-0.5 transition-transform duration-200 font-bold">→</span>
             </button>
           )}
 
