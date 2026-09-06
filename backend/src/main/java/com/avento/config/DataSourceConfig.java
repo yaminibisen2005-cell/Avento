@@ -54,7 +54,7 @@ public class DataSourceConfig {
                 }
 
                 int port = uri.getPort() != -1 ? uri.getPort() : 3306;
-                String path = uri.getPath() != null ? uri.getPath() : "/defaultdb";
+                String path = uri.getPath() != null && !uri.getPath().isEmpty() && !"/".equals(uri.getPath()) ? uri.getPath() : "/defaultdb";
                 String query = uri.getQuery();
 
                 // MySQL Connector/J uses sslMode rather than ssl-mode
@@ -63,8 +63,11 @@ public class DataSourceConfig {
                     if (!query.contains("allowPublicKeyRetrieval")) {
                         query += "&allowPublicKeyRetrieval=true";
                     }
+                    if (!query.contains("createDatabaseIfNotExist")) {
+                        query += "&createDatabaseIfNotExist=true";
+                    }
                 } else {
-                    query = "sslMode=REQUIRED&allowPublicKeyRetrieval=true";
+                    query = "sslMode=REQUIRED&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true";
                 }
 
                 cleanUrl = "jdbc:mysql://" + uri.getHost() + ":" + port + path + "?" + query;
@@ -76,6 +79,19 @@ public class DataSourceConfig {
         } else if (!cleanUrl.startsWith("jdbc:")) {
             cleanUrl = "jdbc:" + cleanUrl;
         }
+
+        // Ensure critical MySQL connection flags for cloud DBs (auto-create DB, public key retrieval, sslMode)
+        if (cleanUrl.startsWith("jdbc:mysql://")) {
+            cleanUrl = cleanUrl.replace("ssl-mode=", "sslMode=");
+            if (!cleanUrl.contains("createDatabaseIfNotExist=")) {
+                cleanUrl += (cleanUrl.contains("?") ? "&" : "?") + "createDatabaseIfNotExist=true";
+            }
+            if (!cleanUrl.contains("allowPublicKeyRetrieval=")) {
+                cleanUrl += "&allowPublicKeyRetrieval=true";
+            }
+        }
+
+        logger.info("Configured JDBC URL for MySQL database connection (createDatabaseIfNotExist enabled)");
 
         config.setJdbcUrl(cleanUrl);
         config.setUsername(parsedUsername);
