@@ -104,9 +104,11 @@ public class OrganizerServiceImpl implements OrganizerService {
         }
 
         if (ticketOpt.isEmpty()) {
-            // Search if payload contains ticket number inside e.g. AVENTO:TICKET:...:AVT-...
+            // Search if payload contains ticket number or qr payload inside (e.g. AVENTO:TICKET:...:AVT-...)
+            String upperPayload = payload.toUpperCase();
             for (Ticket t : ticketRepository.findAll()) {
-                if (payload.contains(t.getTicketNumber())) {
+                if (upperPayload.contains(t.getTicketNumber().toUpperCase()) ||
+                    (t.getQrCodePayload() != null && upperPayload.contains(t.getQrCodePayload().toUpperCase()))) {
                     ticketOpt = Optional.of(t);
                     break;
                 }
@@ -116,12 +118,32 @@ public class OrganizerServiceImpl implements OrganizerService {
         if (ticketOpt.isEmpty()) {
             return AttendanceScanResponse.builder()
                     .valid(false)
-                    .message("Invalid QR code / Ticket Not Found")
+                    .message("Invalid QR code / Ticket Not Found in Registry")
                     .build();
         }
 
         Ticket ticket = ticketOpt.get();
         Registration reg = ticket.getRegistration();
+
+        // Check if eventId filter was provided and matches
+        if (req.getEventId() != null && !ticket.getEvent().getId().equals(req.getEventId())) {
+            return AttendanceScanResponse.builder()
+                    .valid(false)
+                    .message("Ticket belongs to another event: '" + ticket.getEvent().getTitle() + "'")
+                    .build();
+        }
+
+        // Check if organizer owns this event (for ORGANIZER role)
+        if (organizer != null && organizer.getRole() == Role.ORGANIZER) {
+            Event event = ticket.getEvent();
+            if (event.getOrganizer() != null && !event.getOrganizer().getId().equals(organizer.getId())) {
+                return AttendanceScanResponse.builder()
+                        .valid(false)
+                        .message("Unauthorized: This ticket belongs to an event hosted by another organizer.")
+                        .build();
+            }
+        }
+
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("hh:mm:ss a");
 
         if (Boolean.TRUE.equals(reg.getAttended()) || "Checked In".equalsIgnoreCase(ticket.getStatus())) {
@@ -132,6 +154,9 @@ public class OrganizerServiceImpl implements OrganizerService {
                     .message("Already Checked In at " + checkInTime)
                     .studentName(reg.getStudentName())
                     .studentEmail(reg.getStudentEmail())
+                    .college(reg.getCollege())
+                    .registrationNumber(reg.getRegistrationNumber())
+                    .eventId(ticket.getEvent().getId())
                     .eventTitle(ticket.getEvent().getTitle())
                     .ticketId(ticket.getTicketNumber())
                     .seatNumber(ticket.getSeatNumber())
@@ -153,6 +178,9 @@ public class OrganizerServiceImpl implements OrganizerService {
                 .message("Check-in Verified. Gate pass granted.")
                 .studentName(reg.getStudentName())
                 .studentEmail(reg.getStudentEmail())
+                .college(reg.getCollege())
+                .registrationNumber(reg.getRegistrationNumber())
+                .eventId(ticket.getEvent().getId())
                 .eventTitle(ticket.getEvent().getTitle())
                 .ticketId(ticket.getTicketNumber())
                 .seatNumber(ticket.getSeatNumber())

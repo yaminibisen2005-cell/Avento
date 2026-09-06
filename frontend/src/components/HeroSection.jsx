@@ -3,7 +3,9 @@ import { motion } from 'framer-motion'
 import MacbookMockup3D from './MacbookMockup3D'
 import {
   QRAttendanceCard,
-  CertificateCard
+  CertificateCard,
+  ParticipantsCard,
+  PrizePoolCard
 } from './FloatingGlassCard'
 
 export default function HeroSection({ currentUser, onOpenProfile, onOpenEvents, onOpenAuth }) {
@@ -392,60 +394,94 @@ export default function HeroSection({ currentUser, onOpenProfile, onOpenEvents, 
           </div>
 
 
-          {/* ================= RIGHT COLUMN: MACBOOK DASHBOARD WITH 3D DEPTH - Slides in from right ================= */}
+          {/* ================= RIGHT COLUMN: SMALL CARDS (Mobile) / MACBOOK DASHBOARD WITH 3D DEPTH (Desktop) ================= */}
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, type: 'spring', stiffness: 110, damping: 18, delay: 0.18 }}
-            className="xl:col-span-7 relative flex items-center justify-center z-20 mt-10 xl:mt-0 xl:translate-y-4 xl:translate-x-3 max-w-full overflow-hidden"
+            className="xl:col-span-7 relative flex items-center justify-center z-20 mt-8 xl:mt-0 xl:translate-y-4 xl:translate-x-3 max-w-full w-full"
           >
-            
-            {/* 7. Radial Light Behind Laptop for Floating Depth */}
-            <div 
-              style={{
-                background: 'radial-gradient(circle at center, rgba(255, 255, 255, 0.85) 0%, rgba(243, 247, 244, 0.5) 45%, transparent 70%)',
-                filter: 'blur(60px)'
-              }}
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[680px] h-[520px] pointer-events-none -z-10"
-              aria-hidden="true"
-            />
+            {/* 1. MOBILE ONLY (< lg): Small Cards Grid (NO HERO LAPTOP ON MOBILE) */}
+            <div className="block lg:hidden w-full max-w-md mx-auto py-2">
+              <div className="grid grid-cols-2 gap-2.5 sm:gap-3.5">
+                <motion.div
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
+                >
+                  <QRAttendanceCard className="w-full h-[84px]" />
+                </motion.div>
 
-            {/* Subtle Green & Gold Depth Glow Halo */}
-            <motion.div 
-              animate={{ scale: [1, 1.04, 1], opacity: [0.08, 0.11, 0.08] }}
-              transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
-              style={{
-                background: 'radial-gradient(circle at center, rgba(15, 93, 70, 0.8) 0%, rgba(217, 178, 74, 0.6) 45%, transparent 70%)',
-                filter: 'blur(90px)'
-              }}
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[720px] h-[560px] pointer-events-none -z-10"
-              aria-hidden="true"
-            />
+                <motion.div
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                >
+                  <CertificateCard className="w-full h-[84px]" />
+                </motion.div>
 
-            {/* Laptop & Floating Cards Wrapper */}
-            <div className="relative w-full max-w-[720px] xl:max-w-[760px] flex justify-center items-center">
+                <motion.div
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.3 }}
+                >
+                  <ParticipantsCard className="w-full h-[84px]" />
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
+                >
+                  <PrizePoolCard className="w-full h-[84px]" />
+                </motion.div>
+              </div>
+            </div>
+
+            {/* 2. DESKTOP ONLY (>= lg): 3D MACBOOK MOCKUP & FLOATING CARDS */}
+            <div className="hidden lg:flex relative w-full max-w-[720px] xl:max-w-[760px] justify-center items-center">
               
-              {/* TWO FLOATING CARDS (20-30px AWAY FROM LAPTOP EDGES) */}
+              {/* Radial Light Behind Laptop for Floating Depth */}
+              <div 
+                style={{
+                  background: 'radial-gradient(circle at center, rgba(255, 255, 255, 0.85) 0%, rgba(243, 247, 244, 0.5) 45%, transparent 70%)',
+                  filter: 'blur(60px)'
+                }}
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[680px] h-[520px] pointer-events-none -z-10"
+                aria-hidden="true"
+              />
 
-              {/* Top Left: QR Attendance Card (translateY -10px, 4s duration, ease-in-out, infinite) */}
+              {/* Subtle Green & Gold Depth Glow Halo */}
+              <motion.div 
+                animate={{ scale: [1, 1.04, 1], opacity: [0.08, 0.11, 0.08] }}
+                transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
+                style={{
+                  background: 'radial-gradient(circle at center, rgba(15, 93, 70, 0.8) 0%, rgba(217, 178, 74, 0.6) 45%, transparent 70%)',
+                  filter: 'blur(90px)'
+                }}
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[720px] h-[560px] pointer-events-none -z-10"
+                aria-hidden="true"
+              />
+
+              {/* Top Left: QR Attendance Card */}
               <motion.div 
                 animate={{ y: [0, -10, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                className="hidden lg:block absolute -top-5 -left-6 xl:-left-9 z-30 pointer-events-auto"
+                className="absolute -top-5 -left-6 xl:-left-9 z-30 pointer-events-auto"
               >
                 <QRAttendanceCard />
               </motion.div>
 
-              {/* Top Right: Certificate Generated Card (translateY -10px, 4s duration, ease-in-out, infinite, different delay) */}
+              {/* Top Right: Certificate Generated Card */}
               <motion.div 
                 animate={{ y: [0, -10, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 1.8 }}
-                className="hidden lg:block absolute -top-6 -right-4 xl:-right-8 z-30 pointer-events-auto"
+                className="absolute -top-6 -right-4 xl:-right-8 z-30 pointer-events-auto"
               >
                 <CertificateCard />
               </motion.div>
 
-              {/* 8. 3D MACBOOK MOCKUP (FLOATING VIA LAYERED SHADOWS) */}
+              {/* 3D MACBOOK MOCKUP (DESKTOP ONLY) */}
               <div className="w-full flex justify-center items-center">
                 <MacbookMockup3D />
               </div>

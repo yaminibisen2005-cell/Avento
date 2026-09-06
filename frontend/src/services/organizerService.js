@@ -136,9 +136,13 @@ export const organizerService = {
   },
 
   // 4. Attendance Scan Verification via Spring Boot
-  async scanTicket(ticketId) {
+  async scanTicket(ticketId, eventId = null) {
     try {
-      const res = await organizerApi.scanAttendance({ qrCode: ticketId });
+      const payload = { qrCode: ticketId };
+      if (eventId && eventId !== 'All') {
+        payload.eventId = Number(eventId);
+      }
+      const res = await organizerApi.scanAttendance(payload);
       if (res.valid) {
         return {
           status: res.alreadyCheckedIn ? 'ALREADY_SCANNED' : 'VALID',
@@ -147,6 +151,9 @@ export const organizerService = {
           attendee: {
             studentName: res.studentName || 'Attendee',
             email: res.studentEmail || '',
+            college: res.college || 'University Attendee',
+            registrationNumber: res.registrationNumber || '',
+            eventId: res.eventId,
             eventTitle: res.eventTitle || '',
             checkedInTime: res.checkInTime || 'Just now',
             seatNumber: res.seatNumber || 'GA-A14',
@@ -163,7 +170,7 @@ export const organizerService = {
     } catch (err) {
       return {
         status: 'INVALID',
-        message: err.message || 'Attendance check-in failed',
+        message: err.response?.data?.message || err.message || 'Attendance check-in failed',
         ticketId
       };
     }

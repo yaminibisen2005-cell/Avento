@@ -143,7 +143,23 @@ export default function OrganizerDashboard({
           )}
 
           {activeTab === 'attendance' && (
-            <TabQRAttendance />
+            <TabQRAttendance
+              events={events}
+              registrations={registrations}
+              onAttendanceMarked={async () => {
+                try {
+                  const [regs, ov] = await Promise.all([
+                    organizerService.getRegistrations(),
+                    organizerService.getOverview()
+                  ]);
+                  setRegistrations(regs);
+                  setOverviewData(ov);
+                } catch (e) {
+                  console.error('Failed to sync registrations', e);
+                }
+              }}
+              onNavigateTab={handleTabChange}
+            />
           )}
 
           {activeTab === 'certificates' && (

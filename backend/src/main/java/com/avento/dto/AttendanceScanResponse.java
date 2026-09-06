@@ -14,6 +14,9 @@ public class AttendanceScanResponse {
     private String message;
     private String studentName;
     private String studentEmail;
+    private String college;
+    private String registrationNumber;
+    private Long eventId;
     private String eventTitle;
     private String ticketId;
     private String seatNumber;
