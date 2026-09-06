@@ -21,6 +21,7 @@ public interface RegistrationRepository extends JpaRepository<Registration, Long
 
     boolean existsByEventAndUser(Event event, User user);
     boolean existsByUserAndEvent(User user, Event event);
+    boolean existsByEventAndStudentEmailIgnoreCase(Event event, String studentEmail);
 
     long countByEvent(Event event);
 

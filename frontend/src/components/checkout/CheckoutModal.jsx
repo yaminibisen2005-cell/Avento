@@ -119,7 +119,13 @@ export default function CheckoutModal({
           onCheckoutComplete(res.data)
         }
       } catch (err) {
-        setPaymentError(err.message || 'Registration failed')
+        if (err.message && err.message.toLowerCase().includes('already registered')) {
+          setIsAlreadyRegistered(true)
+          addRegisteredEventId(event.id)
+          setPaymentError('')
+        } else {
+          setPaymentError(err.message || 'Registration failed')
+        }
       } finally {
         setIsProcessing(false)
       }
@@ -226,7 +232,13 @@ export default function CheckoutModal({
                 refreshUserRegistrations()
                 if (onCheckoutComplete) onCheckoutComplete(regRecord)
               } catch (err) {
-                setPaymentError(err.message || 'Payment signature verification failed')
+                if (err.message && err.message.toLowerCase().includes('already registered')) {
+                  setIsAlreadyRegistered(true)
+                  addRegisteredEventId(event.id)
+                  setPaymentError('')
+                } else {
+                  setPaymentError(err.message || 'Payment signature verification failed')
+                }
               } finally {
                 setIsProcessing(false)
               }
@@ -288,7 +300,13 @@ export default function CheckoutModal({
       setIsProcessing(false)
     } catch (err) {
       setIsProcessing(false)
-      setPaymentError(err.message || 'Payment initiation failed')
+      if (err.message && err.message.toLowerCase().includes('already registered')) {
+        setIsAlreadyRegistered(true)
+        addRegisteredEventId(event.id)
+        setPaymentError('')
+      } else {
+        setPaymentError(err.message || 'Payment initiation failed')
+      }
     }
   }
 

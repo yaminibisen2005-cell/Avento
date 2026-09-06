@@ -217,7 +217,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
             className="relative w-full preserve-3d auth-flip-transition"
             style={{
               transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
-              minHeight: isFlipped ? '680px' : '560px'
+              minHeight: 'auto'
             }}
           >
 
@@ -225,7 +225,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
             {/* FRONT FACE: LOGIN FORM                                   */}
             {/* ======================================================== */}
             <div 
-              className="w-full max-h-[88vh] overflow-y-auto custom-scrollbar rounded-[28px] bg-white border border-[#0F4C3A]/15 p-6 sm:p-9 shadow-2xl flex flex-col justify-between relative"
+              className="w-full max-h-[88vh] overflow-y-auto custom-scrollbar rounded-[24px] sm:rounded-[28px] bg-white border border-[#0F4C3A]/15 p-4 sm:p-8 shadow-2xl flex flex-col justify-between relative"
               style={{
                 display: isFlipped ? 'none' : 'flex' // Clean accessibility & pointer-events guarantee
               }}
@@ -344,7 +344,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
             {/* BACK FACE: SIGNUP FORM                                   */}
             {/* ======================================================== */}
             <div 
-              className="w-full max-h-[88vh] overflow-y-auto custom-scrollbar rounded-[28px] bg-white border border-[#0F4C3A]/15 p-6 sm:p-9 shadow-2xl flex flex-col justify-between relative"
+              className="w-full max-h-[88vh] overflow-y-auto custom-scrollbar rounded-[24px] sm:rounded-[28px] bg-white border border-[#0F4C3A]/15 p-4 sm:p-8 shadow-2xl flex flex-col justify-between relative"
               style={{
                 display: !isFlipped ? 'none' : 'flex' // Clean accessibility & pointer-events guarantee
               }}

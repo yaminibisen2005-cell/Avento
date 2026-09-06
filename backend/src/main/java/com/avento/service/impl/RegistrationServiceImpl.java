@@ -68,23 +68,21 @@ public class RegistrationServiceImpl implements RegistrationService {
             throw new BadRequestException("Event is already fully booked.");
         }
 
-        // Check if already registered
-        if (registrationRepository.existsByEventAndUser(event, user)) {
-            Registration existing = registrationRepository.findByUserOrderByRegisteredAtDesc(user).stream()
-                    .filter(r -> r.getEvent().getId().equals(event.getId()))
-                    .findFirst()
-                    .orElse(null);
-            if (existing != null) {
-                Ticket t = ticketRepository.findByRegistration(existing).orElse(null);
-                return RegistrationResponse.fromEntity(existing, t != null ? t.getTicketNumber() : "");
-            }
-        }
-
-        String regNumber = "REG-" + (System.currentTimeMillis() % 100000);
         String studentName = req.getStudentName() != null && !req.getStudentName().trim().isEmpty() ?
                 req.getStudentName().trim() : user.getFullName();
         String studentEmail = req.getStudentEmail() != null && !req.getStudentEmail().trim().isEmpty() ?
                 req.getStudentEmail().trim() : user.getEmail();
+
+        // Strictly prevent multiple registrations for the same event
+        boolean alreadyRegistered = registrationRepository.existsByEventAndUser(event, user);
+        if (!alreadyRegistered && studentEmail != null && !studentEmail.isBlank()) {
+            alreadyRegistered = registrationRepository.existsByEventAndStudentEmailIgnoreCase(event, studentEmail);
+        }
+        if (alreadyRegistered) {
+            throw new BadRequestException("You have already registered for this event. Multiple registrations for the same event are not allowed.");
+        }
+
+        String regNumber = "REG-" + (System.currentTimeMillis() % 100000);
 
         boolean isFree = event.getFee() == null || event.getFee().equalsIgnoreCase("Free") || event.getFee().equals("₹0");
         String paymentStatus = isFree ? "Paid (₹0 Free Tier)" : "Paid (" + event.getFee() + " Razorpay)";
@@ -245,6 +243,10 @@ public class RegistrationServiceImpl implements RegistrationService {
         if (event == null) {
             return false;
         }
-        return registrationRepository.existsByEventAndUser(event, user);
+        boolean registered = registrationRepository.existsByEventAndUser(event, user);
+        if (!registered && user.getEmail() != null && !user.getEmail().isBlank()) {
+            registered = registrationRepository.existsByEventAndStudentEmailIgnoreCase(event, user.getEmail().trim());
+        }
+        return registered;
     }
 }

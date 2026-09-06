@@ -94,7 +94,7 @@ export default function TabCreateEvent({ onEventCreated }) {
           background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(254, 252, 248, 0.85) 100%)',
           backdropFilter: 'blur(20px)'
         }}
-        className="p-6 sm:p-8 rounded-[28px] border border-white/80 shadow-xs space-y-6"
+        className="p-4 sm:p-8 rounded-[20px] sm:rounded-[28px] border border-white/80 shadow-xs space-y-5 sm:space-y-6"
       >
         {/* ================= STEP 1: BASIC INFORMATION ================= */}
         {step === 1 && (

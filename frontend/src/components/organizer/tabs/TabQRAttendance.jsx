@@ -177,21 +177,45 @@ export default function TabQRAttendance({
 
       const cameraConstraint = cameraIdToUse || (cameraDevices.length > 0 ? cameraDevices[0].id : { facingMode: 'environment' })
 
-      await scannerRef.current.start(
-        cameraConstraint,
-        config,
-        (decodedText) => {
-          processTicketVerification(decodedText)
-        },
-        () => {
-          // Ignore frame decode misses
-        }
-      )
+      try {
+        await scannerRef.current.start(
+          cameraConstraint,
+          config,
+          (decodedText) => {
+            processTicketVerification(decodedText)
+          },
+          () => {
+            // Ignore frame decode misses
+          }
+        )
+      } catch (initialErr) {
+        // Fallback: If device ID constraint failed, try generic user / environment facingMode
+        console.warn('Initial camera constraint failed, attempting fallback:', initialErr)
+        await scannerRef.current.start(
+          { facingMode: 'user' },
+          config,
+          (decodedText) => {
+            processTicketVerification(decodedText)
+          },
+          () => {}
+        )
+      }
 
       setIsCameraRunning(true)
     } catch (err) {
       console.error('Camera start failure:', err)
-      setCameraError(err.message || 'Unable to access camera device. Please verify permissions.')
+      const errName = err?.name || ''
+      const errMsg = (err?.message || '').toLowerCase()
+
+      if (errName === 'NotAllowedError' || errMsg.includes('permission') || errMsg.includes('denied')) {
+        setCameraError('Camera permission was blocked. Please click the lock / camera icon in your browser address bar, toggle Camera to "Allow", and click "Start Camera". Also check Windows Settings > Privacy & Security > Camera.')
+      } else if (errName === 'NotReadableError' || errName === 'TrackStartError' || errMsg.includes('in use') || errMsg.includes('readable') || errMsg.includes('could not start')) {
+        setCameraError('Your camera (HP True Vision) is currently locked or in use by another program (such as Zoom, Teams, Windows Camera, or another browser tab). Please close other apps and click "Retry Camera".')
+      } else if (errName === 'NotFoundError' || errMsg.includes('not found')) {
+        setCameraError('No camera found on this device. You can upload pass image files or enter ticket numbers manually below.')
+      } else {
+        setCameraError(err.message || 'Unable to access camera device. Please verify permissions.')
+      }
       setIsCameraRunning(false)
     }
   }, [cameraDevices, processTicketVerification])
@@ -519,12 +543,21 @@ export default function TabQRAttendance({
 
           {/* Camera Permission / Error Warning */}
           {cameraError && (
-            <div className="p-3 rounded-[16px] bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-start gap-2.5">
-              <span className="text-base">⚠️</span>
-              <div>
-                <span className="font-bold block">Camera Notice:</span>
-                <span className="text-[11px] leading-relaxed">{cameraError}</span>
+            <div className="p-3.5 rounded-[18px] bg-amber-50/90 border border-amber-200 text-amber-900 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
+              <div className="flex items-start gap-2.5">
+                <span className="text-lg shrink-0">⚠️</span>
+                <div>
+                  <span className="font-bold block text-[#0F5D46]">Camera Notice:</span>
+                  <span className="text-[11.5px] leading-relaxed text-stone-700">{cameraError}</span>
+                </div>
               </div>
+              <button
+                type="button"
+                onClick={() => startCamera(selectedCameraId)}
+                className="px-3.5 py-1.5 bg-[#0F5D46] hover:bg-[#126B51] text-white font-bold text-xs rounded-[12px] shrink-0 cursor-pointer shadow-xs transition-colors self-start sm:self-auto"
+              >
+                🔄 Retry Camera
+              </button>
             </div>
           )}
 

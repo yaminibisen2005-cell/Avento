@@ -239,7 +239,7 @@ export default function SplashScreen() {
         </div>
 
         {/* Step 3 (2.5-3.5s): The word A V E N T O appears one letter at a time */}
-        <div className="flex items-center justify-center select-none overflow-visible">
+        <div className="flex items-center justify-center select-none overflow-visible max-w-full">
           {brandLetters.map((char, index) => (
             <motion.span
               key={index}
@@ -254,19 +254,19 @@ export default function SplashScreen() {
                 fontFamily: "'General Sans', 'Sora', -apple-system, BlinkMacSystemFont, sans-serif",
                 textShadow: '0 8px 30px rgba(15, 93, 70, 0.08)'
               }}
-              className="font-extrabold text-[44px] sm:text-[68px] md:text-[88px] lg:text-[104px] text-[#0F5D46] tracking-[0.8em] pl-[0.8em] inline-block leading-none"
+              className="font-extrabold text-[28px] min-[400px]:text-[36px] sm:text-[60px] md:text-[80px] lg:text-[96px] text-[#0F5D46] tracking-[0.12em] min-[400px]:tracking-[0.2em] sm:tracking-[0.5em] md:tracking-[0.7em] pl-[0.12em] min-[400px]:pl-[0.2em] sm:pl-[0.5em] md:pl-[0.7em] inline-block leading-none"
             >
               {char}
             </motion.span>
           ))}
         </div>
 
-        {/* Subtitle: SMART EVENT PLATFORM (Small uppercase, Gold #D9B24A, Letter spacing 10px) */}
+        {/* Subtitle: SMART EVENT PLATFORM (Small uppercase, Gold #D9B24A, Responsive Letter spacing) */}
         <motion.p 
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 3.5, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-4 sm:mt-5 text-[11px] sm:text-[13px] md:text-[14px] font-semibold tracking-[10px] pl-[10px] uppercase text-[#D9B24A] select-none"
+          className="mt-3 sm:mt-5 text-[9px] min-[400px]:text-[11px] sm:text-[13px] md:text-[14px] font-semibold tracking-[4px] min-[400px]:tracking-[6px] sm:tracking-[10px] pl-[4px] min-[400px]:pl-[6px] sm:pl-[10px] uppercase text-[#D9B24A] select-none text-center"
           style={{
             fontFamily: "'General Sans', 'Sora', sans-serif"
           }}
@@ -274,8 +274,8 @@ export default function SplashScreen() {
           SMART EVENT PLATFORM
         </motion.p>
 
-        {/* ================= 6. PREMIUM LOADING LINE (240px × 4px, Emerald-to-Gold, Animated Shine, 5.2s) ================= */}
-        <div className="mt-8 sm:mt-11 w-[240px] h-[4px] rounded-full bg-[#0F5D46]/10 overflow-hidden relative shadow-inner">
+        {/* ================= 6. PREMIUM LOADING LINE ================= */}
+        <div className="mt-6 sm:mt-11 w-[180px] min-[400px]:w-[210px] sm:w-[240px] h-[3.5px] sm:h-[4px] rounded-full bg-[#0F5D46]/10 overflow-hidden relative shadow-inner">
           
           {/* Smooth Progress Fill across 5.2 seconds */}
           <motion.div 

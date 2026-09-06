@@ -114,8 +114,12 @@ public class PaymentServiceImpl implements PaymentService {
             throw new BadRequestException("Event is fully booked.");
         }
 
-        if (registrationRepository.existsByEventAndUser(event, user)) {
-            throw new BadRequestException("You are already registered for this event.");
+        boolean alreadyRegistered = registrationRepository.existsByEventAndUser(event, user);
+        if (!alreadyRegistered && req.getStudentEmail() != null && !req.getStudentEmail().isBlank()) {
+            alreadyRegistered = registrationRepository.existsByEventAndStudentEmailIgnoreCase(event, req.getStudentEmail().trim());
+        }
+        if (alreadyRegistered) {
+            throw new BadRequestException("You are already registered for this event. Multiple registrations are not allowed.");
         }
 
         Long amountInPaise = parseAmountToPaise(event.getFee());
@@ -310,11 +314,23 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setStatus(PaymentStatus.SUCCESS);
 
         // Check if user is already registered for this event
-        if (registrationRepository.existsByEventAndUser(event, finalUser)) {
+        String studentEmail = req.getStudentEmail() != null && !req.getStudentEmail().trim().isEmpty() ?
+                req.getStudentEmail().trim() : finalUser.getEmail();
+        boolean alreadyReg = registrationRepository.existsByEventAndUser(event, finalUser);
+        if (!alreadyReg && studentEmail != null && !studentEmail.isBlank()) {
+            alreadyReg = registrationRepository.existsByEventAndStudentEmailIgnoreCase(event, studentEmail);
+        }
+        if (alreadyReg) {
             Registration existingReg = registrationRepository.findByUserOrderByRegisteredAtDesc(finalUser).stream()
                     .filter(r -> r.getEvent().getId().equals(event.getId()))
                     .findFirst()
                     .orElse(null);
+            if (existingReg == null && studentEmail != null) {
+                existingReg = registrationRepository.findByEventOrderByRegisteredAtDesc(event).stream()
+                        .filter(r -> studentEmail.equalsIgnoreCase(r.getStudentEmail()))
+                        .findFirst()
+                        .orElse(null);
+            }
             if (existingReg != null) {
                 Ticket existingTicket = ticketRepository.findByRegistration(existingReg).orElse(null);
                 if (existingTicket != null) {
@@ -324,13 +340,12 @@ public class PaymentServiceImpl implements PaymentService {
                     return TicketDto.fromEntity(existingTicket);
                 }
             }
+            throw new BadRequestException("You have already registered for this event. Multiple registrations are not allowed.");
         }
 
         // Generate Registration and Digital Ticket
         String studentName = req.getStudentName() != null && !req.getStudentName().trim().isEmpty() ?
                 req.getStudentName().trim() : finalUser.getFullName();
-        String studentEmail = req.getStudentEmail() != null && !req.getStudentEmail().trim().isEmpty() ?
-                req.getStudentEmail().trim() : finalUser.getEmail();
 
         String regNumber = "REG-" + (System.currentTimeMillis() % 100000);
         Registration registration = Registration.builder()
