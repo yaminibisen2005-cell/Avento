@@ -148,7 +148,7 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
 
   return (
     <main 
-      className="relative w-full min-h-screen min-h-[100dvh] overflow-y-auto bg-[#FAF8F2] text-[#1F2937] antialiased selection:bg-[#D9B24A]/25 selection:text-[#0B4B3A] flex flex-col items-center justify-center p-2 sm:p-4 lg:p-5"
+      className="relative w-full min-h-screen min-h-[100dvh] overflow-y-auto bg-[#FAF8F2] text-[#1F2937] antialiased selection:bg-[#D9B24A]/25 selection:text-[#0B4B3A] flex flex-col items-center justify-center p-3 sm:p-6 lg:p-8"
       style={{ 
         fontFamily: 'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
       }}
@@ -180,7 +180,7 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
       {onBackToLanding && (
         <button
           onClick={onBackToLanding}
-          className="fixed top-3.5 left-4 sm:left-8 z-50 flex items-center gap-2 px-3 py-1.5 rounded-full bg-white hover:bg-white/95 border border-[#0F5D46]/20 text-[12px] font-semibold text-[#0F5D46] shadow-xs hover:shadow-sm transition-all duration-200 hover:-translate-x-0.5 group cursor-pointer"
+          className="fixed top-4 left-4 sm:left-8 z-50 flex items-center gap-2 px-3.5 py-2 rounded-full bg-white hover:bg-white/95 border border-[#0F5D46]/20 text-[12.5px] font-semibold text-[#0F5D46] shadow-xs hover:shadow-sm transition-all duration-200 hover:-translate-x-0.5 group cursor-pointer"
         >
           <span className="text-[#D9B24A] group-hover:-translate-x-1 transition-transform text-xs">←</span>
           <span>Home</span>
@@ -188,7 +188,7 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
       )}
 
       {/* ========================================================================= */}
-      {/* MAIN CARD: SOLID, CRISP LUXURY CARD (ZERO BLUR OR DISTORTION)             */}
+      {/* MAIN CARD: SOLID, CRISP LUXURY CARD (GENEROUS SPACING)                     */}
       {/* ========================================================================= */}
       <motion.div 
         initial={{ opacity: 0, y: 12 }}
@@ -197,10 +197,10 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
         style={{
           background: '#FFFFFF',
           border: '1px solid rgba(15, 93, 70, 0.15)',
-          boxShadow: '0 20px 60px -15px rgba(15, 93, 70, 0.14), 0 0 0 1px rgba(15, 93, 70, 0.05)',
-          borderRadius: '28px'
+          boxShadow: '0 25px 70px -15px rgba(15, 93, 70, 0.14), 0 0 0 1px rgba(15, 93, 70, 0.05)',
+          borderRadius: '32px'
         }}
-        className="relative w-full max-w-[500px] sm:max-w-[540px] lg:max-w-[1140px] xl:max-w-[1200px] my-auto flex flex-col lg:flex-row h-full max-h-[96vh] lg:max-h-[610px] xl:max-h-[630px] rounded-[22px] sm:rounded-[28px] overflow-hidden z-20"
+        className="relative w-full max-w-[540px] sm:max-w-[580px] lg:max-w-[1180px] xl:max-w-[1240px] my-auto flex flex-col lg:flex-row min-h-[640px] lg:min-h-[700px] rounded-[24px] sm:rounded-[32px] overflow-hidden z-20"
       >
         
         {/* Soft 1px Gradient Vertical Divider */}
@@ -213,13 +213,13 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
         />
 
         {/* ======================================================================= */}
-        {/* LEFT PANEL (50%): REFINED, COMPACT & CALM HERO SHOWCASE                 */}
+        {/* LEFT PANEL (50%): SPACIOUS & ELEGANT HERO SHOWCASE                      */}
         {/* ======================================================================= */}
         <div 
           style={{
             background: 'radial-gradient(at 0% 0%, rgba(15, 93, 70, 0.22) 0px, transparent 60%), radial-gradient(at 100% 100%, rgba(217, 178, 74, 0.22) 0px, transparent 60%), linear-gradient(135deg, rgba(234, 247, 241, 0.95) 0%, rgba(255, 255, 255, 0.5) 45%, rgba(234, 247, 241, 0.88) 100%)'
           }}
-          className="w-full lg:w-1/2 h-full p-4 sm:p-5 lg:p-6 xl:p-7 hidden lg:flex flex-col justify-between text-left relative z-10 overflow-hidden"
+          className="w-full lg:w-1/2 min-h-full p-6 sm:p-8 lg:p-9 xl:p-11 hidden lg:flex flex-col justify-between text-left relative z-10 overflow-hidden"
         >
           
           {/* --- 3D BACKGROUND GRAPHICS & DEPTH --- */}
@@ -317,19 +317,19 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
             </div>
           </div>
 
-          {/* --- MAIN HERO SECTION: COMPACT, ELEGANT PROPORTIONS --- */}
-          <div className="my-auto">
+          {/* --- MAIN HERO SECTION: SPACIOUS, ELEGANT PROPORTIONS --- */}
+          <div className="my-auto py-2">
             
-            {/* HERO HEADING: Compact 30px / 28px scale */}
-            <div className="mb-2 max-w-[480px]">
+            {/* HERO HEADING */}
+            <div className="mb-3 max-w-[480px]">
               <h1 className="uppercase text-left">
                 <span 
-                  className="font-bold text-2xl sm:text-[26px] lg:text-[30px] text-[#0F5D46] block tracking-[-0.035em] leading-[1.05]"
+                  className="font-black text-2xl sm:text-3xl lg:text-[36px] text-[#0F5D46] block tracking-[-0.035em] leading-[1.08]"
                 >
                   SMART EVENTS.
                 </span>
                 <span 
-                  className="font-bold text-2xl sm:text-[24px] lg:text-[28px] bg-gradient-to-b from-[#E6C55A] to-[#D9B24A] bg-clip-text text-transparent inline-block tracking-[-0.035em] leading-[1.05] mt-0.5"
+                  className="font-black text-2xl sm:text-3xl lg:text-[34px] bg-gradient-to-b from-[#E6C55A] to-[#D9B24A] bg-clip-text text-transparent inline-block tracking-[-0.035em] leading-[1.08] mt-1"
                 >
                   MADE SIMPLE.
                 </span>
@@ -338,13 +338,13 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
 
             {/* PARAGRAPH */}
             <p 
-              className="text-xs sm:text-[13px] font-normal leading-snug max-w-[420px] mb-2 text-left text-[#66757A]"
+              className="text-xs sm:text-sm font-normal leading-relaxed max-w-[440px] mb-5 text-left text-[#5E6A68]"
             >
               Manage registrations, QR attendance, certificates and analytics from one intelligent platform.
             </p>
 
-            {/* FEATURE CARDS: 4 Specified Cards */}
-            <div className="space-y-1.5 relative max-w-[420px]">
+            {/* FEATURE CARDS: 4 Spacious Cards */}
+            <div className="space-y-2.5 relative max-w-[440px]">
               
               {/* Card 1: ⚡ Instant QR Check-in */}
               <div 
@@ -352,22 +352,22 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                   background: '#FFFFFF',
                   border: '1px solid rgba(15, 93, 70, 0.12)',
                   boxShadow: '0 4px 14px rgba(15, 93, 70, 0.05)',
-                  borderRadius: '14px'
+                  borderRadius: '16px'
                 }}
-                className="w-[92%] sm:w-[355px] px-3.5 py-1.5 flex items-center justify-between group hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(15,93,70,0.08)] transition-all duration-200 relative z-0 cursor-default"
+                className="w-full px-4 py-2.5 flex items-center justify-between group hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(15,93,70,0.08)] transition-all duration-200 relative z-0 cursor-default"
               >
-                <div className="flex items-center gap-2.5">
-                  <div className="w-5 h-5 rounded-full bg-[#0B4B3A] text-[#D9B24A] flex items-center justify-center text-[11px] font-bold shadow-xs shrink-0 group-hover:scale-105 transition-transform">
+                <div className="flex items-center gap-3">
+                  <div className="w-7 h-7 rounded-full bg-[#0B4B3A] text-[#D9B24A] flex items-center justify-center text-xs font-bold shadow-xs shrink-0 group-hover:scale-105 transition-transform">
                     ⚡
                   </div>
                   <div className="text-left">
-                    <div className="text-[12.5px] font-semibold text-[#0B4B3A] leading-tight">Instant QR Check-in</div>
-                    <div className="text-[10.5px] font-normal mt-0.5 leading-tight text-[#0F5D46]/70">
+                    <div className="text-[13.5px] font-bold text-[#0B4B3A] leading-tight">Instant QR Check-in</div>
+                    <div className="text-xs font-normal mt-0.5 leading-tight text-[#0F5D46]/70">
                       0.3s sub-second turnstile gate entry
                     </div>
                   </div>
                 </div>
-                <span className="text-[9.5px] font-mono font-semibold text-[#0F5D46] bg-[#EAF7F1] px-2 py-0.5 rounded-full border border-[#0F5D46]/15">
+                <span className="text-[10px] font-mono font-bold text-[#0F5D46] bg-[#EAF7F1] px-2.5 py-1 rounded-full border border-[#0F5D46]/15">
                   0.3s
                 </span>
               </div>
@@ -378,23 +378,23 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                   background: '#FFFFFF',
                   border: '1px solid rgba(15, 93, 70, 0.12)',
                   boxShadow: '0 4px 14px rgba(15, 93, 70, 0.05)',
-                  borderRadius: '14px'
+                  borderRadius: '16px'
                 }}
-                className="w-[96%] sm:w-[375px] -mt-0.5 ml-2 px-3.5 py-1.5 flex items-center justify-between group hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(15,93,70,0.08)] transition-all duration-200 relative z-10 cursor-default"
+                className="w-full px-4 py-2.5 flex items-center justify-between group hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(15,93,70,0.08)] transition-all duration-200 relative z-10 cursor-default"
               >
-                <div className="flex items-center gap-2.5">
-                  <div className="w-5 h-5 rounded-full bg-[#D9B24A]/25 text-[#0B4B3A] border border-[#D9B24A]/40 flex items-center justify-center text-[11px] shadow-xs shrink-0 group-hover:scale-105 transition-transform">
+                <div className="flex items-center gap-3">
+                  <div className="w-7 h-7 rounded-full bg-[#D9B24A]/25 text-[#0B4B3A] border border-[#D9B24A]/40 flex items-center justify-center text-xs shadow-xs shrink-0 group-hover:scale-105 transition-transform">
                     🎓
                   </div>
                   <div className="text-left">
-                    <div className="text-[12.5px] font-semibold text-[#0B4B3A] leading-tight">Smart Certificates</div>
-                    <div className="text-[10.5px] font-normal mt-0.5 leading-tight text-[#0F5D46]/70">
+                    <div className="text-[13.5px] font-bold text-[#0B4B3A] leading-tight">Smart Certificates</div>
+                    <div className="text-xs font-normal mt-0.5 leading-tight text-[#0F5D46]/70">
                       Cryptographically verifiable credentials
                     </div>
                   </div>
                 </div>
-                <span className="text-[9.5px] font-mono font-semibold text-[#0B4B3A] bg-[#FAF8F3] px-2 py-0.5 rounded-full border border-[#D9B24A]/30 flex items-center gap-1">
-                  <span className="w-1 h-1 rounded-full bg-[#0F5D46]" />
+                <span className="text-[10px] font-mono font-bold text-[#0B4B3A] bg-[#FAF8F3] px-2.5 py-1 rounded-full border border-[#D9B24A]/30 flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#0F5D46]" />
                   VERIFIED
                 </span>
               </div>
@@ -405,22 +405,22 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                   background: '#FFFFFF',
                   border: '1px solid rgba(15, 93, 70, 0.12)',
                   boxShadow: '0 4px 14px rgba(15, 93, 70, 0.05)',
-                  borderRadius: '14px'
+                  borderRadius: '16px'
                 }}
-                className="w-[94%] sm:w-[365px] -mt-0.5 ml-1 px-3.5 py-1.5 flex items-center justify-between group hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(15,93,70,0.08)] transition-all duration-200 relative z-20 cursor-default"
+                className="w-full px-4 py-2.5 flex items-center justify-between group hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(15,93,70,0.08)] transition-all duration-200 relative z-20 cursor-default"
               >
-                <div className="flex items-center gap-2.5">
-                  <div className="w-5 h-5 rounded-full bg-[#0F5D46] text-white flex items-center justify-center text-[11px] shadow-xs shrink-0 group-hover:scale-105 transition-transform">
+                <div className="flex items-center gap-3">
+                  <div className="w-7 h-7 rounded-full bg-[#0F5D46] text-white flex items-center justify-center text-xs shadow-xs shrink-0 group-hover:scale-105 transition-transform">
                     📊
                   </div>
                   <div className="text-left">
-                    <div className="text-[12.5px] font-semibold text-[#0B4B3A] leading-tight">Live Event Analytics</div>
-                    <div className="text-[10.5px] font-normal mt-0.5 leading-tight text-[#0F5D46]/70">
+                    <div className="text-[13.5px] font-bold text-[#0B4B3A] leading-tight">Live Event Analytics</div>
+                    <div className="text-xs font-normal mt-0.5 leading-tight text-[#0F5D46]/70">
                       Real-time attendance & seat tracking
                     </div>
                   </div>
                 </div>
-                <span className="text-[9.5px] font-mono font-semibold text-[#0F5D46] bg-[#EAF7F1] px-2.5 py-0.5 rounded-full border border-[#0F5D46]/20">
+                <span className="text-[10px] font-mono font-bold text-[#0F5D46] bg-[#EAF7F1] px-2.5 py-1 rounded-full border border-[#0F5D46]/20">
                   LIVE
                 </span>
               </div>
@@ -431,22 +431,22 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                   background: '#FFFFFF',
                   border: '1px solid rgba(15, 93, 70, 0.12)',
                   boxShadow: '0 4px 14px rgba(15, 93, 70, 0.05)',
-                  borderRadius: '14px'
+                  borderRadius: '16px'
                 }}
-                className="w-[96%] sm:w-[370px] -mt-0.5 ml-3 px-3.5 py-1.5 flex items-center justify-between group hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(15,93,70,0.08)] transition-all duration-200 relative z-30 cursor-default"
+                className="w-full px-4 py-2.5 flex items-center justify-between group hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(15,93,70,0.08)] transition-all duration-200 relative z-30 cursor-default"
               >
-                <div className="flex items-center gap-2.5">
-                  <div className="w-5 h-5 rounded-full bg-[#D9B24A]/25 text-[#0B4B3A] border border-[#D9B24A]/50 flex items-center justify-center text-[11px] shadow-xs shrink-0 group-hover:scale-105 transition-transform">
+                <div className="flex items-center gap-3">
+                  <div className="w-7 h-7 rounded-full bg-[#D9B24A]/25 text-[#0B4B3A] border border-[#D9B24A]/50 flex items-center justify-center text-xs shadow-xs shrink-0 group-hover:scale-105 transition-transform">
                     💳
                   </div>
                   <div className="text-left">
-                    <div className="text-[12.5px] font-semibold text-[#0B4B3A] leading-tight">Secure Payments</div>
-                    <div className="text-[10.5px] font-normal mt-0.5 leading-tight text-[#0F5D46]/70">
+                    <div className="text-[13.5px] font-bold text-[#0B4B3A] leading-tight">Secure Payments</div>
+                    <div className="text-xs font-normal mt-0.5 leading-tight text-[#0F5D46]/70">
                       Bank-grade Razorpay escrow checkout
                     </div>
                   </div>
                 </div>
-                <span className="text-[9.5px] font-mono font-semibold text-[#0B4B3A] bg-[#FAF8F3] px-2 py-0.5 rounded-full border border-[#D9B24A]/30">
+                <span className="text-[10px] font-mono font-bold text-[#0B4B3A] bg-[#FAF8F3] px-2.5 py-1 rounded-full border border-[#D9B24A]/30">
                   ESCROW
                 </span>
               </div>
@@ -455,9 +455,9 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
 
           </div>
 
-          {/* --- BOTTOM: STATS (13px, 500 Weight) --- */}
-          <div className="pt-2 sm:pt-2.5 border-t border-[#0F5D46]/12">
-            <div className="flex items-center justify-between gap-2 sm:gap-3 text-[11.5px] font-medium text-[#0F5D46] flex-wrap">
+          {/* --- BOTTOM: STATS --- */}
+          <div className="pt-3 border-t border-[#0F5D46]/12">
+            <div className="flex items-center justify-between gap-2 sm:gap-3 text-xs sm:text-[13px] font-semibold text-[#0F5D46] flex-wrap">
               <span className="flex items-center gap-1">
                 <span className="text-[#0F5D46] font-bold text-xs">✔</span>
                 <span>200+ Colleges</span>
@@ -484,19 +484,19 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
 
 
         {/* ======================================================================= */}
-        {/* RIGHT PANEL (50%): COMPACT & ELEGANT AUTHENTICATION FORM                */}
+        {/* RIGHT PANEL (50%): SPACIOUS & ELEGANT AUTHENTICATION FORM               */}
         {/* ======================================================================= */}
-        <div className="auth-right-panel-bg w-full lg:w-1/2 h-auto lg:h-full relative p-4 sm:p-6 lg:p-6 xl:p-8 flex items-center justify-center overflow-y-auto custom-scrollbar">
+        <div className="auth-right-panel-bg w-full lg:w-1/2 min-h-full relative p-6 sm:p-8 lg:p-9 xl:p-12 flex items-center justify-center overflow-y-auto custom-scrollbar">
           
-          <div className="w-full max-w-[480px] sm:max-w-[500px] h-full flex flex-col justify-between relative z-10">
+          <div className="w-full max-w-[480px] sm:max-w-[500px] flex flex-col justify-between relative z-10 py-2 sm:py-4">
             {/* Top-Level Unified Switcher: Sign In | Sign Up in the Same Card */}
-            <div className="flex p-1 bg-[#0F5D46]/[0.07] rounded-2xl border border-[#0F5D46]/15 mb-2 relative z-20 shrink-0">
+            <div className="flex p-1.5 bg-[#0F5D46]/[0.07] rounded-2xl border border-[#0F5D46]/15 mb-5 relative z-20 shrink-0 shadow-2xs">
               <button
                 type="button"
                 onClick={() => handleToggleAuth(true)}
-                className={`flex-1 py-1.5 text-xs sm:text-[13px] font-bold rounded-xl transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 ${
+                className={`flex-1 py-2.5 text-xs sm:text-sm font-bold rounded-xl transition-all duration-200 cursor-pointer flex items-center justify-center gap-2 ${
                   isLogin
-                    ? 'bg-[#0F5D46] text-white shadow-xs'
+                    ? 'bg-[#0F5D46] text-white shadow-sm'
                     : 'text-[#0F5D46] hover:bg-white/60'
                 }`}
               >
@@ -506,9 +506,9 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
               <button
                 type="button"
                 onClick={() => handleToggleAuth(false)}
-                className={`flex-1 py-1.5 text-xs sm:text-[13px] font-bold rounded-xl transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 ${
+                className={`flex-1 py-2.5 text-xs sm:text-sm font-bold rounded-xl transition-all duration-200 cursor-pointer flex items-center justify-center gap-2 ${
                   !isLogin
-                    ? 'bg-[#0F5D46] text-white shadow-xs'
+                    ? 'bg-[#0F5D46] text-white shadow-sm'
                     : 'text-[#0F5D46] hover:bg-white/60'
                 }`}
               >
@@ -523,46 +523,46 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.2 }}
-                className="w-full h-full p-2 sm:p-3 flex flex-col justify-between text-left overflow-y-auto custom-scrollbar"
+                className="w-full p-2 sm:p-3 flex flex-col justify-between text-left overflow-y-auto custom-scrollbar"
               >
                 {/* Mobile Brand Header */}
-                <div className="lg:hidden flex items-center justify-center gap-2 pt-0.5 pb-1 shrink-0">
-                  <div className="w-6 h-6 rounded-[8px] bg-gradient-to-br from-[#0B4B3A] to-[#0F5D46] flex items-center justify-center text-white font-bold text-xs shadow-xs border border-white/40">
+                <div className="lg:hidden flex items-center justify-center gap-2 pb-3 shrink-0">
+                  <div className="w-7 h-7 rounded-[9px] bg-gradient-to-br from-[#0B4B3A] to-[#0F5D46] flex items-center justify-center text-white font-bold text-xs shadow-xs border border-white/40">
                     A
                   </div>
-                  <span className="font-bold tracking-wider text-[13.5px] text-[#0B4B3A]">AVENTO</span>
-                  <span className="text-[10px] uppercase font-semibold tracking-[0.08em] text-[#0F5D46] bg-[#EAF7F1] border border-[#0F5D46]/20 px-2 py-0.5 rounded-full">
+                  <span className="font-bold tracking-wider text-[15px] text-[#0B4B3A]">AVENTO</span>
+                  <span className="text-[10px] uppercase font-semibold tracking-[0.08em] text-[#0F5D46] bg-[#EAF7F1] border border-[#0F5D46]/20 px-2.5 py-0.5 rounded-full">
                     Smart Events
                   </span>
                 </div>
 
                 {/* Portal Subtitle */}
-                <div className="flex items-center justify-end relative z-10 shrink-0">
-                  <span className="text-[10.5px] sm:text-[11px] font-medium text-[#6B7478]">
+                <div className="flex items-center justify-end relative z-10 shrink-0 mb-1">
+                  <span className="text-xs font-semibold text-[#6B7478]">
                     Event Registration
                   </span>
                 </div>
 
                 {/* Heading & Subtitle */}
-                <div className="relative z-10 mt-1 sm:mt-1.5 mb-1 shrink-0">
+                <div className="relative z-10 mb-3 shrink-0">
                   <h2 
-                    className="font-bold text-2xl sm:text-[26px] lg:text-[28px] text-[#0B4B3A] tracking-[-0.025em] leading-tight"
+                    className="font-extrabold text-2xl sm:text-3xl text-[#0B4B3A] tracking-[-0.025em] leading-tight"
                   >
                     Create Account
                   </h2>
                   <p 
-                    className="text-xs sm:text-[13px] font-normal mt-0.5 leading-normal text-[#6B7478]"
+                    className="text-xs sm:text-sm font-normal mt-1 leading-normal text-[#6B7478]"
                   >
                     Create your AVENTO workspace securely.
                   </p>
                 </div>
 
                 {/* Role Selector Toggle */}
-                <div className="flex items-center gap-2 p-1 bg-[#0F5D46]/[0.06] rounded-[14px] border border-[#0F5D46]/10 mb-1.5 relative z-10 shrink-0">
+                <div className="flex items-center gap-2.5 p-1.5 bg-[#0F5D46]/[0.06] rounded-[16px] border border-[#0F5D46]/10 mb-4 relative z-10 shrink-0">
                   <button
                     type="button"
                     onClick={() => setSignupForm(prev => ({ ...prev, role: 'STUDENT' }))}
-                    className={`flex-1 py-1 text-[11.5px] font-bold rounded-[10px] transition-all duration-200 cursor-pointer ${
+                    className={`flex-1 py-2 text-xs sm:text-[13px] font-bold rounded-[12px] transition-all duration-200 cursor-pointer ${
                       signupForm.role === 'STUDENT'
                         ? 'bg-[#0F5D46] text-white shadow-xs'
                         : 'text-[#0F5D46] hover:bg-white/60'
@@ -573,7 +573,7 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                   <button
                     type="button"
                     onClick={() => setSignupForm(prev => ({ ...prev, role: 'ORGANIZER' }))}
-                    className={`flex-1 py-1 text-[11.5px] font-bold rounded-[10px] transition-all duration-200 cursor-pointer ${
+                    className={`flex-1 py-2 text-xs sm:text-[13px] font-bold rounded-[12px] transition-all duration-200 cursor-pointer ${
                       signupForm.role === 'ORGANIZER'
                         ? 'bg-[#0F5D46] text-white shadow-xs'
                         : 'text-[#0F5D46] hover:bg-white/60'
@@ -585,7 +585,7 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
 
                 {/* Toast Alert */}
                 {toast.message && !isLogin && (
-                  <div className={`p-2 rounded-[12px] text-xs font-semibold flex items-center justify-between gap-2 mb-1.5 relative z-10 shrink-0 ${
+                  <div className={`p-3 rounded-[14px] text-xs font-semibold flex items-center justify-between gap-2 mb-3 relative z-10 shrink-0 ${
                     toast.type === 'error'
                       ? 'bg-red-50 text-red-700 border border-red-200/80'
                       : 'bg-emerald-50 text-emerald-800 border border-emerald-200/80'
@@ -595,13 +595,13 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                   </div>
                 )}
 
-                {/* Form Fields: Micro Labels, Inputs, Checkbox, Submit */}
-                <form onSubmit={handleSignupSubmit} className="space-y-1.5 sm:space-y-2 relative z-10 shrink-0">
+                {/* Form Fields: Labels, Inputs, Checkbox, Submit */}
+                <form onSubmit={handleSignupSubmit} className="space-y-3 sm:space-y-3.5 relative z-10 shrink-0">
                   
                   {/* Row 1: Full Name & Phone Number (2-Column Grid) */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5">
                     <div>
-                      <label className="text-[10px] sm:text-[10.5px] font-semibold tracking-[0.08em] uppercase text-[#0F5D46] mb-0.5 block">
+                      <label className="text-[11px] sm:text-xs font-bold tracking-[0.08em] uppercase text-[#0F5D46] mb-1.5 block">
                         FULL NAME
                       </label>
                       <input 
@@ -614,7 +614,7 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                       />
                     </div>
                     <div>
-                      <label className="text-[10px] sm:text-[10.5px] font-semibold tracking-[0.08em] uppercase text-[#0F5D46] mb-0.5 block">
+                      <label className="text-[11px] sm:text-xs font-bold tracking-[0.08em] uppercase text-[#0F5D46] mb-1.5 block">
                         PHONE NUMBER
                       </label>
                       <input 
@@ -630,7 +630,7 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
 
                   {/* Row 2: Email */}
                   <div>
-                    <label className="text-[10px] sm:text-[10.5px] font-semibold tracking-[0.08em] uppercase text-[#0F5D46] mb-0.5 block">
+                    <label className="text-[11px] sm:text-xs font-bold tracking-[0.08em] uppercase text-[#0F5D46] mb-1.5 block">
                       EMAIL ADDRESS
                     </label>
                     <input 
@@ -644,9 +644,9 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                   </div>
 
                   {/* Row 3: Password & Confirm Password (2-Column Grid) */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5">
                     <div>
-                      <label className="text-[10px] sm:text-[10.5px] font-semibold tracking-[0.08em] uppercase text-[#0F5D46] mb-0.5 block">
+                      <label className="text-[11px] sm:text-xs font-bold tracking-[0.08em] uppercase text-[#0F5D46] mb-1.5 block">
                         PASSWORD
                       </label>
                       <div className="relative">
@@ -656,12 +656,12 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                           value={signupForm.password}
                           onChange={e => setSignupForm({ ...signupForm, password: e.target.value })}
                           required
-                          className="auth-input-glass w-full pr-8 focus:outline-none"
+                          className="auth-input-glass w-full pr-10 focus:outline-none"
                         />
                         <button 
                           type="button" 
                           onClick={() => setShowSignupPassword(!showSignupPassword)}
-                          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-gray-400 hover:text-[#0F5D46] p-1 focus:outline-none cursor-pointer"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 hover:text-[#0F5D46] p-1 focus:outline-none cursor-pointer"
                           aria-label={showSignupPassword ? 'Hide password' : 'Show password'}
                         >
                           {showSignupPassword ? '👁' : '👁‍🗨'}
@@ -670,7 +670,7 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                     </div>
 
                     <div>
-                      <label className="text-[10px] sm:text-[10.5px] font-semibold tracking-[0.08em] uppercase text-[#0F5D46] mb-0.5 block">
+                      <label className="text-[11px] sm:text-xs font-bold tracking-[0.08em] uppercase text-[#0F5D46] mb-1.5 block">
                         CONFIRM PASSWORD
                       </label>
                       <div className="relative">
@@ -680,12 +680,12 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                           value={signupForm.confirmPassword}
                           onChange={e => setSignupForm({ ...signupForm, confirmPassword: e.target.value })}
                           required
-                          className="auth-input-glass w-full pr-8 focus:outline-none"
+                          className="auth-input-glass w-full pr-10 focus:outline-none"
                         />
                         <button 
                           type="button" 
                           onClick={() => setShowSignupConfirmPassword(!showSignupConfirmPassword)}
-                          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-gray-400 hover:text-[#0F5D46] p-1 focus:outline-none cursor-pointer"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 hover:text-[#0F5D46] p-1 focus:outline-none cursor-pointer"
                           aria-label={showSignupConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
                         >
                           {showSignupConfirmPassword ? '👁' : '👁‍🗨'}
@@ -695,15 +695,15 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                   </div>
 
                   {/* Row 4: Terms Checkbox */}
-                  <div className="flex items-start gap-2 pt-0.5">
+                  <div className="flex items-start gap-2 pt-1">
                     <input 
                       type="checkbox" 
                       id="signupTermsCheck"
                       required
-                      className="w-3.5 h-3.5 mt-0.5 rounded text-[#0F5D46] border-gray-300 focus:ring-[#0F5D46] accent-[#0F5D46] cursor-pointer"
+                      className="w-4 h-4 mt-0.5 rounded text-[#0F5D46] border-gray-300 focus:ring-[#0F5D46] accent-[#0F5D46] cursor-pointer"
                     />
-                    <label htmlFor="signupTermsCheck" className="text-[11.5px] sm:text-[12px] font-normal text-[#66757A] leading-tight cursor-pointer">
-                      I agree to Terms & Privacy Policy
+                    <label htmlFor="signupTermsCheck" className="text-xs font-normal text-[#5E6A68] leading-tight cursor-pointer">
+                      I agree to the <strong className="text-[#0F5D46]">Terms of Service</strong> & <strong className="text-[#0F5D46]">Privacy Policy</strong>
                     </label>
                   </div>
 
@@ -713,12 +713,12 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                     disabled={loading}
                     whileHover={{ y: loading ? 0 : -2 }}
                     whileTap={{ scale: loading ? 1 : 0.985 }}
-                    className="auth-btn-primary w-full text-white flex items-center justify-center group cursor-pointer relative overflow-hidden text-[14px] font-semibold mt-2 sm:mt-2.5 disabled:opacity-70"
+                    className="auth-btn-primary w-full h-[48px] sm:h-[52px] rounded-[16px] text-white flex items-center justify-center group cursor-pointer relative overflow-hidden text-sm sm:text-base font-bold mt-3 disabled:opacity-70 shadow-sm"
                   >
                     <div className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none -translate-x-full group-hover:translate-x-[250%] transition-transform duration-700" />
                     <span className="relative z-10">{loading ? 'Creating Account...' : 'Create Account'}</span>
                     {!loading && (
-                      <span className="relative z-10 text-[#D9B24A] font-medium text-[13px] ml-2 transform group-hover:translate-x-1 transition-transform duration-200">
+                      <span className="relative z-10 text-[#D9B24A] font-bold text-base ml-2 transform group-hover:translate-x-1 transition-transform duration-200">
                         →
                       </span>
                     )}
@@ -727,30 +727,28 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                 </form>
 
                 {/* Bottom Row: Google Button & Already have an account? Login */}
-                <div className="relative z-10 pt-1.5 shrink-0 space-y-1.5 sm:space-y-2">
-                  {/* Google Button */}
+                <div className="relative z-10 pt-3 shrink-0 space-y-3">
                   <button 
                     type="button"
                     onClick={handleGoogleLogin}
                     disabled={loading}
-                    className="w-full h-[38px] sm:h-[40px] bg-white/85 hover:bg-white text-[#0B4B3A] border border-[#0F5D46]/20 hover:border-[#0F5D46]/40 font-medium text-[13px] sm:text-[13.5px] rounded-[14px] shadow-2xs hover:shadow-xs hover:-translate-y-0.5 active:scale-[0.99] flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer backdrop-blur-md"
+                    className="w-full h-[44px] sm:h-[48px] bg-white/95 hover:bg-white text-[#0B4B3A] border border-[#0F5D46]/20 hover:border-[#0F5D46]/40 font-semibold text-xs sm:text-sm rounded-[14px] shadow-2xs hover:shadow-xs transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
                   >
-                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4" viewBox="0 0 24 24">
                       <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                       <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
                       <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
                       <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
                     </svg>
-                    <span>Continue with Google</span>
+                    <span>Sign up with Google</span>
                   </button>
 
-                  {/* Switch to Login */}
-                  <div className="text-center text-[12.5px] sm:text-[13px] font-medium text-[#6B7478]">
+                  <div className="text-center text-xs sm:text-sm text-[#5E6A68] pt-1">
                     <span>Already have an account? </span>
                     <button 
                       type="button" 
                       onClick={() => handleToggleAuth(true)}
-                      className="font-semibold text-[#D9B24A] hover:underline underline-offset-4 cursor-pointer transition-all"
+                      className="font-bold text-[#0F5D46] hover:text-[#D9B24A] hover:underline underline-offset-4 cursor-pointer transition-colors ml-1"
                     >
                       Login
                     </button>
@@ -764,35 +762,35 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.2 }}
-                className="w-full h-full p-1 sm:p-2 flex flex-col justify-between text-left overflow-hidden"
+                className="w-full p-2 sm:p-3 flex flex-col justify-between text-left"
               >
                 {/* Mobile Brand Header */}
-                <div className="lg:hidden flex items-center justify-center gap-2 pt-0.5 pb-1 shrink-0">
-                  <div className="w-6 h-6 rounded-[8px] bg-gradient-to-br from-[#0B4B3A] to-[#0F5D46] flex items-center justify-center text-white font-bold text-xs shadow-xs border border-white/40">
+                <div className="lg:hidden flex items-center justify-center gap-2 pb-3 shrink-0">
+                  <div className="w-7 h-7 rounded-[9px] bg-gradient-to-br from-[#0B4B3A] to-[#0F5D46] flex items-center justify-center text-white font-bold text-xs shadow-xs border border-white/40">
                     A
                   </div>
-                  <span className="font-bold tracking-wider text-[13.5px] text-[#0B4B3A]">AVENTO</span>
-                  <span className="text-[10px] uppercase font-semibold tracking-[0.08em] text-[#0F5D46] bg-[#EAF7F1] border border-[#0F5D46]/20 px-2 py-0.5 rounded-full">
+                  <span className="font-bold tracking-wider text-[15px] text-[#0B4B3A]">AVENTO</span>
+                  <span className="text-[10px] uppercase font-semibold tracking-[0.08em] text-[#0F5D46] bg-[#EAF7F1] border border-[#0F5D46]/20 px-2.5 py-0.5 rounded-full">
                     Smart Events
                   </span>
                 </div>
 
                 {/* Portal Subtitle */}
-                <div className="flex items-center justify-end relative z-10 shrink-0 mb-0.5">
-                  <span className="text-[10.5px] sm:text-[11px] font-medium text-[#6B7478]">
+                <div className="flex items-center justify-end relative z-10 shrink-0 mb-1">
+                  <span className="text-xs font-semibold text-[#6B7478]">
                     {loginRole === 'ORGANIZER' ? '🏢 Organizer Portal' : '🎓 Student Portal'}
                   </span>
                 </div>
 
                 {/* Heading & Subtitle */}
-                <div className="relative z-10 mb-1 shrink-0">
+                <div className="relative z-10 mb-3 shrink-0">
                   <h2 
-                    className="font-bold text-xl sm:text-[22px] lg:text-[24px] text-[#0B4B3A] tracking-[-0.025em] leading-tight"
+                    className="font-extrabold text-2xl sm:text-3xl text-[#0B4B3A] tracking-[-0.025em] leading-tight"
                   >
                     Welcome Back
                   </h2>
                   <p 
-                    className="text-[11px] sm:text-[11.5px] font-normal mt-0.5 leading-snug text-[#6B7478]"
+                    className="text-xs sm:text-sm font-normal mt-1 leading-normal text-[#6B7478]"
                   >
                     {loginRole === 'ORGANIZER' 
                       ? 'Sign in to manage university events, registrations and analytics.' 
@@ -803,7 +801,7 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                 {/* ============================================================= */}
                 {/* ACCOUNT TYPE SELECTOR: Segmented Selectable Cards             */}
                 {/* ============================================================= */}
-                <div className="grid grid-cols-2 gap-2 my-1 relative z-10 shrink-0">
+                <div className="grid grid-cols-2 gap-3 sm:gap-3.5 my-3 sm:my-4 relative z-10 shrink-0">
                   {/* Option 1: Student Login */}
                   <motion.button
                     type="button"
@@ -813,15 +811,15 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                       setLoginRole('STUDENT')
                       setToast({ type: '', message: '' })
                     }}
-                    className={`p-2 rounded-[14px] text-left transition-all duration-200 cursor-pointer flex flex-col justify-between relative ${
+                    className={`p-3 sm:p-3.5 rounded-[16px] text-left transition-all duration-200 cursor-pointer flex flex-col justify-between relative ${
                       loginRole === 'STUDENT'
                         ? 'bg-[#0F5D46]/[0.08] border-2 border-[#0F5D46] shadow-[0_4px_16px_rgba(15,93,70,0.12)] scale-[1.01]'
-                        : 'bg-white/80 border border-gray-200/90 hover:border-[#0F5D46]/35 hover:bg-white shadow-2xs'
+                        : 'bg-white border border-gray-200/90 hover:border-[#0F5D46]/35 hover:bg-gray-50/50 shadow-2xs'
                     }`}
                   >
-                    <div className="flex items-center justify-between w-full mb-0.5">
-                      <div className="flex items-center gap-1.5 font-bold text-xs sm:text-[12px] text-[#0B4B3A]">
-                        <span className="text-sm">🎓</span>
+                    <div className="flex items-center justify-between w-full mb-1">
+                      <div className="flex items-center gap-2 font-bold text-xs sm:text-sm text-[#0B4B3A]">
+                        <span className="text-base">🎓</span>
                         <span>Student Login</span>
                       </div>
                       {loginRole === 'STUDENT' ? (
@@ -832,7 +830,7 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                         <span className="w-3.5 h-3.5 rounded-full border border-gray-300 shrink-0" />
                       )}
                     </div>
-                    <p className="text-[9.5px] sm:text-[10px] leading-tight text-[#0F5D46]/75">
+                    <p className="text-[11px] sm:text-[11.5px] leading-normal text-[#0F5D46]/75 mt-0.5">
                       Access registered events, certificates and tickets.
                     </p>
                   </motion.button>
@@ -846,15 +844,15 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                       setLoginRole('ORGANIZER')
                       setToast({ type: '', message: '' })
                     }}
-                    className={`p-2 rounded-[14px] text-left transition-all duration-200 cursor-pointer flex flex-col justify-between relative ${
+                    className={`p-3 sm:p-3.5 rounded-[16px] text-left transition-all duration-200 cursor-pointer flex flex-col justify-between relative ${
                       loginRole === 'ORGANIZER'
                         ? 'bg-[#0F5D46]/[0.08] border-2 border-[#0F5D46] shadow-[0_4px_16px_rgba(15,93,70,0.12)] scale-[1.01]'
-                        : 'bg-white/80 border border-gray-200/90 hover:border-[#0F5D46]/35 hover:bg-white shadow-2xs'
+                        : 'bg-white border border-gray-200/90 hover:border-[#0F5D46]/35 hover:bg-gray-50/50 shadow-2xs'
                     }`}
                   >
-                    <div className="flex items-center justify-between w-full mb-0.5">
-                      <div className="flex items-center gap-1.5 font-bold text-xs sm:text-[12px] text-[#0B4B3A]">
-                        <span className="text-sm">🏢</span>
+                    <div className="flex items-center justify-between w-full mb-1">
+                      <div className="flex items-center gap-2 font-bold text-xs sm:text-sm text-[#0B4B3A]">
+                        <span className="text-base">🏢</span>
                         <span>Organizer Login</span>
                       </div>
                       {loginRole === 'ORGANIZER' ? (
@@ -865,7 +863,7 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                         <span className="w-3.5 h-3.5 rounded-full border border-gray-300 shrink-0" />
                       )}
                     </div>
-                    <p className="text-[9.5px] sm:text-[10px] leading-tight text-[#0F5D46]/75">
+                    <p className="text-[11px] sm:text-[11.5px] leading-normal text-[#0F5D46]/75 mt-0.5">
                       Manage events, registrations, payments and analytics.
                     </p>
                   </motion.button>
@@ -873,7 +871,7 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
 
                 {/* Toast Alert on Login */}
                 {toast.message && isLogin && (
-                  <div className={`p-1.5 rounded-[10px] text-xs font-semibold flex items-center justify-between gap-2 mb-1 relative z-10 shrink-0 ${
+                  <div className={`p-3 rounded-[14px] text-xs font-semibold flex items-center justify-between gap-2 mb-3 relative z-10 shrink-0 ${
                     toast.type === 'error'
                       ? 'bg-red-50 text-red-700 border border-red-200/80'
                       : 'bg-emerald-50 text-emerald-800 border border-emerald-200/80'
@@ -884,11 +882,11 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                 )}
 
                 {/* Login Fields Form */}
-                <form onSubmit={handleLoginSubmit} className="space-y-1.5 relative z-10 shrink-0">
+                <form onSubmit={handleLoginSubmit} className="space-y-3 sm:space-y-3.5 relative z-10 shrink-0">
                   
                   {/* Email with Mail Icon */}
                   <div>
-                    <label className="text-[10px] font-semibold tracking-[0.08em] uppercase text-[#0F5D46] mb-0.5 block">
+                    <label className="text-[11px] sm:text-xs font-bold tracking-[0.08em] uppercase text-[#0F5D46] mb-1.5 block">
                       EMAIL ADDRESS
                     </label>
                     <div className="relative">
@@ -898,9 +896,9 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                         value={loginForm.email}
                         onChange={e => setLoginForm({ ...loginForm, email: e.target.value })}
                         required
-                        className="auth-input-glass w-full pl-9 pr-4 text-xs sm:text-[13px] focus:outline-none"
+                        className="auth-input-glass w-full pl-11 pr-4 text-xs sm:text-sm focus:outline-none"
                       />
-                      <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                      <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
                         <svg className="w-4 h-4 text-[#0F5D46]/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                         </svg>
@@ -910,14 +908,14 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
 
                   {/* Password with Lock Icon & Eye Toggle */}
                   <div>
-                    <div className="flex justify-between items-center mb-0.5">
-                      <label className="text-[10px] font-semibold tracking-[0.08em] uppercase text-[#0F5D46]">
+                    <div className="flex justify-between items-center mb-1.5">
+                      <label className="text-[11px] sm:text-xs font-bold tracking-[0.08em] uppercase text-[#0F5D46]">
                         PASSWORD
                       </label>
                       <button 
                         type="button" 
                         onClick={() => setShowForgotModal(true)} 
-                        className="text-[10.5px] sm:text-[11px] font-medium text-[#D9B24A] hover:underline underline-offset-4 transition-colors cursor-pointer bg-transparent border-0 p-0"
+                        className="text-xs font-bold text-[#D9B24A] hover:text-[#b8912e] hover:underline underline-offset-4 transition-colors cursor-pointer bg-transparent border-0 p-0"
                       >
                         Forgot Password?
                       </button>
@@ -929,9 +927,9 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                         value={loginForm.password}
                         onChange={e => setLoginForm({ ...loginForm, password: e.target.value })}
                         required
-                        className="auth-input-glass w-full pl-9 pr-8 text-xs sm:text-[13px] focus:outline-none"
+                        className="auth-input-glass w-full pl-11 pr-10 text-xs sm:text-sm focus:outline-none"
                       />
-                      <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                      <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
                         <svg className="w-4 h-4 text-[#0F5D46]/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                         </svg>
@@ -939,15 +937,15 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                       <button 
                         type="button" 
                         onClick={() => setShowLoginPassword(!showLoginPassword)}
-                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-gray-400 hover:text-[#0F5D46] p-1 focus:outline-none cursor-pointer transition-colors"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 hover:text-[#0F5D46] p-1 focus:outline-none cursor-pointer transition-colors"
                         aria-label={showLoginPassword ? 'Hide password' : 'Show password'}
                       >
                         {showLoginPassword ? (
-                          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
                           </svg>
                         ) : (
-                          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                           </svg>
@@ -957,15 +955,15 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                   </div>
 
                   {/* Remember Me with Checkbox Icon */}
-                  <div className="flex items-center gap-2 pt-0.5">
+                  <div className="flex items-center gap-2 pt-1">
                     <input 
                       type="checkbox" 
                       id="loginRememberCheckCustom"
                       checked={rememberMe}
                       onChange={(e) => setRememberMe(e.target.checked)}
-                      className="w-3.5 h-3.5 rounded text-[#0F5D46] border-gray-300 focus:ring-[#0F5D46] accent-[#0F5D46] cursor-pointer"
+                      className="w-4 h-4 rounded text-[#0F5D46] border-gray-300 focus:ring-[#0F5D46] accent-[#0F5D46] cursor-pointer"
                     />
-                    <label htmlFor="loginRememberCheckCustom" className="text-[11px] sm:text-[11.5px] font-normal text-[#66757A] cursor-pointer select-none">
+                    <label htmlFor="loginRememberCheckCustom" className="text-xs font-normal text-[#5E6A68] cursor-pointer select-none">
                       Remember me for 30 days
                     </label>
                   </div>
@@ -976,14 +974,14 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                     disabled={loading}
                     whileHover={{ y: loading ? 0 : -1 }}
                     whileTap={{ scale: loading ? 1 : 0.985 }}
-                    className="w-full h-[38px] sm:h-[40px] rounded-[12px] bg-[#0B4B3A] hover:bg-[#073327] text-white flex items-center justify-center gap-2 font-semibold text-xs sm:text-[13px] shadow-[0_4px_16px_rgba(11,75,58,0.22)] hover:shadow-[0_6px_22px_rgba(11,75,58,0.32)] transition-all duration-200 cursor-pointer relative overflow-hidden disabled:opacity-70 mt-1"
+                    className="w-full h-[48px] sm:h-[52px] rounded-[16px] bg-[#0B4B3A] hover:bg-[#073327] text-white flex items-center justify-center gap-2 font-bold text-sm sm:text-base shadow-[0_8px_24px_rgba(11,75,58,0.25)] hover:shadow-[0_12px_28px_rgba(11,75,58,0.35)] transition-all duration-200 cursor-pointer relative overflow-hidden disabled:opacity-70 mt-2"
                   >
                     <div className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/15 to-transparent pointer-events-none -translate-x-full group-hover:translate-x-[250%] transition-transform duration-700" />
                     <span className="relative z-10 font-bold">
                       {loading ? 'Authenticating...' : `Login as ${loginRole === 'ORGANIZER' ? 'Organizer' : 'Student'}`}
                     </span>
                     {!loading && (
-                      <span className="relative z-10 text-[#D9B24A] font-extrabold text-sm transform group-hover:translate-x-1 transition-transform duration-200">
+                      <span className="relative z-10 text-[#D9B24A] font-extrabold text-base transform group-hover:translate-x-1 transition-transform duration-200">
                         →
                       </span>
                     )}
@@ -992,15 +990,15 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                 </form>
 
                 {/* Bottom Row: Google Button & Separate Account Creation Links */}
-                <div className="relative z-10 pt-1 shrink-0 space-y-1.5">
+                <div className="relative z-10 pt-3 shrink-0 space-y-3">
                   {/* Google Button */}
                   <button 
                     type="button"
                     onClick={handleGoogleLogin}
                     disabled={loading}
-                    className="w-full h-[36px] sm:h-[38px] bg-white/90 hover:bg-white text-[#0B4B3A] border border-[#0F5D46]/20 hover:border-[#0F5D46]/40 font-medium text-xs sm:text-[12.5px] rounded-[12px] shadow-2xs hover:shadow-xs hover:-translate-y-0.5 active:scale-[0.99] flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer backdrop-blur-md"
+                    className="w-full h-[44px] sm:h-[48px] bg-white/95 hover:bg-white text-[#0B4B3A] border border-[#0F5D46]/20 hover:border-[#0F5D46]/40 font-semibold text-xs sm:text-sm rounded-[14px] shadow-2xs hover:shadow-xs transition-all duration-200 flex items-center justify-center gap-2.5 cursor-pointer backdrop-blur-md"
                   >
-                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4" viewBox="0 0 24 24">
                       <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                       <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
                       <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
@@ -1010,16 +1008,16 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                   </button>
 
                   {/* Dual Create Account Links */}
-                  <div className="pt-0.5 text-center text-xs text-[#6B7478]">
-                    <span className="text-[10px] sm:text-[10.5px] text-gray-500 block mb-0.5">Don't have an account?</span>
-                    <div className="flex items-center justify-center gap-2.5 text-[11px] font-semibold">
+                  <div className="pt-1 text-center text-xs sm:text-sm text-[#6B7478]">
+                    <span className="text-xs text-gray-500 block mb-1">Don't have an account?</span>
+                    <div className="flex items-center justify-center gap-3 text-xs sm:text-sm font-semibold">
                       <button 
                         type="button" 
                         onClick={() => {
                           setSignupForm(prev => ({ ...prev, role: 'STUDENT' }))
                           handleToggleAuth(false)
                         }}
-                        className="inline-flex items-center gap-1 text-[#0F5D46] hover:text-[#0B4B3A] hover:underline underline-offset-4 cursor-pointer transition-colors"
+                        className="inline-flex items-center gap-1.5 text-[#0F5D46] hover:text-[#0B4B3A] hover:underline underline-offset-4 cursor-pointer transition-colors"
                       >
                         <span>🎓</span>
                         <span>Create Student Account</span>
@@ -1031,7 +1029,7 @@ export default function Authentication({ initialIsLogin = false, onBackToLanding
                           setSignupForm(prev => ({ ...prev, role: 'ORGANIZER' }))
                           handleToggleAuth(false)
                         }}
-                        className="inline-flex items-center gap-1 text-[#D9B24A] hover:text-[#b8912e] hover:underline underline-offset-4 cursor-pointer transition-colors"
+                        className="inline-flex items-center gap-1.5 text-[#D9B24A] hover:text-[#b8912e] hover:underline underline-offset-4 cursor-pointer transition-colors"
                       >
                         <span>🏢</span>
                         <span>Create Organizer Account</span>
